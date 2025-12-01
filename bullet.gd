@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var speed := 400.0
-@export var lifetime := 0.7 # seconds
+@export var lifetime := 0.5 # seconds
 var direction := Vector2.RIGHT
 var time_alive := 0.0
 

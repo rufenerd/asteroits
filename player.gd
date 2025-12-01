@@ -8,8 +8,16 @@ extends CharacterBody2D
 @export var turn_accel := 50.0
 
 @export var bullet_scene: PackedScene
+@export var wall_scene: PackedScene
+@export var harvester_scene: PackedScene
+@export var turret_scene: PackedScene
+
 @export var fire_cooldown := 0.2 # seconds between shots
 var fire_timer := 0.0
+
+@export var build_cooldown := 0.1
+var build_timer := 0.0
+
 var angular_velocity := 0.0
 
 func _physics_process(delta):
@@ -43,7 +51,15 @@ func _physics_process(delta):
 		if fire_timer <= 0.0:
 			shoot_bullet(aim_vector)
 			fire_timer = fire_cooldown
+			
+	if Input.is_action_pressed("build_wall"):
+		build_wall(delta)
 
+	if Input.is_action_pressed("build_harvester"):
+		build_harvester(delta)
+		
+	if Input.is_action_pressed("build_turret"):
+		build_turret(delta)
 
 func _update_rotation_from_input(input_vector: Vector2, delta: float) -> void:
 	if input_vector.length() < deadzone:
@@ -76,3 +92,55 @@ func shoot_bullet(aim_vector: Vector2):
 	bullet.global_position = global_position + nose_offset
 
 	get_parent().add_child(bullet)
+
+func build_wall(delta):
+	var wall = wall_scene.instantiate()
+	build(wall, delta)
+
+func build_harvester(delta):
+	var harvester = harvester_scene.instantiate()
+	build(harvester, delta)
+
+func build_turret(delta):
+	var turret = turret_scene.instantiate()
+	turret.rotation = snapped_cardinal(rotation)
+	build(turret, delta)
+
+func build(node, delta):
+	build_timer -= delta
+	if build_timer > 0.0:
+		return
+	build_timer = build_cooldown
+	
+	var tilemaplayer: TileMapLayer = $"../TileMapLayer"
+	var build_position = global_position + Vector2(-16, 0).rotated(rotation)
+	var cell: Vector2i = tilemaplayer.local_to_map(tilemaplayer.to_local(build_position))
+
+	if World.board.has(cell):
+		return
+
+	var snapped_pos = tilemaplayer.to_global(tilemaplayer.map_to_local(cell))
+	node.global_position = snapped_pos
+
+	get_parent().add_child(node)
+
+	World.board[cell] = node
+
+func snapped_cardinal(angle: float) -> float:
+	var cardinals = [
+		0.0,              # right
+		PI * 0.5,         # down
+		PI,               # left
+		-PI * 0.5         # up
+	]
+
+	var closest = cardinals[0]
+	var closest_dist = abs(angle - closest)
+
+	for c in cardinals:
+		var dist = abs(angle - c)
+		if dist < closest_dist:
+			closest = c
+			closest_dist = dist
+
+	return closest

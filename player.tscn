@@ -1,0 +1,31 @@
+[gd_scene load_steps=9 format=3 uid="uid://b1jkjbna1ytr6"]
+
+[ext_resource type="Script" uid="uid://dl1r6c7iegnv1" path="res://player.gd" id="1_2hs0m"]
+[ext_resource type="PackedScene" uid="uid://ee61geh7hicc" path="res://bullet.tscn" id="2_1jxqw"]
+[ext_resource type="PackedScene" uid="uid://cnd2gkftcb1s" path="res://wall.tscn" id="3_dw050"]
+[ext_resource type="PackedScene" uid="uid://dtg8o8c1rneyd" path="res://harvester.tscn" id="4_b26j0"]
+[ext_resource type="PackedScene" uid="uid://7e68i5x5rtys" path="res://turret.tscn" id="5_n7ghd"]
+[ext_resource type="Texture2D" uid="uid://cv1f4s3671dvx" path="res://art/ship.png" id="6_nvl01"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_0xm2m"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1bvp3"]
+size = Vector2(13, 13.5)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_2hs0m")
+bullet_scene = ExtResource("2_1jxqw")
+wall_scene = ExtResource("3_dw050")
+harvester_scene = ExtResource("4_b26j0")
+turret_scene = ExtResource("5_n7ghd")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_0xm2m")
+texture = ExtResource("6_nvl01")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(5, 5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, -0.75)
+shape = SubResource("RectangleShape2D_1bvp3")
