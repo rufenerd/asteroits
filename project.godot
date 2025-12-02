@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 World="*res://world.gd"
 
+[display]
+
+window/size/mode=3
+
 [input]
 
 left_stick_left={
