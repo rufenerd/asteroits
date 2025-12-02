@@ -2,6 +2,8 @@ extends CharacterBody2D
 
 var health = 10000
 
+const CELL_SIZE = 16
+
 @export var deadzone := 0.2
 @export var max_speed := 400.0
 @export var acceleration := 800.0
@@ -21,6 +23,9 @@ var fire_timer := 0.0
 var build_timer := 0.0
 
 var angular_velocity := 0.0
+
+func _ready():
+	global_position = Vector2(400, 400)
 
 func _physics_process(delta):
 	var input_vector = Vector2(
@@ -47,6 +52,9 @@ func _physics_process(delta):
 	)
 
 	move_and_slide()
+	
+	global_position.x = clamp(global_position.x, World.BOUNDS.position.x, World.BOUNDS.position.x + World.BOUNDS.size.x)
+	global_position.y = clamp(global_position.y, World.BOUNDS.position.y, World.BOUNDS.position.y + World.BOUNDS.size.y)
 	
 	if aim_vector.length() > deadzone:
 		fire_timer -= delta
@@ -113,20 +121,31 @@ func build(node, delta):
 	if build_timer > 0.0:
 		return
 	build_timer = build_cooldown
-	
-	var tilemaplayer: TileMapLayer = $"../TileMapLayer"
 	var build_position = global_position + Vector2(-33, 0).rotated(rotation)
-	var cell: Vector2i = tilemaplayer.local_to_map(tilemaplayer.to_local(build_position))
+
+	var cell = world_to_cell(build_position)
 
 	if World.board.has(cell):
 		return
 
-	var snapped_pos = tilemaplayer.to_global(tilemaplayer.map_to_local(cell))
+	var snapped_pos = cell_to_world(cell)
 	node.global_position = snapped_pos
 
 	get_parent().add_child(node)
 
 	World.board[cell] = node
+
+func world_to_cell(pos: Vector2) -> Vector2i:
+	return Vector2i(
+		int(floor(pos.x / CELL_SIZE)),
+		int(floor(pos.y / CELL_SIZE))
+	)
+
+func cell_to_world(cell: Vector2i) -> Vector2:
+	return Vector2(
+		(cell.x + 0.5) * CELL_SIZE,
+		(cell.y + 0.5) * CELL_SIZE
+	)
 
 func ang_dist(a,b):
 	return abs(wrapf(a - b, -PI, PI))
