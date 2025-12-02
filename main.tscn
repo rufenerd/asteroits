@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dertmpgmxst4g"]
+[gd_scene load_steps=8 format=3 uid="uid://dertmpgmxst4g"]
 
 [ext_resource type="Script" uid="uid://d0enoidadyoq0" path="res://world.gd" id="1_5vw27"]
 [ext_resource type="PackedScene" uid="uid://cltc2entjtmho" path="res://base.tscn" id="3_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://b1jkjbna1ytr6" path="res://player.tscn" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://cm435kf80k6tb" path="res://resource.tscn" id="4_1bvp3"]
 
 [sub_resource type="Gradient" id="Gradient_0xm2m"]
 offsets = PackedFloat32Array(0.701299, 1)
@@ -33,8 +34,10 @@ color = Color(0, 0, 0, 1)
 
 [node name="StarNoiseTextureRect" type="TextureRect" parent="World/StarParallaxBackground/StarsParallaxLayer"]
 modulate = Color(1, 1, 1, 0.666667)
-offset_right = 10000.0
-offset_bottom = 10000.0
+offset_left = 42.0
+offset_top = 22.0
+offset_right = 10042.0
+offset_bottom = 10022.0
 texture = SubResource("NoiseTexture2D_h2yge")
 stretch_mode = 1
 
@@ -43,4 +46,9 @@ stretch_mode = 1
 [node name="Bases" type="Node2D" parent="World"]
 
 [node name="Base1" parent="World/Bases" instance=ExtResource("3_1bvp3")]
+position = Vector2(513, 377)
+
+[node name="Resources" type="Node2D" parent="World"]
+
+[node name="Resource" parent="World/Resources" instance=ExtResource("4_1bvp3")]
 position = Vector2(513, 429)
