@@ -1,4 +1,4 @@
-extends Node2D
+extends Explodable
 
 @export var bullet_scene: PackedScene
 
@@ -21,6 +21,3 @@ func shoot_bullet():
 	bullet.global_position = global_position + nose_offset
 
 	get_parent().add_child(bullet)
-
-func on_hit():
-	queue_free()
