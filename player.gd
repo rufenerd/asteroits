@@ -46,15 +46,15 @@ func _physics_process(delta):
 
 	_update_rotation_from_input(input_vector, delta)
 
+	move_and_slide()
+
+	global_position.x = clamp(global_position.x, World.BOUNDS.position.x, World.BOUNDS.position.x + World.BOUNDS.size.x)
+	global_position.y = clamp(global_position.y, World.BOUNDS.position.y, World.BOUNDS.position.y + World.BOUNDS.size.y)
+
 	var aim_vector := Vector2(
 		Input.get_axis("aim_left", "aim_right"),
 		Input.get_axis("aim_up", "aim_down")
 	)
-
-	move_and_slide()
-	
-	global_position.x = clamp(global_position.x, World.BOUNDS.position.x, World.BOUNDS.position.x + World.BOUNDS.size.x)
-	global_position.y = clamp(global_position.y, World.BOUNDS.position.y, World.BOUNDS.position.y + World.BOUNDS.size.y)
 	
 	if aim_vector.length() > deadzone:
 		fire_timer -= delta
