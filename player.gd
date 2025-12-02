@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-var health = 10
+var health = 10000
 
 @export var deadzone := 0.2
 @export var max_speed := 400.0
@@ -115,7 +115,7 @@ func build(node, delta):
 	build_timer = build_cooldown
 	
 	var tilemaplayer: TileMapLayer = $"../TileMapLayer"
-	var build_position = global_position + Vector2(-16, 0).rotated(rotation)
+	var build_position = global_position + Vector2(-33, 0).rotated(rotation)
 	var cell: Vector2i = tilemaplayer.local_to_map(tilemaplayer.to_local(build_position))
 
 	if World.board.has(cell):

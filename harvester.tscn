@@ -49,7 +49,7 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_ky16f"]
 radius = 8.0
 
-[node name="Harvester" type="Area2D"]
+[node name="Harvester" type="StaticBody2D"]
 modulate = Color(0.0784314, 0.682353, 0.996078, 1)
 script = ExtResource("1_ky16f")
 

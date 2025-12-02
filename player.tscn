@@ -13,6 +13,7 @@
 size = Vector2(14, 14.5)
 
 [node name="Player" type="CharacterBody2D"]
+z_index = 1
 script = ExtResource("1_2hs0m")
 bullet_scene = ExtResource("2_1jxqw")
 wall_scene = ExtResource("3_dw050")
