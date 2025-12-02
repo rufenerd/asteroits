@@ -77,7 +77,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_4lvei")
 }],
 "loop": false,
-"name": &"default",
+"name": &"explode",
 "speed": 30.0
 }]
 
@@ -87,6 +87,4 @@ script = ExtResource("1_q7epf")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_7rlbx")
-autoplay = "default"
-frame = 9
-frame_progress = 1.0
+animation = &"explode"

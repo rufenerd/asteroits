@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://dwejjgsruroi4"]
+
+[ext_resource type="Texture2D" uid="uid://cn3adwaggp5qt" path="res://art/explosion.png" id="1_n2j20"]
+[ext_resource type="Script" uid="uid://br8u3tju7elyo" path="res://damaged.gd" id="1_y6b4c"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_txe80"]
+atlas = ExtResource("1_n2j20")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_by257"]
+atlas = ExtResource("1_n2j20")
+region = Rect2(112, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_71oi5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_txe80")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_by257")
+}],
+"loop": false,
+"name": &"damaged",
+"speed": 30.0
+}]
+
+[node name="Damaged" type="Node2D"]
+z_index = 2
+script = ExtResource("1_y6b4c")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_71oi5")
+animation = &"damaged"

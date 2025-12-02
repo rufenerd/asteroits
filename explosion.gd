@@ -4,6 +4,7 @@ extends Node2D
 var target_node: Node = null
 
 func _ready():
+	rotation = randf() * TAU
 	var anim = $AnimatedSprite2D
 	anim.speed_scale = 3.0 
 	anim.play("explode")

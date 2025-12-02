@@ -7,6 +7,8 @@ var time_alive := 0.0
 
 var previous_position: Vector2
 
+var damage = 1
+
 func _ready():
 	connect("area_entered", Callable(self, "_on_area_entered"))
 	connect("body_entered", Callable(self, "_on_body_entered"))
@@ -20,7 +22,7 @@ func _on_body_entered(body):
 
 func _handle_hit(target):
 	if target.has_method("on_hit"):
-		target.on_hit()
+		target.on_hit(damage)
 	queue_free()
 
 func _physics_process(delta):
@@ -28,7 +30,7 @@ func _physics_process(delta):
 	var new_position = global_position + velocity * delta
 
 	var space = get_world_2d().direct_space_state
-
+	
 	var query = PhysicsRayQueryParameters2D.new()
 	query.from = previous_position
 	query.to = new_position
@@ -39,7 +41,7 @@ func _physics_process(delta):
 	if result:
 		var hit = result.collider
 		if hit.has_method("on_hit"):
-			hit.on_hit()
+			hit.on_hit(damage)
 		queue_free()
 		return
 
