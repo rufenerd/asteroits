@@ -10,7 +10,7 @@
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_0xm2m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1bvp3"]
-size = Vector2(13, 13.5)
+size = Vector2(14, 14.5)
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_2hs0m")
@@ -27,5 +27,5 @@ texture = ExtResource("6_nvl01")
 zoom = Vector2(5, 5)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-0.5, -0.75)
+position = Vector2(-1, -0.25)
 shape = SubResource("RectangleShape2D_1bvp3")

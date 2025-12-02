@@ -1,12 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://7e68i5x5rtys"]
+[gd_scene load_steps=5 format=3 uid="uid://7e68i5x5rtys"]
 
 [ext_resource type="Script" uid="uid://b2e1m4omo5p1c" path="res://turret.gd" id="1_tjdg3"]
 [ext_resource type="Texture2D" uid="uid://ddw3lj8facbj0" path="res://art/turret.png" id="2_c5apd"]
 [ext_resource type="PackedScene" uid="uid://ee61geh7hicc" path="res://bullet.tscn" id="2_coqkk"]
 
-[node name="Turret" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c5apd"]
+size = Vector2(8, 13)
+
+[node name="Turret" type="StaticBody2D"]
 script = ExtResource("1_tjdg3")
 bullet_scene = ExtResource("2_coqkk")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_c5apd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-4, -0.5)
+shape = SubResource("RectangleShape2D_c5apd")

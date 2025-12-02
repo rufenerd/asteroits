@@ -16,6 +16,11 @@ func _physics_process(delta):
 func shoot_bullet():
 	var bullet = bullet_scene.instantiate()
 	bullet.direction = Vector2.RIGHT.rotated(rotation)
-	bullet.global_position = global_position
+
+	var nose_offset := Vector2(16, 0).rotated(rotation)
+	bullet.global_position = global_position + nose_offset
 
 	get_parent().add_child(bullet)
+
+func on_hit():
+	queue_free()

@@ -88,7 +88,7 @@ func shoot_bullet(aim_vector: Vector2):
 	
 	bullet.speed += acceleration
 
-	var nose_offset := Vector2(8, 0).rotated(direction.angle())
+	var nose_offset := Vector2(16, 0).rotated(direction.angle())
 	bullet.global_position = global_position + nose_offset
 
 	get_parent().add_child(bullet)
@@ -126,6 +126,9 @@ func build(node, delta):
 
 	World.board[cell] = node
 
+func ang_dist(a,b):
+	return abs(wrapf(a - b, -PI, PI))
+
 func snapped_cardinal(angle: float) -> float:
 	var cardinals = [
 		0.0,              # right
@@ -135,10 +138,10 @@ func snapped_cardinal(angle: float) -> float:
 	]
 
 	var closest = cardinals[0]
-	var closest_dist = abs(angle - closest)
+	var closest_dist = ang_dist(angle, closest)
 
 	for c in cardinals:
-		var dist = abs(angle - c)
+		var dist = ang_dist(angle, c)
 		if dist < closest_dist:
 			closest = c
 			closest_dist = dist
