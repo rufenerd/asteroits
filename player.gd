@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+var health = 10
+
 @export var deadzone := 0.2
 @export var max_speed := 400.0
 @export var acceleration := 800.0
@@ -147,3 +149,17 @@ func snapped_cardinal(angle: float) -> float:
 			closest_dist = dist
 
 	return closest
+
+func on_hit(damage = 1):
+	health -= damage
+
+	if health <= 0:
+		var explosion = preload("res://Explosion.tscn").instantiate()
+		explosion.global_position = global_position
+		explosion.target_node = self
+		explosion.target_frame = 9
+		get_tree().current_scene.add_child(explosion)
+	else:
+		var damaged =  preload("res://damaged.tscn").instantiate()
+		damaged.global_position = global_position
+		get_tree().current_scene.add_child(damaged)
