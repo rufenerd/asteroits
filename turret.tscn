@@ -8,6 +8,7 @@
 size = Vector2(8, 13)
 
 [node name="Turret" type="StaticBody2D"]
+modulate = Color(0.996078, 0.854902, 0.0784314, 1)
 script = ExtResource("1_tjdg3")
 bullet_scene = ExtResource("2_coqkk")
 
