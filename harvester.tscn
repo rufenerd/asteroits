@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://dtg8o8c1rneyd"]
+[gd_scene load_steps=11 format=3 uid="uid://dtg8o8c1rneyd"]
 
 [ext_resource type="Texture2D" uid="uid://dhiwrg6um4vvw" path="res://art/harvester.png" id="1_bqvda"]
 [ext_resource type="Script" uid="uid://vbp5txiwfy2h" path="res://harvester.gd" id="1_ky16f"]
+[ext_resource type="PackedScene" uid="uid://ctr2774xamxjy" path="res://delayed_materialization.tscn" id="3_ivm7c"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ivm7c"]
 atlas = ExtResource("1_bqvda")
@@ -59,3 +60,5 @@ autoplay = "default"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ky16f")
+
+[node name="DelayedMaterialization" parent="." instance=ExtResource("3_ivm7c")]

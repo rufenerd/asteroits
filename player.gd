@@ -119,8 +119,7 @@ func build(node, delta):
 	if build_timer > 0.0:
 		return
 	build_timer = build_cooldown
-	var build_position = global_position + Vector2(-33, 0).rotated(rotation)
-	World.build(node, build_position)
+	World.build(node, global_position)
 
 func ang_dist(a,b):
 	return abs(wrapf(a - b, -PI, PI))

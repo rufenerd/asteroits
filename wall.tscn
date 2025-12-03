@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://cnd2gkftcb1s"]
+[gd_scene load_steps=5 format=3 uid="uid://cnd2gkftcb1s"]
 
 [ext_resource type="Texture2D" uid="uid://byv57krcg6htb" path="res://art/wall.png" id="1_xxgf6"]
 [ext_resource type="Script" uid="uid://kejh4wi70xq4" path="res://wall.gd" id="1_y4f30"]
+[ext_resource type="PackedScene" uid="uid://ctr2774xamxjy" path="res://delayed_materialization.tscn" id="3_iuee5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xxgf6"]
 size = Vector2(14, 14)
@@ -15,3 +16,5 @@ texture = ExtResource("1_xxgf6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_xxgf6")
+
+[node name="DelayedMaterialization" parent="." instance=ExtResource("3_iuee5")]

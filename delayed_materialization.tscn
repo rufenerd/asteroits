@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://ctr2774xamxjy"]
+
+[ext_resource type="Script" uid="uid://b42bdvp38rs0v" path="res://delayed_materialization.gd" id="1_h0wi6"]
+
+[node name="DelayedMaterialization" type="Node2D"]
+script = ExtResource("1_h0wi6")
