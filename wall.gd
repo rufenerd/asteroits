@@ -14,5 +14,6 @@ func _on_body_entered(body):
 func _handle_hit(target):
 	if target.has_method("on_hit"):
 		target.on_hit()
-	on_hit(5)
-	queue_free()
+
+	if target is not Bullet:
+		on_hit(5)
