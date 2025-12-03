@@ -1,1 +1,14 @@
 class_name Harvester extends Explodable
+
+var cell : Vector2i
+
+func _ready():
+	var t := Timer.new()
+	t.wait_time = 1.0
+	t.autostart = true
+	t.one_shot = false
+	add_child(t)
+
+	t.timeout.connect(func():
+		World.harvest(self)
+	)

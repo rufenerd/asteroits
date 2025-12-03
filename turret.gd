@@ -4,8 +4,9 @@ extends Explodable
 
 @export
 var fire_cooldown = 0.5
-
 var fire_timer = 1.0
+
+var cell : Vector2i
 
 func _physics_process(delta):
 	fire_timer -= delta

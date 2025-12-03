@@ -3,7 +3,7 @@ extends Node
 const CELL_SIZE = 16
 const NUM_CELLS_IN_ROW = 625
 const BOUNDS := Rect2(0, 0, NUM_CELLS_IN_ROW * CELL_SIZE, NUM_CELLS_IN_ROW * CELL_SIZE)
-const MAX_RESOURCE_START_AMOUNT = 100
+const MAX_RESOURCE_START_AMOUNT = 300
 const NUM_RESOURCE_CLUSTERS = 20
 const MIN_RESOURCES_IN_CLUSTER = 25
 const MAX_RESOURCES_IN_CLUSTER = 50
@@ -11,6 +11,7 @@ const MAX_CLUSTER_RADIUS = 20
 
 var board = {}
 var resources = {}
+var bank = { "player": 0 }
 
 func _ready():
 	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
@@ -65,6 +66,11 @@ func build(node, build_position):
 
 	if node is Harvester and not resources.has(cell):
 		return
+		
+	if not node is Harvester:
+		if bank["player"] < 10:
+			return
+		bank["player"] -= 10
 
 	var snapped_pos = cell_to_world(cell)
 	node.global_position = snapped_pos
@@ -72,9 +78,20 @@ func build(node, build_position):
 	add_child(node)
 
 	board[cell] = node
+	
+	node.cell = cell
 
 	if resources.has(cell):
 		resources[cell].visible = false
+
+func harvest(harvester):
+	var resource = resources[harvester.cell]
+	if resource.amount > 0:
+		resources[harvester.cell].amount -= 1
+		bank["player"] += 1 #TODO generic keys
+	else:
+		harvester.queue_free()
+	print(bank["player"])
 
 func world_to_cell(pos: Vector2) -> Vector2i:
 	return Vector2i(

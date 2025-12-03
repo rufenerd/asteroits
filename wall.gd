@@ -1,5 +1,7 @@
 extends Explodable
 
+var cell : Vector2i
+
 func _ready():
 	connect("area_entered", Callable(self, "_on_area_entered"))
 	connect("body_entered", Callable(self, "_on_body_entered"))
