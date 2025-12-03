@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://buga6hnc4h5xu"]
+
+[ext_resource type="Script" uid="uid://boj00ndbghduf" path="res://hud.gd" id="1_37p78"]
+
+[node name="HUD" type="CanvasLayer"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_37p78")
+
+[node name="BankAmount" type="Label" parent="Control"]
+modulate = Color(0.854902, 0.0784314, 0.996078, 1)
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 138.0
+offset_bottom = 93.0
+theme_override_font_sizes/font_size = 50
+text = "1234"

@@ -91,7 +91,6 @@ func harvest(harvester):
 		bank["player"] += 1 #TODO generic keys
 	else:
 		harvester.queue_free()
-	print(bank["player"])
 
 func world_to_cell(pos: Vector2) -> Vector2i:
 	return Vector2i(
