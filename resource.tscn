@@ -1,5 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://cm435kf80k6tb"]
+[gd_scene load_steps=14 format=3 uid="uid://cm435kf80k6tb"]
 
+[ext_resource type="Script" uid="uid://qds5da2qdmuh" path="res://resource.gd" id="1_cpix3"]
 [ext_resource type="Texture2D" uid="uid://cpk03ynjoumds" path="res://art/resource.png" id="1_txoar"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cpix3"]
@@ -81,8 +82,9 @@ animations = [{
 }]
 
 [node name="Resource" type="Node2D"]
+script = ExtResource("1_cpix3")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_xxh62")
 autoplay = "default"
-frame_progress = 0.0647903
+frame_progress = 0.499216

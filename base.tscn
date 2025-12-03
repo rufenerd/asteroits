@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://cltc2entjtmho"]
+[gd_scene load_steps=3 format=3 uid="uid://cltc2entjtmho"]
 
 [ext_resource type="Texture2D" uid="uid://dx3jvbytudyrj" path="res://art/base.png" id="1_rpg24"]
-[ext_resource type="PackedScene" uid="uid://cm435kf80k6tb" path="res://resource.tscn" id="2_3vi8l"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_3vi8l"]
 radius = 19.0263
@@ -13,6 +12,3 @@ texture = ExtResource("1_rpg24")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_3vi8l")
-
-[node name="Resource" parent="." instance=ExtResource("2_3vi8l")]
-position = Vector2(452, 406)

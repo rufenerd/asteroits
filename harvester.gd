@@ -1,1 +1,1 @@
-extends Explodable
+class_name Harvester extends Explodable

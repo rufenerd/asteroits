@@ -116,7 +116,7 @@ func build_turret(delta):
 
 func build(node, delta):
 	build_timer -= delta
-	if build_timer > 0.0:
+	if node is not Harvester and build_timer > 0.0:
 		return
 	build_timer = build_cooldown
 	World.build(node, global_position)
