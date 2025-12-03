@@ -4,13 +4,14 @@
 [ext_resource type="PackedScene" uid="uid://b1jkjbna1ytr6" path="res://player.tscn" id="3_h2yge"]
 
 [sub_resource type="Gradient" id="Gradient_0xm2m"]
-offsets = PackedFloat32Array(0.701299, 1)
+offsets = PackedFloat32Array(0.779221, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_0xm2m"]
 noise_type = 2
 frequency = 1.0
 fractal_type = 0
 cellular_return_type = 2
+domain_warp_enabled = true
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_h2yge"]
 color_ramp = SubResource("Gradient_0xm2m")

@@ -4,15 +4,21 @@ const CELL_SIZE = 16
 const NUM_CELLS_IN_ROW = 625
 const BOUNDS := Rect2(0, 0, NUM_CELLS_IN_ROW * CELL_SIZE, NUM_CELLS_IN_ROW * CELL_SIZE)
 const MAX_RESOURCE_START_AMOUNT = 100
+const NUM_RESOURCE_CLUSTERS = 20
+const MIN_RESOURCES_IN_CLUSTER = 16
+const MAX_RESOURCES_IN_CLUSTER = 25
+const MAX_CLUSTER_RADIUS = 20
 
 var board = {}
 var resources = {}
 
 func _ready():
-	initialize_clustered_resources(100, 4, 40)
+	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
 
-func initialize_clustered_resources(num_clusters: int, min_resources: int, max_resources: int, cluster_radius: float = 5.0) -> void:
+func initialize_clustered_resources(num_clusters: int, min_resources: int, max_resources: int, max_cluster_radius: float) -> void:
 	for c in range(num_clusters):
+		var cluster_radius = (MAX_CLUSTER_RADIUS / 2) + randi() % (MAX_CLUSTER_RADIUS / 2)
+		
 		var cluster_center = Vector2i(
 			randi() % NUM_CELLS_IN_ROW,
 			randi() % NUM_CELLS_IN_ROW
@@ -23,13 +29,21 @@ func initialize_clustered_resources(num_clusters: int, min_resources: int, max_r
 		var R := int(cluster_radius)
 
 		for i in range(num_resources):
-			var dx = randi() % (R * 2 + 1) - R
-			var dy = randi() % (R * 2 + 1) - R
+			# Gaussian offsets (mean 0, stddev ~ R/2, adjust as needed)
+			var u1 = randf()
+			var u2 = randf()
+			var mag = sqrt(-2.0 * log(u1))
+			var z0 = mag * cos(TAU * u2)   # Gaussian 0, mean 0, stddev 1
+			var z1 = mag * sin(TAU * u2)
+
+			# Scale Gaussian to desired spread
+			var dx = int(z0 * (R * 0.5))
+			var dy = int(z1 * (R * 0.5))
 
 			var cell = cluster_center + Vector2i(dx, dy)
 
-			cell.x = clamp(cell.x, 0, NUM_CELLS_IN_ROW - 1)
-			cell.y = clamp(cell.y, 0, NUM_CELLS_IN_ROW - 1)
+			if cell.x < 0 or cell.y < 0 or cell.x >= NUM_CELLS_IN_ROW or cell.y >= NUM_CELLS_IN_ROW:
+				continue
 
 			var resource_amount = randi() % MAX_RESOURCE_START_AMOUNT + 1
 			initialize_resource(resource_amount, cell)

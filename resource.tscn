@@ -31,4 +31,4 @@ script = ExtResource("1_cpix3")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_xxh62")
 animation = &"new_animation"
-frame_progress = 0.590936
+frame_progress = 0.1779
