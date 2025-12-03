@@ -2,8 +2,6 @@ extends CharacterBody2D
 
 var health = 10000
 
-const CELL_SIZE = 16
-
 @export var deadzone := 0.2
 @export var max_speed := 400.0
 @export var acceleration := 800.0
@@ -122,30 +120,7 @@ func build(node, delta):
 		return
 	build_timer = build_cooldown
 	var build_position = global_position + Vector2(-33, 0).rotated(rotation)
-
-	var cell = world_to_cell(build_position)
-
-	if World.board.has(cell):
-		return
-
-	var snapped_pos = cell_to_world(cell)
-	node.global_position = snapped_pos
-
-	get_parent().add_child(node)
-
-	World.board[cell] = node
-
-func world_to_cell(pos: Vector2) -> Vector2i:
-	return Vector2i(
-		int(floor(pos.x / CELL_SIZE)),
-		int(floor(pos.y / CELL_SIZE))
-	)
-
-func cell_to_world(cell: Vector2i) -> Vector2:
-	return Vector2(
-		(cell.x + 0.5) * CELL_SIZE,
-		(cell.y + 0.5) * CELL_SIZE
-	)
+	World.build(node, build_position)
 
 func ang_dist(a,b):
 	return abs(wrapf(a - b, -PI, PI))
