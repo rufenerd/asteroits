@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b1jkjbna1ytr6"]
+[gd_scene load_steps=10 format=3 uid="uid://b1jkjbna1ytr6"]
 
 [ext_resource type="Script" uid="uid://dl1r6c7iegnv1" path="res://player.gd" id="1_2hs0m"]
 [ext_resource type="PackedScene" uid="uid://ee61geh7hicc" path="res://bullet.tscn" id="2_1jxqw"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dtg8o8c1rneyd" path="res://harvester.tscn" id="4_b26j0"]
 [ext_resource type="PackedScene" uid="uid://7e68i5x5rtys" path="res://turret.tscn" id="5_n7ghd"]
 [ext_resource type="Texture2D" uid="uid://cv1f4s3671dvx" path="res://art/ship.png" id="6_nvl01"]
+[ext_resource type="Script" uid="uid://ctdptnyr6najp" path="res://camera_2d.gd" id="7_1jxqw"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_0xm2m"]
 
@@ -31,6 +32,7 @@ limit_left = 0
 limit_top = 0
 limit_right = 10000
 limit_bottom = 10000
+script = ExtResource("7_1jxqw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, -0.25)

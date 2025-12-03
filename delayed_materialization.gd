@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var delay_seconds: float = 0.2
+@export var delay_seconds: float = 0.5
 
 func _ready() -> void:
 	_suppress_collisions()
