@@ -1,6 +1,5 @@
-[gd_scene load_steps=7 format=3 uid="uid://dertmpgmxst4g"]
+[gd_scene load_steps=6 format=3 uid="uid://dertmpgmxst4g"]
 
-[ext_resource type="Script" uid="uid://d0enoidadyoq0" path="res://world.gd" id="1_5vw27"]
 [ext_resource type="PackedScene" uid="uid://cltc2entjtmho" path="res://base.tscn" id="3_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://b1jkjbna1ytr6" path="res://player.tscn" id="3_h2yge"]
 
@@ -20,7 +19,6 @@ noise = SubResource("FastNoiseLite_0xm2m")
 [node name="Main" type="Node2D"]
 
 [node name="World" type="Node2D" parent="."]
-script = ExtResource("1_5vw27")
 
 [node name="StarParallaxBackground" type="ParallaxBackground" parent="World"]
 

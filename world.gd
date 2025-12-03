@@ -5,11 +5,11 @@ const NUM_CELLS_IN_ROW = 625
 const BOUNDS := Rect2(0, 0, NUM_CELLS_IN_ROW * CELL_SIZE, NUM_CELLS_IN_ROW * CELL_SIZE)
 const MAX_RESOURCE_START_AMOUNT = 100
 
-var board := {}
-var resources := {}
+var board = {}
+var resources = {}
 
 func _ready():
-	initialize_clustered_resources(10, 4, 5)
+	initialize_clustered_resources(100, 4, 40)
 
 func initialize_clustered_resources(num_clusters: int, min_resources: int, max_resources: int, cluster_radius: float = 5.0) -> void:
 	for c in range(num_clusters):
@@ -50,8 +50,6 @@ func build(node, build_position):
 		return
 
 	if node is Harvester and not resources.has(cell):
-		print(cell)
-		print(resources.keys())
 		return
 
 	var snapped_pos = cell_to_world(cell)
