@@ -5,7 +5,7 @@ var health = 10000
 @export var deadzone := 0.2
 @export var max_speed := 600.0
 @export var acceleration := 400.0
-@export var friction := 1800.0  
+@export var friction := 1800.0
 @export var max_turn_speed := 15.0
 @export var turn_accel := 50.0
 
