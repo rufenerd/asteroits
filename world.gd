@@ -11,7 +11,7 @@ const MAX_CLUSTER_RADIUS = 20
 
 var board = {}
 var resources = {}
-var bank = { "player": 0 }
+var bank = { "player": 1000 }
 
 #green 39FF14
 #pink DA14FE
