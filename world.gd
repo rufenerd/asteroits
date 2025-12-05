@@ -8,6 +8,7 @@ const NUM_RESOURCE_CLUSTERS = 20
 const MIN_RESOURCES_IN_CLUSTER = 25
 const MAX_RESOURCES_IN_CLUSTER = 50
 const MAX_CLUSTER_RADIUS = 20
+const NUM_BASES = 5
 
 var board = {}
 var resources = {}
@@ -18,10 +19,27 @@ var bank = { "player": 1000 }
 #blue 1438FE
 #yellow FEDA14
 #orange FE6414
-var colors = { "player": "39FF14"}
+var colors = { "player": "39FF14", "neutral": Color.WHITE }
 
 func _ready():
 	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
+	initialize_bases(NUM_BASES)
+
+func initialize_bases(num_bases):
+	for c in range(num_bases):
+		var base = preload("res://base.tscn").instantiate()
+		var made_base = false
+		while true:
+			var cell = Vector2i(
+				randi() % NUM_CELLS_IN_ROW,
+				randi() % NUM_CELLS_IN_ROW
+			)
+			if not board.has(cell) and not resources.has(cell):
+				board[cell] = base
+				base.global_position = cell_to_world(cell)
+				add_child(base)
+				break
+		
 
 func initialize_clustered_resources(num_clusters: int, min_resources: int, max_resources: int, max_cluster_radius: float) -> void:
 	for c in range(num_clusters):
