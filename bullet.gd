@@ -1,6 +1,6 @@
 class_name Bullet extends Area2D
 
-@export var speed := 200.0
+@export var speed := 1000.0
 @export var lifetime := 1.0
 var direction := Vector2.RIGHT
 var time_alive := 0.0

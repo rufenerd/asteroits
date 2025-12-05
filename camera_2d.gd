@@ -3,7 +3,7 @@ extends Camera2D
 const ZOOM_IN_FACTOR := 0.5
 const ZOOM_OUT_FACTOR := 2.0
 
-const MIN_ZOOM := 0.25
+const MIN_ZOOM := 0.5
 const MAX_ZOOM := 8.0
 
 func _input(event):
