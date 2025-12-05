@@ -35,10 +35,10 @@ color = Color(0, 0, 0, 1)
 
 [node name="StarNoiseTextureRect" type="TextureRect" parent="World/StarParallaxBackground/StarsParallaxLayer"]
 modulate = Color(1, 1, 1, 0.666667)
-offset_left = 42.0
-offset_top = 22.0
-offset_right = 10042.0
-offset_bottom = 10022.0
+offset_left = -10000.0
+offset_top = -10000.0
+offset_right = 10000.0
+offset_bottom = 10000.0
 texture = SubResource("NoiseTexture2D_h2yge")
 stretch_mode = 1
 
