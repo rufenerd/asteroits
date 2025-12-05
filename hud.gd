@@ -11,3 +11,4 @@ func _process(_delta):
 
 func _update_bank():
 	amount_label.text = str(World.bank["player"])
+	amount_label.modulate = World.colors["player"]

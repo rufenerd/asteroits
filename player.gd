@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 var health = 10000
+var team = "player"
 
 @export var deadzone := 0.2
 @export var max_speed := 600.0
@@ -24,6 +25,7 @@ var angular_velocity := 0.0
 
 func _ready():
 	global_position = Vector2(400, 400)
+	$Sprite2D.modulate = World.colors["player"]
 
 func _physics_process(delta):
 	var input_vector = Vector2(
@@ -95,6 +97,7 @@ func shoot_bullet(aim_vector: Vector2):
 	bullet.direction = direction
 	
 	bullet.speed += acceleration
+	bullet.modulate = World.colors[team]
 
 	var nose_offset := Vector2(16, 0).rotated(direction.angle())
 	bullet.global_position = global_position + nose_offset
@@ -119,7 +122,7 @@ func build(node, delta):
 	if node is not Harvester and build_timer > 0.0:
 		return
 	build_timer = build_cooldown
-	World.build(node, global_position)
+	World.build(node, global_position, team)
 
 func ang_dist(a,b):
 	return abs(wrapf(a - b, -PI, PI))

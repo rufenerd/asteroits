@@ -13,6 +13,13 @@ var board = {}
 var resources = {}
 var bank = { "player": 0 }
 
+#green 39FF14
+#pink DA14FE
+#blue 1438FE
+#yellow FEDA14
+#orange FE6414
+var colors = { "player": "39FF14"}
+
 func _ready():
 	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
 
@@ -58,7 +65,8 @@ func initialize_resource(amount, cell: Vector2i):
 	resources[cell] = resource
 	add_child(resource)
 
-func build(node, build_position):
+func build(node, build_position, team):
+	node.modulate = colors[team]
 	var cell = world_to_cell(build_position)
 
 	if board.has(cell):
