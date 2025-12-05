@@ -13,6 +13,7 @@ script = ExtResource("1_37p78")
 
 [node name="BankAmount" type="Label" parent="Control"]
 modulate = Color(0.854902, 0.0784314, 0.996078, 1)
+layout_mode = 0
 offset_left = 24.0
 offset_top = 24.0
 offset_right = 138.0

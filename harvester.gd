@@ -1,6 +1,7 @@
 class_name Harvester extends Explodable
 
 var cell : Vector2i
+var team = null
 
 func _ready():
 	var t := Timer.new()

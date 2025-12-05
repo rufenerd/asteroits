@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://b6ofuthfk04e3"]
+
+[ext_resource type="Script" uid="uid://n2q8rcvblpfv" path="res://shield.gd" id="1_ffst0"]
+[ext_resource type="Texture2D" uid="uid://cfpvdb7ylq5ix" path="res://art/shield.png" id="2_dmnlx"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0vxx4"]
+radius = 14.0
+
+[node name="Shield" type="Area2D"]
+script = ExtResource("1_ffst0")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_dmnlx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_0vxx4")
+
+[node name="ShieldHealthLabelContainer" type="Node2D" parent="."]
+
+[node name="ShieldHealthLabel" type="Label" parent="ShieldHealthLabelContainer"]
+offset_left = -20.0
+offset_top = -30.0
+offset_right = 20.0
+offset_bottom = -7.0
+theme_override_font_sizes/font_size = 8
+text = "1"
+horizontal_alignment = 1

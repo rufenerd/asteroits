@@ -12,7 +12,7 @@ const NUM_BASES = 5
 
 var board = {}
 var resources = {}
-var bank = { "player": 1000 }
+var bank = { "player": 100000 }
 
 #green 39FF14
 #pink DA14FE

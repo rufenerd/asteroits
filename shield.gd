@@ -1,12 +1,12 @@
+class_name Shield
 extends Explodable
 
 var cell : Vector2i
-var team = null
+var team
 
 func _ready():
 	connect("area_entered", Callable(self, "_on_area_entered"))
 	connect("body_entered", Callable(self, "_on_body_entered"))
-	health = 5
 
 func _on_area_entered(area):
 	_handle_hit(area)
@@ -14,7 +14,17 @@ func _on_area_entered(area):
 func _on_body_entered(body):
 	_handle_hit(body)
 
+func _process(_delta):
+	$ShieldHealthLabelContainer.global_rotation = 0
+	$ShieldHealthLabelContainer/ShieldHealthLabel.text = str(health)
+
 func _handle_hit(target):
+	if "team" in target and target.team == team:
+		return
+	
+	if target is Base:
+		return
+
 	if target.has_method("on_hit"):
 		target.on_hit()
 

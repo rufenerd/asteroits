@@ -9,6 +9,7 @@ var previous_position: Vector2
 
 var damage = 1
 var team = "player"
+var origin
 
 func _ready():
 	previous_position = global_position
@@ -31,9 +32,15 @@ func _physics_process(delta):
 
 	if result:
 		var hit = result.collider
-		if hit.has_method("on_hit") and (not hit is Player or (team and team != hit.team)):
+		var friendly_fire = hit is Player and team and team  == hit.team
+		var own_shield = hit is Shield and team and team == hit.team
+		
+		if not friendly_fire and not own_shield and hit.has_method("on_hit"):
 			hit.on_hit(damage)
-		queue_free()
+
+		if not own_shield or not origin is Player:
+			queue_free()
+
 		return
 
 	global_position = new_position

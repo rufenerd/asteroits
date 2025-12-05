@@ -1,8 +1,9 @@
 class_name Player
 extends CharacterBody2D
 
-var health = 10000
+var health = 1
 var team = "player"
+var shield = null
 
 @export var deadzone := 0.2
 @export var max_speed := 600.0
@@ -23,6 +24,9 @@ var fire_timer := 0.0
 var build_timer := 0.0
 
 var angular_velocity := 0.0
+
+@export var shield_boost_delay := 1.0
+var shield_boost_timer := 0.0
 
 func _ready():
 	global_position = Vector2(400, 400)
@@ -72,6 +76,16 @@ func _physics_process(delta):
 	if Input.is_action_pressed("build_turret"):
 		build_turret(delta)
 
+	if Input.is_action_pressed("boost_shield"):
+		shield_boost_timer += delta
+		if shield_boost_timer >= shield_boost_delay:
+			if World.bank[team] >= 1000:
+				World.bank[team] -= 1000
+				boost_shield()
+				shield_boost_timer = 0.0
+	else:
+		shield_boost_timer = 0.0
+
 func _update_rotation_from_input(input_vector: Vector2, delta: float) -> void:
 	if input_vector.length() < deadzone:
 		angular_velocity = 0.0
@@ -94,6 +108,7 @@ func _update_rotation_from_input(input_vector: Vector2, delta: float) -> void:
 func shoot_bullet(aim_vector: Vector2):
 	var bullet = bullet_scene.instantiate()
 	bullet.team = team
+	bullet.origin = self
 
 	var direction = aim_vector.normalized()
 	bullet.direction = direction
@@ -120,11 +135,23 @@ func build_turret(delta):
 	build(turret, delta)
 
 func build(node, delta):
+	node.team = team
 	build_timer -= delta
 	if node is not Harvester and build_timer > 0.0:
 		return
 	build_timer = build_cooldown
 	World.build(node, global_position, team)
+
+func boost_shield():
+	if not shield:
+		shield = preload("res://shield.tscn").instantiate()
+		shield.team = team
+		shield.health = 1
+		shield.modulate = World.colors[team]
+		add_child(shield)
+		shield = shield
+	else:
+		shield.health += 1
 
 func ang_dist(a,b):
 	return abs(wrapf(a - b, -PI, PI))
@@ -149,6 +176,8 @@ func snapped_cardinal(angle: float) -> float:
 	return closest
 
 func on_hit(damage = 1):
+	if shield and shield.health > 0:
+		return
 	health -= damage
 
 	if health <= 0:
