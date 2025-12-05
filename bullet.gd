@@ -8,6 +8,7 @@ var time_alive := 0.0
 var previous_position: Vector2
 
 var damage = 1
+var team = "player"
 
 func _ready():
 	previous_position = global_position
@@ -30,7 +31,7 @@ func _physics_process(delta):
 
 	if result:
 		var hit = result.collider
-		if hit.has_method("on_hit"):
+		if hit.has_method("on_hit") and (not hit is Player or (team and team != hit.team)):
 			hit.on_hit(damage)
 		queue_free()
 		return

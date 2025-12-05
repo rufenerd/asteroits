@@ -1,3 +1,4 @@
+class_name Player
 extends CharacterBody2D
 
 var health = 10000
@@ -92,6 +93,7 @@ func _update_rotation_from_input(input_vector: Vector2, delta: float) -> void:
 
 func shoot_bullet(aim_vector: Vector2):
 	var bullet = bullet_scene.instantiate()
+	bullet.team = team
 
 	var direction = aim_vector.normalized()
 	bullet.direction = direction
