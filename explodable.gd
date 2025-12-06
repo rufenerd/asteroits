@@ -2,7 +2,7 @@ class_name Explodable extends Node2D
 
 var health = 1
 
-func on_hit(damage = 1):
+func on_hit(damage, _origin):
 	health -= damage
 
 	if health <= 0:

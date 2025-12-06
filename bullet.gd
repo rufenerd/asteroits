@@ -36,7 +36,7 @@ func _physics_process(delta):
 		var own_shield = hit is Shield and team and team == hit.team
 		
 		if not friendly_fire and not own_shield and hit.has_method("on_hit"):
-			hit.on_hit(damage)
+			hit.on_hit(damage, result.position)
 
 		if not own_shield or not origin is Player:
 			queue_free()

@@ -175,7 +175,7 @@ func snapped_cardinal(angle: float) -> float:
 
 	return closest
 
-func on_hit(damage = 1):
+func on_hit(damage, _origin):
 	if shield and shield.health > 0:
 		return
 	health -= damage

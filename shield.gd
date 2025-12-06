@@ -26,7 +26,7 @@ func _handle_hit(target):
 		return
 
 	if target.has_method("on_hit"):
-		target.on_hit()
+		target.on_hit(1, global_position)
 
 	if target is not Bullet:
-		on_hit(5)
+		on_hit(5, global_position)
