@@ -58,6 +58,7 @@ func spawn_child(hit_origin: Vector2):
 	child.angular_velocity = randf_range(-8.0, 8.0) * (mass / child.mass)
 
 func _ready():
+	World.asteroid_count += 1
 	randomize()
 	global_position = Vector2(600, 600)
 
@@ -199,3 +200,6 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 
 	# Apply new position directly to body
 	state.transform.origin = pos
+
+func _exit_tree():
+	World.asteroid_destroyed()

@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://dertmpgmxst4g"]
+[gd_scene load_steps=6 format=3 uid="uid://dertmpgmxst4g"]
 
 [ext_resource type="PackedScene" uid="uid://buga6hnc4h5xu" path="res://hud.tscn" id="2_h2yge"]
-[ext_resource type="PackedScene" uid="uid://bswocsff7t1t2" path="res://asteroid.tscn" id="3_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://b1jkjbna1ytr6" path="res://player.tscn" id="3_h2yge"]
 
 [sub_resource type="Gradient" id="Gradient_0xm2m"]
@@ -43,5 +42,3 @@ texture = SubResource("NoiseTexture2D_h2yge")
 stretch_mode = 1
 
 [node name="Player" parent="World" instance=ExtResource("3_h2yge")]
-
-[node name="Asteroid" parent="." instance=ExtResource("3_1bvp3")]

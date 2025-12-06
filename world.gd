@@ -13,6 +13,7 @@ const NUM_BASES = 5
 var board = {}
 var resources = {}
 var bank = { "player": 100000 }
+var asteroid_count := 0
 
 #green 39FF14
 #pink DA14FE
@@ -24,6 +25,7 @@ var colors = { "player": "39FF14", "neutral": Color.WHITE }
 func _ready():
 	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
 	initialize_bases(NUM_BASES)
+	spawn_initial_asteroid()
 
 func initialize_bases(num_bases):
 	for c in range(num_bases):
@@ -117,6 +119,17 @@ func harvest(harvester):
 		bank["player"] += 1 #TODO generic keys
 	else:
 		harvester.queue_free()
+
+func asteroid_destroyed():
+	asteroid_count -= 1
+	if asteroid_count <= 0:
+		call_deferred("spawn_initial_asteroid")
+
+func spawn_initial_asteroid():
+	var init_asteroid = preload("res://asteroid.tscn").instantiate()
+	add_child(init_asteroid)
+	init_asteroid.global_position = Vector2(randi() % CELL_SIZE * NUM_CELLS_IN_ROW, randi() % CELL_SIZE * NUM_CELLS_IN_ROW)
+	asteroid_count = 1
 
 func world_to_cell(pos: Vector2) -> Vector2i:
 	return Vector2i(
