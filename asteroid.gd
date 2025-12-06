@@ -17,7 +17,10 @@ class_name Asteroid extends RigidBody2D
 
 func on_hit(_damage, origin):
 	if (radius == 10):
-		print("POOF")
+		var explosion = preload("res://Explosion.tscn").instantiate()
+		explosion.global_position = global_position
+		explosion.target_node = self
+		get_tree().current_scene.add_child(explosion)
 	else:
 		for i in range(4):
 			spawn_child(origin)
