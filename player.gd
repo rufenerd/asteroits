@@ -40,15 +40,15 @@ var weapon_level = 1
 
 var turbo = false
 
+var input: PlayerInput = HumanInput.new()
+
 func _ready():
 	global_position = Vector2(400, 400)
 	$Sprite2D.modulate = World.colors["player"]
 
 func _physics_process(delta):
-	var input_vector = Vector2(
-		Input.get_axis("left_stick_left", "left_stick_right"),
-		Input.get_axis("left_stick_up", "left_stick_down")
-	)
+	input.update(self, delta)
+	var input_vector := input.move
 
 	var stick_active := input_vector.length() >= deadzone
 	if stick_active:
@@ -71,10 +71,7 @@ func _physics_process(delta):
 	global_position.x = clamp(global_position.x, World.BOUNDS.position.x, World.BOUNDS.position.x + World.BOUNDS.size.x)
 	global_position.y = clamp(global_position.y, World.BOUNDS.position.y, World.BOUNDS.position.y + World.BOUNDS.size.y)
 
-	var aim_vector := Vector2(
-		Input.get_axis("aim_left", "aim_right"),
-		Input.get_axis("aim_up", "aim_down")
-	)
+	var aim_vector := input.aim
 
 	if aim_vector.length() > deadzone:
 		fire_timer -= delta
@@ -82,16 +79,16 @@ func _physics_process(delta):
 			fire_weapon(aim_vector)
 			fire_timer = fire_cooldown
 			
-	if Input.is_action_pressed("build_wall"):
+	if input.build_wall:
 		build_wall(delta)
 
-	if Input.is_action_pressed("build_harvester"):
+	if input.build_harvester:
 		build_harvester(delta)
 		
-	if Input.is_action_pressed("build_turret"):
+	if input.build_turret:
 		build_turret(delta)
 
-	if Input.is_action_pressed("boost_shield"):
+	if input.boost_shield:
 		shield_boost_timer += delta
 		if shield_boost_timer >= shield_boost_delay:
 			if World.bank[team] >= 1000:
@@ -101,7 +98,7 @@ func _physics_process(delta):
 	else:
 		shield_boost_timer = 0.0
 		
-	if World.bank[team] > 0 and Input.is_action_pressed("turbo") and Input.is_action_pressed("turbo_2"):
+	if World.bank[team] > 0 and input.turbo:
 		max_speed = TURBO_MAX_SPEED
 		acceleration = TURBO_ACCELERATION
 		turbo = true
