@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://c41rqh7tgwh2l"]
+
+[ext_resource type="PackedScene" uid="uid://b1jkjbna1ytr6" path="res://player.tscn" id="1_816p0"]
+[ext_resource type="Script" uid="uid://cafx8udg0nhnh" path="res://ai/ai_player.gd" id="1_m32kg"]
+[ext_resource type="Script" uid="uid://ce2on2xn73jqs" path="res://ai/ai_brain.gd" id="2_m32kg"]
+
+[node name="AIPlayer" type="Node2D"]
+script = ExtResource("1_m32kg")
+
+[node name="Player" parent="." instance=ExtResource("1_816p0")]
+
+[node name="AIBrain" type="Node2D" parent="."]
+script = ExtResource("2_m32kg")

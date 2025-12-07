@@ -12,7 +12,6 @@ func update(_player, _delta):
 		Input.get_axis("aim_up", "aim_down")
 	)
 
-	fire = aim.length() > 0.2
 	turbo = Input.is_action_pressed("turbo") and Input.is_action_pressed("turbo_2")
 
 	build_wall = Input.is_action_pressed("build_wall")

@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://dertmpgmxst4g"]
+[gd_scene load_steps=7 format=3 uid="uid://dertmpgmxst4g"]
 
 [ext_resource type="PackedScene" uid="uid://buga6hnc4h5xu" path="res://hud.tscn" id="2_h2yge"]
-[ext_resource type="PackedScene" uid="uid://b1jkjbna1ytr6" path="res://player.tscn" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://c41rqh7tgwh2l" path="res://ai/ai_player.tscn" id="3_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://3e6qq8pp7ips" path="res://ai/human_player.tscn" id="3_h2yge"]
 
 [sub_resource type="Gradient" id="Gradient_0xm2m"]
 offsets = PackedFloat32Array(0.779221, 1)
@@ -41,4 +42,6 @@ offset_bottom = 10000.0
 texture = SubResource("NoiseTexture2D_h2yge")
 stretch_mode = 1
 
-[node name="Player" parent="World" instance=ExtResource("3_h2yge")]
+[node name="AIPlayer" parent="World" instance=ExtResource("3_1bvp3")]
+
+[node name="HumanPlayer" parent="World" instance=ExtResource("3_h2yge")]

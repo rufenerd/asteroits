@@ -12,8 +12,8 @@ const NUM_BASES = 5
 
 var board = {}
 var resources = {}
-var bank = { "player": 0 }
-var extra_lives = { "player": 0}
+var bank = { "player": 0, "ai1": 0 }
+var extra_lives = { "player": 0, "ai1": 0}
 var asteroid_count := 0
 
 #green 39FF14
@@ -21,12 +21,13 @@ var asteroid_count := 0
 #blue 1438FE
 #yellow FEDA14
 #orange FE6414
-var colors = { "player": "39FF14", "neutral": Color.WHITE }
+var colors = { "player": "39FF14", "neutral": Color.WHITE, "ai1": "DA14FE" }
 
 func _ready():
 	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
 	initialize_bases(NUM_BASES)
 	spawn_initial_asteroid()
+
 
 func initialize_bases(num_bases):
 	for c in range(num_bases):
@@ -97,9 +98,9 @@ func build(node, build_position, team):
 		return
 		
 	if not node is Harvester:
-		if bank["player"] < 10:
+		if bank[team] < 10:
 			return
-		bank["player"] -= 10
+		bank[team] -= 10
 
 	var snapped_pos = cell_to_world(cell)
 	node.global_position = snapped_pos
@@ -115,9 +116,10 @@ func build(node, build_position, team):
 
 func harvest(harvester):
 	var resource = resources[harvester.cell]
+	resource.harvester = harvester
 	if resource.amount > 0:
 		resources[harvester.cell].amount -= 1
-		bank["player"] += 1 #TODO generic keys
+		bank[harvester.team] += 1
 	else:
 		harvester.queue_free()
 

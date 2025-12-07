@@ -40,11 +40,12 @@ var weapon_level = 1
 
 var turbo = false
 
-var input: PlayerInput = HumanInput.new()
+var input: PlayerInput
 
 func _ready():
 	global_position = Vector2(400, 400)
-	$Sprite2D.modulate = World.colors["player"]
+	$Sprite2D.modulate = World.colors[team]
+	add_to_group("players")
 
 func _physics_process(delta):
 	input.update(self, delta)
@@ -107,7 +108,7 @@ func _physics_process(delta):
 			velocity = Vector2(0,0)
 		max_speed = NORMAL_MAX_SPEED
 		acceleration = NORMAL_ACCELERATION
-		turbo = false		
+		turbo = false
 
 func _update_rotation_from_input(input_vector: Vector2, delta: float) -> void:
 	if input_vector.length() < deadzone:
@@ -216,7 +217,7 @@ func on_hit(damage, _origin):
 			explosion.global_position = global_position
 			explosion.target_node = self
 			explosion.target_frame = 9
-			get_tree().current_scene.add_child(explosion)
+			call_deferred("_die", explosion)
 		else:
 			World.extra_lives[team] -= 1
 			weapon_level = 1
@@ -225,6 +226,11 @@ func on_hit(damage, _origin):
 		var damaged =  preload("res://damaged.tscn").instantiate()
 		damaged.global_position = global_position
 		get_tree().current_scene.add_child(damaged)
+
+func _die(explosion):
+	remove_from_group("players")
+	get_tree().current_scene.add_child(explosion)
+
 
 func upgrade_weapon():
 	weapon_level += 1
