@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://bvrce4fsf7p74"]
+
+[ext_resource type="Texture2D" uid="uid://cv1f4s3671dvx" path="res://art/ship.png" id="1_22kp8"]
+[ext_resource type="Script" uid="uid://df35rrq5pigf7" path="res://extra_life_icon.gd" id="1_c2p00"]
+
+[node name="ExtraLifeIcon" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 242.0
+offset_top = 41.0
+offset_right = 282.0
+offset_bottom = 81.0
+script = ExtResource("1_c2p00")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(12, 16)
+rotation = -1.5708
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("1_22kp8")
