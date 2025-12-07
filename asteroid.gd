@@ -18,7 +18,7 @@ class_name Asteroid extends RigidBody2D
 @export var hit_debounce := 0.5
 var hit_debounce_timer := 0.0
 
-const COIN_DROP_ODDS = 16
+const COIN_DROP_ODDS = 10
 const COIN_SCENES = {
 	"extra_life": preload("res://coin_extra_life.tscn"),
 	"resources": preload("res://coin_resources.tscn"),

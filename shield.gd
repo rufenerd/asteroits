@@ -28,5 +28,5 @@ func _handle_hit(target):
 	if target.has_method("on_hit"):
 		target.on_hit(1, global_position)
 
-	if target is not Bullet:
+	if target is not Bullet and target is not Coin:
 		on_hit(5, global_position)

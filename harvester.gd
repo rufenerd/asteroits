@@ -5,7 +5,7 @@ var team = null
 
 func _ready():
 	var t := Timer.new()
-	t.wait_time = 2.0
+	t.wait_time = 0.25
 	t.autostart = true
 	t.one_shot = false
 	add_child(t)

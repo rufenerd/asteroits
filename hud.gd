@@ -13,7 +13,7 @@ func _process(_delta):
 	_update_extra_lives()
 
 func _update_bank():
-	amount_label.text = str(World.bank["player"])
+	amount_label.text = str(int(round(World.bank["player"])))
 	amount_label.modulate = World.colors["player"]
 
 func _update_extra_lives():

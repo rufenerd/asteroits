@@ -3,7 +3,7 @@ extends Node
 const CELL_SIZE = 16
 const NUM_CELLS_IN_ROW = 625
 const BOUNDS := Rect2(0, 0, NUM_CELLS_IN_ROW * CELL_SIZE, NUM_CELLS_IN_ROW * CELL_SIZE)
-const MAX_RESOURCE_START_AMOUNT = 300
+const MAX_RESOURCE_START_AMOUNT = 1000
 const NUM_RESOURCE_CLUSTERS = 20
 const MIN_RESOURCES_IN_CLUSTER = 25
 const MAX_RESOURCES_IN_CLUSTER = 50
@@ -12,7 +12,7 @@ const NUM_BASES = 5
 
 var board = {}
 var resources = {}
-var bank = { "player": 100000 }
+var bank = { "player": 0 }
 var extra_lives = { "player": 0}
 var asteroid_count := 0
 

@@ -5,9 +5,17 @@ var health = 1
 var team = "player"
 var shield = null
 
+const NORMAL_MAX_SPEED = 600.0
+const TURBO_MAX_SPEED = 4 * NORMAL_MAX_SPEED
+
+const NORMAL_ACCELERATION = 400.0
+const TURBO_ACCELERATION = 4000.0
+
+const TURBO_COST = 1000
+
 @export var deadzone := 0.2
-@export var max_speed := 600.0
-@export var acceleration := 400.0
+@export var max_speed := NORMAL_MAX_SPEED
+@export var acceleration := NORMAL_ACCELERATION
 @export var friction := 1800.0
 @export var max_turn_speed := 15.0
 @export var turn_accel := 50.0
@@ -30,6 +38,8 @@ var shield_boost_timer := 0.0
 
 var weapon_level = 1
 
+var turbo = false
+
 func _ready():
 	global_position = Vector2(400, 400)
 	$Sprite2D.modulate = World.colors["player"]
@@ -43,6 +53,9 @@ func _physics_process(delta):
 	var stick_active := input_vector.length() >= deadzone
 	if stick_active:
 		input_vector = input_vector.normalized()
+		
+		if turbo:
+			World.bank[team] -= min(TURBO_COST * delta, World.bank[team])
 
 	var forward := Vector2.RIGHT.rotated(rotation)
 
@@ -62,7 +75,7 @@ func _physics_process(delta):
 		Input.get_axis("aim_left", "aim_right"),
 		Input.get_axis("aim_up", "aim_down")
 	)
-	
+
 	if aim_vector.length() > deadzone:
 		fire_timer -= delta
 		if fire_timer <= 0.0:
@@ -87,6 +100,17 @@ func _physics_process(delta):
 				shield_boost_timer = 0.0
 	else:
 		shield_boost_timer = 0.0
+		
+	if World.bank[team] > 0 and Input.is_action_pressed("turbo") and Input.is_action_pressed("turbo_2"):
+		max_speed = TURBO_MAX_SPEED
+		acceleration = TURBO_ACCELERATION
+		turbo = true
+	else:
+		if turbo:
+			velocity = Vector2(0,0)
+		max_speed = NORMAL_MAX_SPEED
+		acceleration = NORMAL_ACCELERATION
+		turbo = false		
 
 func _update_rotation_from_input(input_vector: Vector2, delta: float) -> void:
 	if input_vector.length() < deadzone:
