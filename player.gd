@@ -28,7 +28,6 @@ var angular_velocity := 0.0
 @export var shield_boost_delay := 1.0
 var shield_boost_timer := 0.0
 
-var extra_lives = 0
 var weapon_level = 1
 
 func _ready():
@@ -191,11 +190,16 @@ func on_hit(damage, _origin):
 	health -= damage
 
 	if health <= 0:
-		var explosion = preload("res://Explosion.tscn").instantiate()
-		explosion.global_position = global_position
-		explosion.target_node = self
-		explosion.target_frame = 9
-		get_tree().current_scene.add_child(explosion)
+		if World.extra_lives[team] == 0:
+			var explosion = preload("res://Explosion.tscn").instantiate()
+			explosion.global_position = global_position
+			explosion.target_node = self
+			explosion.target_frame = 9
+			get_tree().current_scene.add_child(explosion)
+		else:
+			World.extra_lives[team] -= 1
+			weapon_level = 1
+			health = 1
 	else:
 		var damaged =  preload("res://damaged.tscn").instantiate()
 		damaged.global_position = global_position

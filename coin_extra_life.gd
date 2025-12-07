@@ -1,4 +1,4 @@
 class_name CoinExtraLife extends Coin
 
 func apply(player : Player):
-	player.extra_lives += 1
+	World.extra_lives[player.team] += 1

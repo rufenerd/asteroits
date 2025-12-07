@@ -13,6 +13,7 @@ const NUM_BASES = 5
 var board = {}
 var resources = {}
 var bank = { "player": 100000 }
+var extra_lives = { "player": 0}
 var asteroid_count := 0
 
 #green 39FF14
