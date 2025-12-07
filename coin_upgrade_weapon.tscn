@@ -1,0 +1,69 @@
+[gd_scene load_steps=11 format=3 uid="uid://cs7gilndpc66u"]
+
+[ext_resource type="Script" uid="uid://ndewfqqvy7pt" path="res://coin_upgrade_weapon.gd" id="1_q8kug"]
+[ext_resource type="Texture2D" uid="uid://ci68v8iivhxdm" path="res://art/coin_weapon.png" id="2_q8kug"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vem4i"]
+radius = 6.08276
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r5k07"]
+atlas = ExtResource("2_q8kug")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vem4i"]
+atlas = ExtResource("2_q8kug")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8eb8w"]
+atlas = ExtResource("2_q8kug")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_adv21"]
+atlas = ExtResource("2_q8kug")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cxuq2"]
+atlas = ExtResource("2_q8kug")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p1spq"]
+atlas = ExtResource("2_q8kug")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8eb8w"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r5k07")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vem4i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8eb8w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_adv21")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cxuq2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p1spq")
+}],
+"loop": true,
+"name": &"new_animation",
+"speed": 5.0
+}]
+
+[node name="CoinUpgradeWeapon" type="Area2D"]
+script = ExtResource("1_q8kug")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_vem4i")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_8eb8w")
+animation = &"new_animation"
+autoplay = "new_animation"
+frame_progress = 0.207282

@@ -1,0 +1,68 @@
+[gd_scene load_steps=11 format=3 uid="uid://bnk3oqtx8iea7"]
+
+[ext_resource type="Script" uid="uid://cqti4s3k36s0v" path="res://coin_resources.gd" id="1_iaix2"]
+[ext_resource type="Texture2D" uid="uid://cd6sdm1sifcvr" path="res://art/count_resource.png" id="2_iaix2"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_q8thm"]
+radius = 6.08276
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tebdd"]
+atlas = ExtResource("2_iaix2")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q8thm"]
+atlas = ExtResource("2_iaix2")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k3o08"]
+atlas = ExtResource("2_iaix2")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uukwy"]
+atlas = ExtResource("2_iaix2")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1rsf2"]
+atlas = ExtResource("2_iaix2")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jv8sj"]
+atlas = ExtResource("2_iaix2")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_k3o08"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tebdd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q8thm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k3o08")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uukwy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1rsf2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jv8sj")
+}],
+"loop": true,
+"name": &"new_animation",
+"speed": 5.0
+}]
+
+[node name="CoinResources" type="Area2D"]
+script = ExtResource("1_iaix2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_q8thm")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_k3o08")
+animation = &"new_animation"
+autoplay = "new_animation"

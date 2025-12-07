@@ -13,18 +13,50 @@ class_name Asteroid extends RigidBody2D
 
 @export var player_mass := 1.0       # conceptual mass
 @export var push_power := 1.5         # tune feel, not physics
-@export var self_pushback := 0.15     # how much player is affected
+@export var self_pushback := 0.15
+
+@export var hit_debounce := 0.5
+var hit_debounce_timer := 0.0
+
+const COIN_DROP_ODDS = 16
+const COIN_SCENES = {
+	"extra_life": preload("res://coin_extra_life.tscn"),
+	"resources": preload("res://coin_resources.tscn"),
+	"upgrade_weapon": preload("res://coin_upgrade_weapon.tscn")
+}
 
 func on_hit(_damage, origin):
+	if hit_debounce_timer < hit_debounce:
+		return
+
+	hit_debounce_timer = 0.0
+
 	if (radius == 10):
 		var explosion = preload("res://Explosion.tscn").instantiate()
 		explosion.global_position = global_position
 		explosion.target_node = self
 		get_tree().current_scene.add_child(explosion)
+
+		if randi() % COIN_DROP_ODDS == 0:
+			var coin_roll = randi() % 3
+			var coin_type = null
+			if coin_roll == 1:
+				coin_type = "extra_life"
+			elif coin_roll == 2:
+				coin_type = "resources"
+			else:
+				coin_type = "upgrade_weapon"
+
+			var coin = COIN_SCENES[coin_type].instantiate()
+			coin.global_position = global_position
+			get_tree().current_scene.add_child(coin)
 	else:
 		for i in range(4):
 			spawn_child(origin)
 	queue_free()
+
+func _physics_process(delta: float) -> void:
+	hit_debounce_timer += delta
 
 func spawn_child(hit_origin: Vector2):
 	var child := preload("res://asteroid.tscn").instantiate()

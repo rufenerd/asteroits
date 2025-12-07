@@ -28,6 +28,9 @@ var angular_velocity := 0.0
 @export var shield_boost_delay := 1.0
 var shield_boost_timer := 0.0
 
+var extra_lives = 0
+var weapon_level = 1
+
 func _ready():
 	global_position = Vector2(400, 400)
 	$Sprite2D.modulate = World.colors["player"]
@@ -64,7 +67,7 @@ func _physics_process(delta):
 	if aim_vector.length() > deadzone:
 		fire_timer -= delta
 		if fire_timer <= 0.0:
-			shoot_bullet(aim_vector)
+			fire_weapon(aim_vector)
 			fire_timer = fire_cooldown
 			
 	if Input.is_action_pressed("build_wall"):
@@ -104,6 +107,13 @@ func _update_rotation_from_input(input_vector: Vector2, delta: float) -> void:
 	)
 
 	rotation += angular_velocity * delta
+
+func fire_weapon(aim_vector):
+	shoot_bullet(aim_vector)
+	var spread := deg_to_rad(2 * (weapon_level - 1))
+	for i in range(3 * (weapon_level - 1)):
+		var jitter_vector = aim_vector.rotated(randf_range(-spread, spread))
+		shoot_bullet(jitter_vector)
 
 func shoot_bullet(aim_vector: Vector2):
 	var bullet = bullet_scene.instantiate()
@@ -190,3 +200,6 @@ func on_hit(damage, _origin):
 		var damaged =  preload("res://damaged.tscn").instantiate()
 		damaged.global_position = global_position
 		get_tree().current_scene.add_child(damaged)
+
+func upgrade_weapon():
+	weapon_level += 1
