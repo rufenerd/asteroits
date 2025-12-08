@@ -145,7 +145,8 @@ func shoot_bullet(aim_vector: Vector2):
 	bullet.direction = direction
 	
 	bullet.speed += acceleration
-	bullet.modulate = World.colors[team]
+	var c : Color = Color.from_string(World.colors[team], Color.WHITE)
+	bullet.modulate = c.lerp(Color.WHITE, 0.3) * 2.5
 
 	var nose_offset := Vector2(16, 0).rotated(direction.angle())
 	bullet.global_position = global_position + nose_offset

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dertmpgmxst4g"]
+[gd_scene load_steps=8 format=3 uid="uid://dertmpgmxst4g"]
 
 [ext_resource type="PackedScene" uid="uid://buga6hnc4h5xu" path="res://hud.tscn" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://c41rqh7tgwh2l" path="res://ai/ai_player.tscn" id="3_1bvp3"]
@@ -17,6 +17,12 @@ domain_warp_enabled = true
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_h2yge"]
 color_ramp = SubResource("Gradient_0xm2m")
 noise = SubResource("FastNoiseLite_0xm2m")
+
+[sub_resource type="Environment" id="Environment_h2yge"]
+glow_enabled = true
+glow_intensity = 1.0
+glow_hdr_threshold = 0.8
+glow_hdr_scale = 0.8
 
 [node name="Main" type="Node2D"]
 
@@ -45,3 +51,6 @@ stretch_mode = 1
 [node name="AIPlayer" parent="World" instance=ExtResource("3_1bvp3")]
 
 [node name="HumanPlayer" parent="World" instance=ExtResource("3_h2yge")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
+environment = SubResource("Environment_h2yge")
