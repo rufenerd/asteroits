@@ -4,9 +4,9 @@ extends PlayerInput
 var target_position: Vector2
 var target_aim: Vector2
 
-var stick_smooth := 8.0
-var aim_smooth := 10.0
-var jitter := 0.03
+var stick_smooth := 5.0
+var aim_smooth := 5.0
+var jitter := 0.0
 
 func update(player: Node2D, delta: float):
 	if target_position == null:

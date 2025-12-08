@@ -13,3 +13,4 @@ func _ready():
 	t.timeout.connect(func():
 		World.harvest(self)
 	)
+	add_to_group("harvesters")
