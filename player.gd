@@ -214,9 +214,22 @@ func on_hit(damage, _origin):
 	if health <= 0:
 		if World.extra_lives[team] == 0:
 			var explosion = preload("res://Explosion.tscn").instantiate()
+			var anim := explosion.get_node("AnimatedSprite2D") as AnimatedSprite2D
+			anim.sprite_frames.set_animation_loop("explode", true)
 			explosion.global_position = global_position
 			explosion.target_node = self
-			explosion.target_frame = 9
+			explosion.total_frames = 18
+			visible = false
+
+			var camera = $Camera2D
+			if camera:
+				camera.make_current()
+				camera.reparent(get_tree().current_scene)
+				camera.global_position = explosion.global_position
+				camera.zoom.x = 16.0
+				camera.zoom.y = 16.0
+				camera.global_position = explosion.global_position
+
 			call_deferred("_die", explosion)
 		else:
 			World.extra_lives[team] -= 1
