@@ -218,7 +218,7 @@ func on_hit(damage, _origin):
 			anim.sprite_frames.set_animation_loop("explode", true)
 			explosion.global_position = global_position
 			explosion.target_node = self
-			explosion.total_frames = 18
+			explosion.target_frames = 18
 			visible = false
 
 			var camera = $Camera2D
@@ -235,6 +235,7 @@ func on_hit(damage, _origin):
 			World.extra_lives[team] -= 1
 			weapon_level = 1
 			health = 1
+			global_position = Vector2(400, 400)
 	else:
 		var damaged =  preload("res://damaged.tscn").instantiate()
 		damaged.global_position = global_position

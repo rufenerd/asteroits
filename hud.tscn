@@ -22,6 +22,7 @@ theme_override_font_sizes/font_size = 50
 text = "1234"
 
 [node name="ExtraLives" type="HBoxContainer" parent="Control"]
+layout_mode = 0
 offset_left = 272.0
 offset_top = 43.0
 offset_right = 713.0
