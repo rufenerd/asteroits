@@ -22,7 +22,8 @@ func _physics_process(delta):
 	if not is_instance_valid(player):
 		return
 
-	var nearest_enemy = find_nearest_enemy()
+	nearest_enemy = find_nearest_enemy()
+
 	choose_mode(delta)
 
 	match mode:
@@ -53,15 +54,14 @@ func choose_mode(delta):
 
 	if retreat_score > best:
 		mode = Mode.RETREAT
-	
+
 func score_harvest():
 	return clamp(1000 - World.bank[player.team], 0, 1000)
 
 func score_combat():
-	var enemy = find_nearest_enemy()
-	if not enemy:
+	if not nearest_enemy:
 		return 0
-	return 800 - player.global_position.distance_to(enemy.global_position)
+	return 800 - player.global_position.distance_to(nearest_enemy.global_position)
 
 func score_retreat():
 	return clamp(1 - player.health, 0, 1) * 2000
@@ -77,21 +77,26 @@ func harvest_mode():
 
 	if player.global_position.distance_to(resource.global_position) < 100:
 		input.build_harvester = true
+	
+	shoot_at_nearest_enemy()
 
 func combat_mode():
-	var enemy = find_nearest_enemy()
-	if not enemy:
+	if not nearest_enemy:
 		return
 
-	input.target_position = enemy.global_position
-	input.target_aim = enemy.global_position
+	input.target_position = nearest_enemy.global_position
+	shoot_at_nearest_enemy()
+
+func shoot_at_nearest_enemy():
+	if not nearest_enemy:
+		return
+	input.target_aim = nearest_enemy.global_position
 
 func retreat_mode():
-	var threat = find_nearest_enemy()
-	if not threat:
+	if not nearest_enemy:
 		return
 
-	var away = (player.global_position - threat.global_position).normalized()
+	var away = (player.global_position - nearest_enemy.global_position).normalized()
 	input.target_position = player.global_position + away * 500
 
 func find_nearest_enemy() -> Player:
