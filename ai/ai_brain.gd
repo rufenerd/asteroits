@@ -1,7 +1,7 @@
 class_name AIBrain
 extends Node
 
-enum Mode { UNSTICK, HARVEST, COMBAT, RETREAT, COLLISION_AVOIDANCE }
+enum Mode { UNSTICK, HARVEST, COMBAT, RETREAT, COLLISION_AVOIDANCE, BASE_CAPTURE }
 
 var mode := Mode.HARVEST
 var player: Player
@@ -35,7 +35,6 @@ func _physics_process(delta):
 	nearest_enemy = find_nearest_enemy()
 
 	choose_mode(delta)
-	#print(Mode.find_key(mode))
 
 	match mode:
 		# COIN, BASE, ASTEROID, AVOID_BULLETS
@@ -49,6 +48,8 @@ func _physics_process(delta):
 			retreat_mode()
 		Mode.COLLISION_AVOIDANCE:
 			collision_avoidance_mode()
+		Mode.BASE_CAPTURE:
+			base_capture_mode()
 
 	input.boost_shield = true
 	
@@ -70,6 +71,7 @@ func choose_mode(delta):
 	var harvest_score = score_harvest()
 	var combat_score = score_combat()
 	var retreat_score = score_retreat()
+	var base_score = score_base_capture()
 
 	mode = Mode.HARVEST
 	var best = harvest_score
@@ -90,13 +92,17 @@ func choose_mode(delta):
 		mode = Mode.RETREAT
 		best = retreat_score
 
+	if base_score > best:
+		mode = Mode.BASE_CAPTURE
+		best = base_score
+
 func score_unstick():
 	if not previous_position:
 		return 0
 
 	var moved = player.global_position.distance_to(previous_position)
 	if moved < 1.5 and player.velocity.length() < 30:
-		return 2000
+		return 6000
 	return 0
 
 func score_harvest():
@@ -124,6 +130,58 @@ func score_collision_avoidance():
 	score -= avoidance_cooldown * 2000
 
 	return score
+
+func score_base_capture() -> float:
+	var my_bases := 0
+	var opponent_bases := {}
+
+	for b in get_tree().get_nodes_in_group("bases"):
+		if not is_instance_valid(b):
+			continue
+
+		if b.team == player.team:
+			my_bases += 1
+		else:
+			if not opponent_bases.has(b.team):
+				opponent_bases[b.team] = 0
+			opponent_bases[b.team] += 1
+
+	for team_id in opponent_bases.keys():
+		if team_id != "neutral" and opponent_bases[team_id] >= my_bases + 3:
+			return 3001
+
+	var nearest_unowned = find_nearest_unowned_base()
+	if nearest_unowned:
+		var dist = player.global_position.distance_to(nearest_unowned.global_position)
+		if dist < 500:
+			return 2000
+
+	if my_bases >= 3:
+		if nearest_unowned:
+			return 1500
+
+	return 0
+
+
+func find_nearest_unowned_base(target_team=null):
+	var best = null
+	var best_dist := INF
+
+	for b in get_tree().get_nodes_in_group("bases"):
+		if not is_instance_valid(b):
+			continue
+
+		if b.team == player.team:
+			continue
+		if target_team != null and b.team != target_team:
+			continue
+
+		var dist = player.global_position.distance_squared_to(b.global_position)
+		if dist < best_dist:
+			best_dist = dist
+			best = b
+
+	return best
 
 func collision_avoidance_mode():
 	var hit = imminent_wall_collision()
@@ -190,6 +248,45 @@ func unstick_mode():
 	input.target_aim = player.global_position
 
 	unstick_time -= get_physics_process_delta_time()
+
+func base_capture_mode():
+	var nearest_base: Base = null
+	var my_bases = 0
+	var opponent_bases = {}
+
+	for b in get_tree().get_nodes_in_group("bases"):
+		if not is_instance_valid(b):
+			continue
+		if b.team == player.team:
+			my_bases += 1
+		else:
+			if not opponent_bases.has(b.team):
+				opponent_bases[b.team] = 0
+			opponent_bases[b.team] += 1
+
+	# 1. Opponent ahead by 3+
+	for team_id in opponent_bases.keys():
+		if opponent_bases[team_id] >= my_bases + 3:
+			nearest_base = find_nearest_unowned_base(team_id)
+			break
+
+	# 2 & 3 fallback
+	if nearest_base == null:
+		nearest_base = find_nearest_unowned_base()
+
+	if nearest_base:
+		get_to_with_braking(nearest_base.global_position)
+		shoot_toward_base(nearest_base.global_position)
+
+func shoot_toward_base(target_position: Vector2):
+	var nearby_enemy = find_nearest_enemy()
+	if nearby_enemy:
+		var dist = player.global_position.distance_to(nearby_enemy.global_position)
+		if dist < 800:  # arbitrary shooting distance
+			smart_shoot(nearby_enemy.global_position)
+			return
+
+	smart_shoot(target_position)
 
 func shoot_at_nearest_enemy():
 	if not nearest_enemy:
@@ -263,6 +360,7 @@ func find_best_resource():
 			best = r
 
 	return best
+
 
 var braking = false
 func get_to_with_braking(desired_position):

@@ -7,9 +7,10 @@ var team: String = "neutral"
 
 func _ready():
 	connect("body_entered", Callable(self, "_on_body_entered"))
+	add_to_group("bases")
 
 func _on_body_entered(body: Node):
 	if body is Player:
-		var team = body.team
+		team = body.team
 		if World.colors.has(team):
 			visual.modulate = World.colors[team]
