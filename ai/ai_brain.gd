@@ -115,14 +115,11 @@ func score_collision_avoidance():
 		return 0
 	var dist = player.global_position.distance_to(hit.position)
 
-	# closer wall = higher urgency
-	var score = clamp(1.0 - dist / 300.0, 0, 1) * 10000
+	var score = clamp(1.0 - dist / 300.0, 0, 1) * 100000
 
-	# dampen re-selection while already avoiding
 	if mode == Mode.COLLISION_AVOIDANCE:
 		score *= 0.3
 
-	# cooldown after avoidance ends
 	score -= avoidance_cooldown * 2000
 
 	return score
@@ -130,27 +127,32 @@ func score_collision_avoidance():
 func collision_avoidance_mode():
 	var hit = imminent_wall_collision()
 	if hit.is_empty():
-		avoidance_cooldown = 0.5
+		avoidance_cooldown = 0.4
 		return
 
-	var speed := player.velocity.length()
-	var safe_speed := 100.0
+	var normal: Vector2 = hit.normal.normalized()
+	var hit_dist := player.global_position.distance_to(hit.position)
 
-	if speed > safe_speed:
+	if hit_dist < 120.0:
 		input.target_position = player.global_position
-		input.aim = player.global_position
+		input.target_aim = player.global_position
 		return
 
-	var normal: Vector2 = hit.normal
+	var repel_strength = clamp(1.0 - hit_dist / 300.0, 0, 1)
+	var repel = normal * repel_strength * 600.0
 
-	# slide along wall
 	var tangent := Vector2(-normal.y, normal.x)
 
-	# break symmetry
-	if randf() < 0.5:
+	if player.velocity.dot(tangent) < 0:
 		tangent = -tangent
 
-	input.target_position = player.global_position + tangent * 300
+	var slide = tangent * 200.0 * repel_strength
+
+	var target = player.global_position + \
+		repel + \
+		slide
+
+	input.target_position = target
 	input.target_aim = player.global_position
 
 func harvest_mode():

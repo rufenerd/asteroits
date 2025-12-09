@@ -6,7 +6,7 @@ class_name Asteroid extends RigidBody2D
 @export var color := Color.DARK_GRAY
 
 @export var min_speed := 5.0
-@export var max_speed := 100.0
+@export var max_speed := 30.0
 
 @export var min_spin := -1.0           # radians/sec
 @export var max_spin := 1.0
