@@ -1,4 +1,4 @@
-extends Explodable
+class_name Wall extends Explodable
 
 var cell : Vector2i
 var team = null
@@ -7,6 +7,7 @@ func _ready():
 	connect("area_entered", Callable(self, "_on_area_entered"))
 	connect("body_entered", Callable(self, "_on_body_entered"))
 	health = 5
+	add_to_group("walls")
 
 func _on_area_entered(area):
 	_handle_hit(area)

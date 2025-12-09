@@ -22,7 +22,7 @@ func _handle_hit(target):
 	if "team" in target and target.team == team:
 		return
 	
-	if target is Base:
+	if target is Base or target is Harvester:
 		return
 
 	if target.has_method("on_hit"):
