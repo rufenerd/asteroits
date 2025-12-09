@@ -121,6 +121,9 @@ func harvest(harvester):
 		resources[harvester.cell].amount -= 1
 		bank[harvester.team] += 1
 	else:
+		resource.remove_from_group("resources")
+		resource.queue_free()
+		harvester.remove_from_group("harvester")
 		harvester.queue_free()
 
 func asteroid_destroyed():

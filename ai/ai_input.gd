@@ -4,9 +4,8 @@ extends PlayerInput
 var target_position: Vector2
 var target_aim: Vector2
 
-var stick_smooth := 5.0
-var aim_smooth := 5.0
 var jitter := 0.0
+var aim_smooth := 5.0
 
 func update(player: Node2D, delta: float):
 	if target_position == null:
@@ -19,8 +18,7 @@ func update(player: Node2D, delta: float):
 	else:
 		desired_dir = Vector2.ZERO
 
-	# Smoothly interpolate move input
-	move = move.lerp(desired_dir, stick_smooth * delta)
+	move = desired_dir
 
 	# Add small jitter
 	move += Vector2(randf_range(-jitter, jitter), randf_range(-jitter, jitter))

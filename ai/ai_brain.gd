@@ -160,12 +160,10 @@ func harvest_mode():
 	var resource = find_best_resource()
 	if not resource:
 		return
+	input.build_harvester = true
 
 	get_to_with_braking(resource.global_position)
 
-	if player.global_position.distance_to(resource.global_position) < 100:
-		input.build_harvester = true
-	
 	shoot_at_nearest_enemy()
 
 func combat_mode():
@@ -189,7 +187,7 @@ func unstick_mode():
 		unstick_dir = base_dir.rotated(randf_range(-PI / 3, PI / 3))
 
 	input.target_position = player.global_position + unstick_dir * 400
-	input.target_aim = player.global_position + unstick_dir * 100
+	input.target_aim = player.global_position
 
 	unstick_time -= get_physics_process_delta_time()
 
@@ -252,8 +250,11 @@ func find_best_resource():
 	var best_score := -INF
 
 	for r in get_tree().get_nodes_in_group("resources"):
-		if r.harvester:
+		if not is_instance_valid(r):
 			continue
+		if r.harvester != null:
+			continue
+
 		var dist2 = player.global_position.distance_squared_to(r.global_position)
 		var score = - 1 * dist2
 
@@ -263,12 +264,31 @@ func find_best_resource():
 
 	return best
 
+var braking = false
 func get_to_with_braking(desired_position):
-	var distance = player.global_position.distance_to(desired_position)
-	if distance < 100 and player.velocity.length() > 500:
+	var direction = desired_position - player.global_position
+	var distance = direction.length()
+	if distance == 0:
+		return
+
+	if braking:
+		if player.velocity.length() > 0:
+			input.target_position = player.global_position
+			return
+		else:
+			braking = false
+
+	var speed := player.velocity.length()
+	var max_speed := 100.0
+	var speed_limit_distance := 300.0
+
+	var to_target = direction.normalized()
+
+	if distance < speed_limit_distance and distance > 0.5 * speed_limit_distance and speed > max_speed:
+		braking = true
 		input.target_position = player.global_position
 	else:
-		input.target_position = desired_position
+		input.target_position = player.global_position + to_target * distance
 
 func imminent_wall_collision() -> Dictionary:
 	var dir := Vector2.ZERO
