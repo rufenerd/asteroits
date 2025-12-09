@@ -15,6 +15,9 @@ var previous_position = null
 
 var avoidance_cooldown := 0.0
 
+var unstick_time := 0.0
+var unstick_dir := Vector2.ZERO
+
 func _ready() -> void:
 	player = $"../Player"
 	player.team = "ai1"
@@ -26,6 +29,7 @@ func _physics_process(delta):
 	if not is_instance_valid(player):
 		return
 
+	var prev_mode = mode
 	avoidance_cooldown = max(avoidance_cooldown - delta, 0.0)
 
 	nearest_enemy = find_nearest_enemy()
@@ -46,8 +50,12 @@ func _physics_process(delta):
 			collision_avoidance_mode()
 
 	input.boost_shield = true
+	
+	if prev_mode == Mode.UNSTICK and mode != Mode.UNSTICK:
+		unstick_time = 0.0
 
 	previous_position = player.global_position
+	
 
 func choose_mode(delta):
 	mode_timer -= delta
@@ -82,8 +90,12 @@ func choose_mode(delta):
 		best = retreat_score
 
 func score_unstick():
-	if previous_position and player.global_position.distance_to(previous_position) < 1.0:
-		return 10000
+	if not previous_position:
+		return 0
+
+	var moved = player.global_position.distance_to(previous_position)
+	if moved < 1.5 and player.velocity.length() < 30:
+		return 2000
 	return 0
 
 func score_harvest():
@@ -161,8 +173,22 @@ func combat_mode():
 	shoot_at_nearest_enemy()
 
 func unstick_mode():
-	input.target_position = Vector2(1000, 1000).rotated(randf() * TAU)
-	input.target_aim = player.global_position
+	if unstick_time <= 0.0:
+		unstick_time = randf_range(0.4, 0.8)
+
+		var base_dir: Vector2
+
+		if player.velocity.length() > 10:
+			base_dir = -player.velocity.normalized()
+		else:
+			base_dir = Vector2.RIGHT.rotated(player.rotation)
+
+		unstick_dir = base_dir.rotated(randf_range(-PI / 3, PI / 3))
+
+	input.target_position = player.global_position + unstick_dir * 400
+	input.target_aim = player.global_position + unstick_dir * 100
+
+	unstick_time -= get_physics_process_delta_time()
 
 func shoot_at_nearest_enemy():
 	if not nearest_enemy:
