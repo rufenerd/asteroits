@@ -1,4 +1,4 @@
-extends Node2D
+class_name ResourceTile extends Node2D
 
 var amount = 0
 var harvester : Harvester = null

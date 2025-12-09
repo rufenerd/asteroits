@@ -35,6 +35,7 @@ func _physics_process(delta):
 	nearest_enemy = find_nearest_enemy()
 
 	choose_mode(delta)
+	#print(Mode.find_key(mode))
 
 	match mode:
 		# COIN, BASE, ASTEROID, AVOID_BULLETS
@@ -251,6 +252,8 @@ func find_best_resource():
 	var best_score := -INF
 
 	for r in get_tree().get_nodes_in_group("resources"):
+		if r.harvester:
+			continue
 		var dist2 = player.global_position.distance_squared_to(r.global_position)
 		var score = - 1 * dist2
 
