@@ -236,10 +236,9 @@ func on_hit(damage, _origin):
 			weapon_level = 1
 			health = 1
 			global_position = World.spawn_points[team]
-	else:
-		var damaged =  preload("res://damaged.tscn").instantiate()
-		damaged.global_position = global_position
-		get_tree().current_scene.add_child(damaged)
+			var damaged =  preload("res://damaged.tscn").instantiate()
+			damaged.global_position = global_position
+			get_tree().current_scene.add_child(damaged)
 
 func _die(explosion):
 	remove_from_group("players")
