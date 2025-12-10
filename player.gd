@@ -54,9 +54,6 @@ func _physics_process(delta):
 	var stick_active := input_vector.length() >= deadzone
 	if stick_active:
 		input_vector = input_vector.normalized()
-		
-		if turbo:
-			World.bank[team] -= min(TURBO_COST * delta, World.bank[team])
 
 	var forward := Vector2.RIGHT.rotated(rotation)
 
@@ -99,13 +96,14 @@ func _physics_process(delta):
 	else:
 		shield_boost_timer = 0.0
 		
-	if World.bank[team] > 0 and input.turbo:
+	if World.bank[team] > (TURBO_COST * delta) and input.turbo:
+		World.bank[team] -= min(TURBO_COST * delta, World.bank[team])
 		max_speed = TURBO_MAX_SPEED
 		acceleration = TURBO_ACCELERATION
 		turbo = true
 	else:
 		if turbo:
-			velocity = Vector2(0,0)
+			velocity = Vector2.ZERO
 		max_speed = NORMAL_MAX_SPEED
 		acceleration = NORMAL_ACCELERATION
 		turbo = false
