@@ -43,7 +43,7 @@ var turbo = false
 var input: PlayerInput
 
 func _ready():
-	global_position = Vector2(400, 400)
+	global_position = World.spawn_points[team]
 	$Sprite2D.modulate = World.colors[team]
 	add_to_group("players")
 
@@ -234,7 +234,7 @@ func on_hit(damage, _origin):
 			World.extra_lives[team] -= 1
 			weapon_level = 1
 			health = 1
-			global_position = Vector2(400, 400)
+			global_position = World.spawn_points[team]
 	else:
 		var damaged =  preload("res://damaged.tscn").instantiate()
 		damaged.global_position = global_position

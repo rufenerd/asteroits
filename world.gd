@@ -14,6 +14,7 @@ var board = {}
 var resources = {}
 var bank = { "player": 0, "ai1": 0 }
 var extra_lives = { "player": 2, "ai1": 2}
+var spawn_points = { "player": Vector2(400,400), "ai1": Vector2(400, 9600) }
 var asteroid_count := 0
 
 #green 39FF14
@@ -178,7 +179,7 @@ func check_win_conditions():
 
 	if alive_players.size() == 1:
 		var winner = alive_players[0]
-		print("%s wins by being the last remaining!" % winner.name)
+		print("%s wins by being the last remaining!" % winner.team)
 		get_tree().quit()
 		return
 
