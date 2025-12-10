@@ -8,7 +8,7 @@ const NUM_RESOURCE_CLUSTERS = 20
 const MIN_RESOURCES_IN_CLUSTER = 25
 const MAX_RESOURCES_IN_CLUSTER = 50
 const MAX_CLUSTER_RADIUS = 20
-const NUM_BASES = 5
+const NUM_BASES = 4
 
 var board = {}
 var resources = {}
@@ -28,6 +28,8 @@ func _ready():
 	initialize_bases(NUM_BASES)
 	spawn_initial_asteroid()
 
+func _physics_process(delta):
+	check_win_conditions()
 
 func initialize_bases(num_bases):
 	for c in range(num_bases):
@@ -148,3 +150,54 @@ func cell_to_world(cell: Vector2i) -> Vector2:
 		(cell.x + 0.5) * CELL_SIZE,
 		(cell.y + 0.5) * CELL_SIZE
 	)
+
+func check_win_conditions():
+	# --- 1. All 4 bases owned by 1 team (not neutral) ---
+	var base_counts := {}
+	for b in get_tree().get_nodes_in_group("bases"):
+		if not is_instance_valid(b):
+			continue
+		if b.team == "neutral":
+			continue
+		if not base_counts.has(b.team):
+			base_counts[b.team] = 0
+		base_counts[b.team] += 1
+
+	for team_id in base_counts.keys():
+		if base_counts[team_id] >= 4:
+			print("%s wins by controlling all 4 bases!" % team_id)
+			get_tree().quit()
+			return
+
+	# --- 2. Only 1 player remains ---
+	var alive_players := []
+	for p in get_tree().get_nodes_in_group("players"):
+		if not is_instance_valid(p):
+			continue
+		alive_players.append(p)
+
+	if alive_players.size() == 1:
+		var winner = alive_players[0]
+		print("%s wins by being the last remaining!" % winner.name)
+		get_tree().quit()
+		return
+
+	# --- 3. One team's World.bank is 100,000 more than any other ---
+	var max_team = null
+	var max_value := -INF
+	for team_id in World.bank.keys():
+		var val = World.bank[team_id]
+		if val > max_value:
+			max_value = val
+			max_team = team_id
+
+	for team_id in World.bank.keys():
+		if team_id == max_team:
+			continue
+		if max_value - World.bank[team_id] < 100_000:
+			max_team = null
+			break
+
+	if max_team != null:
+		print("%s wins by having 40k more resources than any opponent!" % max_team)
+		get_tree().quit()
