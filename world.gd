@@ -22,12 +22,12 @@ var hud : HUD
 
 #green 39FF14
 #pink DA14FE
-#blue 1438FE
+#blue 00F0FF
 #orange FE6414
 #yellow FEDA14
 var colors = {"neutral": Color.WHITE}
 
-var available_colors = ["39FF14", "DA14FE", "1438FE", "FE6414", "FEDA14"]
+var available_colors = ["39FF14", "DA14FE", "00F0FF", "FE6414", "FEDA14"]
 var available_spawn_locations = [Vector2(400,400), Vector2(400,9600), Vector2(9600,400), Vector2(9600,9600)]
 
 func _ready():
