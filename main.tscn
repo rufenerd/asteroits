@@ -26,8 +26,6 @@ glow_hdr_scale = 0.8
 
 [node name="Main" type="Node2D"]
 
-[node name="HUD" parent="." instance=ExtResource("2_h2yge")]
-
 [node name="World" type="Node2D" parent="."]
 
 [node name="StarParallaxBackground" type="ParallaxBackground" parent="World"]
@@ -54,3 +52,5 @@ stretch_mode = 1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
 environment = SubResource("Environment_h2yge")
+
+[node name="HUD" parent="World" instance=ExtResource("2_h2yge")]

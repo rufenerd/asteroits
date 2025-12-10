@@ -43,6 +43,7 @@ var turbo = false
 var input: PlayerInput
 
 func _ready():
+	World.register_player(self)
 	global_position = World.spawn_points[team]
 	$Sprite2D.modulate = World.colors[team]
 	add_to_group("players")

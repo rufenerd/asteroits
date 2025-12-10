@@ -10,19 +10,25 @@ const MAX_RESOURCES_IN_CLUSTER = 50
 const MAX_CLUSTER_RADIUS = 20
 const NUM_BASES = 4
 
+var asteroid_count := 0
 var board = {}
 var resources = {}
-var bank = { "player": 0, "ai1": 0 }
-var extra_lives = { "player": 2, "ai1": 2}
-var spawn_points = { "player": Vector2(400,400), "ai1": Vector2(400, 9600) }
-var asteroid_count := 0
+
+var bank = {}
+var extra_lives = {}
+var spawn_points = {}
+
+var hud : HUD
 
 #green 39FF14
 #pink DA14FE
 #blue 1438FE
-#yellow FEDA14
 #orange FE6414
-var colors = { "player": "39FF14", "neutral": Color.WHITE, "ai1": "DA14FE" }
+#yellow FEDA14
+var colors = {"neutral": Color.WHITE}
+
+var available_colors = ["39FF14", "DA14FE", "1438FE", "FE6414", "FEDA14"]
+var available_spawn_locations = [Vector2(400,400), Vector2(400,9600), Vector2(9600,400), Vector2(9600,9600)]
 
 func _ready():
 	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
@@ -31,6 +37,14 @@ func _ready():
 
 func _physics_process(delta):
 	check_win_conditions()
+	
+func register_player(player : Player):
+	if player.team in bank:
+		return
+	bank[player.team] = 0
+	extra_lives[player.team] = 2
+	spawn_points[player.team] = available_spawn_locations.pop_front()
+	colors[player.team] = available_colors.pop_front()
 
 func initialize_bases(num_bases):
 	for c in range(num_bases):
