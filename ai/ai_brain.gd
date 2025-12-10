@@ -147,7 +147,7 @@ func score_base_capture() -> float:
 			opponent_bases[b.team] += 1
 
 	for team_id in opponent_bases.keys():
-		if team_id != "neutral" and opponent_bases[team_id] >= my_bases + 3:
+		if team_id != "neutral" and opponent_bases[team_id] >= my_bases + 2:
 			return 3001
 
 	var nearest_unowned = find_nearest_unowned_base()
