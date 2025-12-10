@@ -19,21 +19,21 @@ offset_top = 24.0
 offset_right = 138.0
 offset_bottom = 93.0
 theme_override_font_sizes/font_size = 50
-text = "1234"
+text = "1000000"
 
 [node name="ExtraLives" type="HBoxContainer" parent="Control"]
 layout_mode = 0
-offset_left = 272.0
-offset_top = 43.0
-offset_right = 713.0
-offset_bottom = 85.0
+offset_left = 2674.0
+offset_top = 47.0
+offset_right = 2786.0
+offset_bottom = 89.0
 theme_override_constants/separation = 50
 
 [node name="BaseScore" type="HBoxContainer" parent="Control"]
 z_index = 2
 layout_mode = 0
-offset_left = 695.0
+offset_left = 245.0
 offset_top = 60.0
-offset_right = 1146.0
+offset_right = 696.0
 offset_bottom = 100.0
 theme_override_constants/separation = 50
