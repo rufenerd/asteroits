@@ -48,6 +48,10 @@ stretch_mode = 1
 
 [node name="AIPlayer" parent="World" instance=ExtResource("3_1bvp3")]
 
+[node name="AIPlayer2" parent="World" instance=ExtResource("3_1bvp3")]
+
+[node name="AIPlayer3" parent="World" instance=ExtResource("3_1bvp3")]
+
 [node name="HumanPlayer" parent="World" instance=ExtResource("3_h2yge")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="World"]

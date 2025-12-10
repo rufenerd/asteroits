@@ -8,11 +8,13 @@ var time_alive := 0.0
 var previous_position: Vector2
 
 var damage = 1
-var team = "player"
+var team = "neutral"
 var origin
 
 func _ready():
 	previous_position = global_position
+	if team:
+		$Sprite2D.modulate = World.colors[team]
 
 func _physics_process(delta):
 	var velocity = direction * speed
