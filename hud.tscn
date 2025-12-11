@@ -11,16 +11,6 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_37p78")
 
-[node name="BankAmount" type="Label" parent="Control"]
-modulate = Color(0.854902, 0.0784314, 0.996078, 1)
-layout_mode = 0
-offset_left = 24.0
-offset_top = 24.0
-offset_right = 138.0
-offset_bottom = 93.0
-theme_override_font_sizes/font_size = 50
-text = "1000000"
-
 [node name="ExtraLives" type="HBoxContainer" parent="Control"]
 layout_mode = 0
 offset_left = 2674.0
@@ -32,8 +22,21 @@ theme_override_constants/separation = 50
 [node name="BaseScore" type="HBoxContainer" parent="Control"]
 z_index = 2
 layout_mode = 0
-offset_left = 245.0
+offset_left = 1.0
 offset_top = 60.0
-offset_right = 696.0
-offset_bottom = 100.0
+offset_right = 2883.0
+offset_bottom = 97.0
 theme_override_constants/separation = 50
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control"]
+layout_mode = 0
+offset_top = 25.0
+offset_right = 40.0
+offset_bottom = 94.0
+theme_override_constants/separation = 50
+
+[node name="BankAmount" type="Label" parent="Control/HBoxContainer"]
+modulate = Color(0.854902, 0.0784314, 0.996078, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 50

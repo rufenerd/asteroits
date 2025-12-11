@@ -1,6 +1,6 @@
 class_name HUD extends Control
 
-@onready var amount_label: Label = $BankAmount
+@onready var amount_label_template: Label = $HBoxContainer/BankAmount
 @export var life_icon_scene = preload("res://extra_life_icon.tscn")
 @onready var extra_lives_box := $ExtraLives
 
@@ -18,9 +18,15 @@ func _process(_delta):
 	_update_base_score()
 
 func _update_bank():
-	if player and player.team in World.bank:
-		amount_label.text = str(int(round(World.bank[player.team])))
-		amount_label.modulate = World.colors[player.team]
+	for child in amount_label_template.get_parent().get_children():
+		if child != amount_label_template:
+			child.queue_free()
+
+	for team in World.bank.keys():
+		var lbl := amount_label_template.duplicate()
+		lbl.text = str(int(round(World.bank[team])))
+		lbl.modulate = World.colors[team]
+		amount_label_template.get_parent().add_child(lbl)
 
 func _update_extra_lives():
 	var lives: int = World.extra_lives[player.team]
