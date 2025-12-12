@@ -83,7 +83,7 @@ static func imminent_wall_collision(player: Player, input):
 		return {}
 
 	var space_state = player.get_viewport().get_world_2d().direct_space_state
-	var lookahead := 200.0
+	var lookahead := 400.0
 	var angles := [-0.35, 0.0, 0.35]
 
 	var best_hit := {}
