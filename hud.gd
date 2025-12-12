@@ -8,14 +8,15 @@ class_name HUD extends Control
 @onready var base_score_box = $BaseScore
 @export var player : Player
 
+func _ready() -> void:
+	World.hud = self
+
 func _process(_delta):
-	if not World.hud:
-		World.hud = self
+	_update_bank()
+	_update_base_score()
 	if not player:
 		return
-	_update_bank()
 	_update_extra_lives()
-	_update_base_score()
 
 func _update_bank():
 	for child in amount_label_template.get_parent().get_children():
