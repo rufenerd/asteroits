@@ -28,7 +28,7 @@ func apply(brain, delta):
 
 	if hit_dist < 600:
 		input.target_position = p.global_position
-		input.target_aim = hit.global_position
+		input.target_aim = hit.position
 		return
 
 	var repel_strength = clamp(1 - hit_dist / 300.0, 0, 1)

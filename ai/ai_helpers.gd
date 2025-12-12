@@ -72,7 +72,7 @@ static func get_to_with_braking(brain, desired_position):
 	else:
 		input.target_position = player.global_position + to_target * distance
 
-static func imminent_wall_collision(player: Player, input, look_ahead: float = 40.0):
+static func imminent_wall_collision(player: Player, input):
 	var dir := Vector2.ZERO
 
 	if player.velocity.length() > 50:
