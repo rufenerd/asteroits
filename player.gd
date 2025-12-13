@@ -28,6 +28,9 @@ const TURBO_COST = 500
 @export var fire_cooldown := 0.2 # seconds between shots
 var fire_timer := 0.0
 
+@export var build_cooldown := 0.1
+var build_timer := 0.0
+
 var angular_velocity := 0.0
 
 @export var shield_boost_delay := 1.0
@@ -47,6 +50,8 @@ func _ready():
 
 func _physics_process(delta):
 	input.update(self, delta)
+	# decrement global build cooldown every physics frame
+	build_timer = max(build_timer - delta, 0.0)
 	var input_vector := input.move
 
 	var stick_active := input_vector.length() >= deadzone
@@ -76,13 +81,13 @@ func _physics_process(delta):
 			fire_timer = fire_cooldown
 			
 	if input.build_wall:
-		build_wall(delta)
+		build_wall()
 
 	if input.build_harvester:
-		build_harvester(delta)
+		build_harvester()
 		
 	if input.build_turret:
-		build_turret(delta)
+		build_turret()
 
 	if input.boost_shield:
 		shield_boost_timer += delta
@@ -154,22 +159,27 @@ func shoot_bullet(aim_vector: Vector2):
 
 	get_parent().add_child(bullet)
 
-func build_wall(delta):
+func build_wall():
 	var wall = wall_scene.instantiate()
-	build(wall, delta)
+	build(wall)
 
-func build_harvester(delta):
+func build_harvester():
 	var harvester = harvester_scene.instantiate()
-	build(harvester, delta)
+	build(harvester)
 
-func build_turret(delta):
+func build_turret():
 	var turret = turret_scene.instantiate()
 	turret.rotation = snapped_cardinal(rotation)
-	build(turret, delta)
+	build(turret)
 
-func build(node, delta):
+func build(node):
 	node.team = team
+	if build_timer > 0.0:
+		node.queue_free()
+		return
 	World.build(node, global_position, team)
+	if node.is_inside_tree():
+		build_timer = build_cooldown
 
 func boost_shield():
 	if not shield:
