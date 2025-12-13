@@ -222,7 +222,7 @@ func on_hit(damage, _origin):
 			visible = false
 
 			var camera = $Camera2D
-			if camera:
+			if is_instance_valid(camera) and camera:
 				camera.make_current()
 				camera.reparent(get_tree().current_scene)
 				camera.global_position = explosion.global_position
