@@ -5,4 +5,5 @@ func _ready() -> void:
 	World.register_player($Player)
 	$Player/Sprite2D.modulate = World.team_color($Player.team)
 	$Player.global_position = World.spawn_points[$Player.team]
-	$Player/Camera2D.queue_free()
+	if is_instance_valid($Player/Camera2D):
+		$Player/Camera2D.enabled = false

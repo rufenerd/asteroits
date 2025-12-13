@@ -3,13 +3,20 @@ extends Control
 @export var indicator_radius: float = 100.0
 @export var label_font: Font
 
+var camera: Camera2D
+
+func _ready():
+	camera = get_viewport().get_camera_2d()
+
 func _process(_delta):
 	if is_visible_in_tree():
 		queue_redraw()
 
 func _draw():
-	var camera := get_viewport().get_camera_2d()
-	if camera == null or World.players() == null:
+	if camera == null:
+		return
+
+	if World.players() == null:
 		return
 
 	for p in World.players():
@@ -64,6 +71,9 @@ func _draw():
 		)
 
 func highlight(screen_pos: Vector2, base_color: Color, p):
+	if camera == null:
+		return
+
 	var modulate_color := Color(1, 1, 1, 0.4)
 	var circle_color := base_color * modulate_color
 	var line_width := 3.0
@@ -73,10 +83,6 @@ func highlight(screen_pos: Vector2, base_color: Color, p):
 
 	# only draw directional ticks for the local HUD player
 	if World.hud == null or p != World.hud.player:
-		return
-
-	var camera := get_viewport().get_camera_2d()
-	if camera == null:
 		return
 
 	var canvas_xform := camera.get_canvas_transform()

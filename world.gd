@@ -45,7 +45,7 @@ func _physics_process(delta):
 	check_win_conditions()
 	
 func register_player(player: Player):
-	if player.team in bank:
+	if player.team in extra_lives:
 		return
 	bank[player.team] = 0
 	extra_lives[player.team] = 2
@@ -142,6 +142,8 @@ func harvest(harvester):
 	resource.harvester = harvester
 	if resource.amount > 0:
 		resources[harvester.cell].amount -= 1
+		if not harvester.team in bank:
+			bank[harvester.team] = 0
 		bank[harvester.team] += 1
 	else:
 		resource.remove_from_group("resources")

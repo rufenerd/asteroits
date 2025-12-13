@@ -8,15 +8,35 @@ class_name HUD extends Control
 @onready var base_score_box = $BaseScore
 @export var player: Player
 
+var _bank_sig = ""
+var _bases_sig = ""
+var _lives_sig = null
+
 func _ready() -> void:
 	World.hud = self
 
+	_bank_sig = ""
+	_bases_sig = ""
+	_lives_sig = null
+
 func _process(_delta):
-	_update_bank()
-	_update_base_score()
+	var bank_sig = _get_bank_signature()
+	if bank_sig != _bank_sig:
+		_bank_sig = bank_sig
+		_update_bank()
+
+	var bases_sig = _get_bases_signature()
+	if bases_sig != _bases_sig:
+		_bases_sig = bases_sig
+		_update_base_score()
+
 	if not player:
 		return
-	_update_extra_lives()
+
+	var lives_sig = _get_lives_signature()
+	if lives_sig != _lives_sig:
+		_lives_sig = lives_sig
+		_update_extra_lives()
 
 func _update_bank():
 	for child in amount_label_template.get_parent().get_children():
@@ -57,3 +77,25 @@ func _update_base_score():
 		base_score_box.add_child(icon)
 		if icon.has_method("set_color"):
 			icon.set_color(World.team_color(base.team))
+
+
+func _get_bank_signature() -> String:
+	var parts := []
+	for team in World.bank.keys():
+		parts.append(str(team) + ":" + str(int(round(World.bank[team]))))
+	parts.sort()
+	return ",".join(parts)
+
+func _get_bases_signature() -> String:
+	var parts := []
+	for base in get_tree().get_nodes_in_group("bases"):
+		if not is_instance_valid(base):
+			continue
+		parts.append(str(base.team))
+	parts.sort()
+	return ",".join(parts)
+
+func _get_lives_signature() -> String:
+	if not player:
+		return ""
+	return str(player.team) + ":" + str(int(World.extra_lives.get(player.team, 0)))
