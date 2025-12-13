@@ -27,7 +27,7 @@ var hud : HUD
 #yellow FEDA14
 var colors = {"neutral": Color.WHITE}
 
-var available_colors = ["39FF14", "DA14FE", "00F0FF", "FE6414", "FEDA14"]
+var available_colors = ["39FF14", "DA14FE", "00F0FF", "FEDA14", "FE6414"]
 var available_spawn_locations = [Vector2(400,400), Vector2(400,9600), Vector2(9600,400), Vector2(9600,9600)]
 
 func _ready():
@@ -216,3 +216,6 @@ func check_win_conditions():
 	if max_team != null:
 		print("%s wins by having 40k more resources than any opponent!" % max_team)
 		get_tree().quit()
+
+func players():
+	return get_tree().get_nodes_in_group("players")

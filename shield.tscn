@@ -6,8 +6,9 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_0vxx4"]
 radius = 14.0
 
-[node name="Shield" type="Area2D"]
+[node name="Shield" type="Area2D" node_paths=PackedStringArray("sprite")]
 script = ExtResource("1_ffst0")
+sprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_dmnlx")
@@ -16,8 +17,10 @@ texture = ExtResource("2_dmnlx")
 shape = SubResource("CircleShape2D_0vxx4")
 
 [node name="ShieldHealthLabelContainer" type="Node2D" parent="."]
+visible = false
 
 [node name="ShieldHealthLabel" type="Label" parent="ShieldHealthLabelContainer"]
+visible = false
 offset_left = -20.0
 offset_top = -39.0
 offset_right = 20.0

@@ -4,6 +4,8 @@ extends Explodable
 var cell : Vector2i
 var team
 
+@export var sprite: Sprite2D
+
 func _ready():
 	connect("area_entered", Callable(self, "_on_area_entered"))
 	connect("body_entered", Callable(self, "_on_body_entered"))
@@ -13,6 +15,12 @@ func _on_area_entered(area):
 
 func _on_body_entered(body):
 	_handle_hit(body)
+
+func enable_label():
+	$ShieldHealthLabelContainer.visible = true
+
+func disable_label():
+	$ShieldHealthLabelContainer.visible = false
 
 func _process(_delta):
 	$ShieldHealthLabelContainer.global_rotation = 0

@@ -107,7 +107,8 @@ func _ready():
 	for c in chunks:
 		var coll := CollisionPolygon2D.new()
 		coll.polygon = c
-		add_child(coll)
+		call_deferred("add_child", coll)
+
 
 	# --- RANDOM LINEAR VELOCITY ---
 	var angle := randf() * TAU
