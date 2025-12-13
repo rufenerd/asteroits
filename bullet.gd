@@ -34,7 +34,7 @@ func _physics_process(delta):
 
 	if result:
 		var hit = result.collider
-		var friendly_fire = hit is Player and team and team  == hit.team
+		var friendly_fire = hit is Player and team and team == hit.team
 		var own_shield = hit is Shield and team and team == hit.team
 		
 		if not friendly_fire and not own_shield and hit.has_method("on_hit"):

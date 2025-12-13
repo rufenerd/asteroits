@@ -6,7 +6,7 @@ class_name HUD extends Control
 
 @export var base_icon_scene = preload("res://base_icon.tscn")
 @onready var base_score_box = $BaseScore
-@export var player : Player
+@export var player: Player
 
 func _ready() -> void:
 	World.hud = self
