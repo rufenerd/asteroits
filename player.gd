@@ -45,7 +45,7 @@ var input: PlayerInput
 func _ready():
 	World.register_player(self)
 	global_position = World.spawn_points[team]
-	$Sprite2D.modulate = World.colors[team]
+	$Sprite2D.modulate = World.team_color(team)
 	add_to_group("players")
 
 func _physics_process(delta):
@@ -144,7 +144,12 @@ func shoot_bullet(aim_vector: Vector2):
 	bullet.direction = direction
 	
 	bullet.speed += acceleration
-	var c : Color = Color.from_string(World.colors[team], Color.WHITE)
+	var team_col = World.colors.get(team, Color.WHITE)
+	var c: Color
+	if typeof(team_col) == TYPE_STRING:
+		c = Color.from_string(team_col, Color.WHITE)
+	else:
+		c = team_col
 	bullet.modulate = c.lerp(Color.WHITE, 0.3) * 2.5
 
 	var nose_offset := Vector2(16, 0).rotated(direction.angle())
@@ -178,21 +183,21 @@ func boost_shield():
 		shield = preload("res://shield.tscn").instantiate()
 		shield.team = team
 		shield.health = 1
-		shield.modulate = World.colors[team]
+		shield.modulate = World.team_color(team)
 		add_child(shield)
 		shield = shield
 	else:
 		shield.health += 1
 
-func ang_dist(a,b):
+func ang_dist(a, b):
 	return abs(wrapf(a - b, -PI, PI))
 
 func snapped_cardinal(angle: float) -> float:
 	var cardinals = [
-		0.0,              # right
-		PI * 0.5,         # down
-		PI,               # left
-		-PI * 0.5         # up
+		0.0, # right
+		PI * 0.5, # down
+		PI, # left
+		- PI * 0.5 # up
 	]
 
 	var closest = cardinals[0]
@@ -236,7 +241,7 @@ func on_hit(damage, _origin):
 			weapon_level = 1
 			health = 1
 			global_position = World.spawn_points[team]
-			var damaged =  preload("res://damaged.tscn").instantiate()
+			var damaged = preload("res://damaged.tscn").instantiate()
 			damaged.global_position = global_position
 			get_tree().current_scene.add_child(damaged)
 

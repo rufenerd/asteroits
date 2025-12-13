@@ -19,7 +19,7 @@ func _draw():
 		var canvas_xform := camera.get_canvas_transform()
 		var screen_pos: Vector2 = canvas_xform * p.global_position
 	
-		var color = Color(World.colors.get(p.team, "ffffff"))
+		var color = World.team_color(p.team)
 		highlight(screen_pos, color, p)
 		
 		if not is_instance_valid(p):
@@ -97,7 +97,7 @@ func highlight(screen_pos: Vector2, base_color: Color, p):
 
 		var screen_dir := world_dir_to_screen_dir(world_dir.normalized(), canvas_xform)
 
-		var other_color := Color(World.colors.get(other.team, "ffffff"))
+		var other_color = World.team_color(other.team)
 		var tick_color := other_color * modulate_color
 
 		draw_radial_tick(
@@ -112,7 +112,7 @@ func highlight(screen_pos: Vector2, base_color: Color, p):
 	# ============================
 	# Asteroid ticks (shorter)
 	# ============================
-	var asteroid_tick_length := 6.0   # shorter than player ticks
+	var asteroid_tick_length := 6.0 # shorter than player ticks
 	var asteroid_color := Color(1, 1, 1, 0.4)
 
 	if World.asteroids() != null:

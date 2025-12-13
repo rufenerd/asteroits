@@ -14,7 +14,7 @@ var origin
 func _ready():
 	previous_position = global_position
 	if team:
-		$Sprite2D.modulate = World.colors[team]
+		$Sprite2D.modulate = World.team_color(team)
 
 func _physics_process(delta):
 	var velocity = direction * speed

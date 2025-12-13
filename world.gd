@@ -18,7 +18,7 @@ var bank = {}
 var extra_lives = {}
 var spawn_points = {}
 
-var hud : HUD
+var hud: HUD
 
 #green 39FF14
 #pink DA14FE
@@ -27,8 +27,14 @@ var hud : HUD
 #yellow FEDA14
 var colors = {"neutral": Color.WHITE}
 
-var available_colors = ["39FF14", "DA14FE", "00F0FF", "FEDA14", "FE6414"]
-var available_spawn_locations = [Vector2(400,400), Vector2(400,9600), Vector2(9600,400), Vector2(9600,9600)]
+var available_colors = [
+	Color8(57, 255, 20), # 39FF14
+	Color8(218, 20, 254), # DA14FE
+	Color8(0, 240, 255), # 00F0FF
+	Color8(254, 218, 20), # FEDA14
+	Color8(254, 100, 20) # FE6414
+]
+var available_spawn_locations = [Vector2(400, 400), Vector2(400, 9600), Vector2(9600, 400), Vector2(9600, 9600)]
 
 func _ready():
 	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
@@ -38,7 +44,7 @@ func _ready():
 func _physics_process(delta):
 	check_win_conditions()
 	
-func register_player(player : Player):
+func register_player(player: Player):
 	if player.team in bank:
 		return
 	bank[player.team] = 0
@@ -80,7 +86,7 @@ func initialize_clustered_resources(num_clusters: int, min_resources: int, max_r
 			var u1 = randf()
 			var u2 = randf()
 			var mag = sqrt(-2.0 * log(u1))
-			var z0 = mag * cos(TAU * u2)   # Gaussian 0, mean 0, stddev 1
+			var z0 = mag * cos(TAU * u2) # Gaussian 0, mean 0, stddev 1
 			var z1 = mag * sin(TAU * u2)
 
 			# Scale Gaussian to desired spread
@@ -222,3 +228,10 @@ func players():
 
 func asteroids():
 	return get_tree().get_nodes_in_group("asteroids")
+
+func team_color(team: String, default := Color.WHITE) -> Color:
+	# Return a Color for `team`. Accepts stored Color or hex/string.
+	var raw = colors.get(team, default)
+	if typeof(raw) == TYPE_STRING:
+		return Color.from_string(raw, default)
+	return raw

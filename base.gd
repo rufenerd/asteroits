@@ -13,4 +13,4 @@ func _on_body_entered(body: Node):
 	if body is Player:
 		team = body.team
 		if World.colors.has(team):
-			visual.modulate = World.colors[team]
+			visual.modulate = World.team_color(team)

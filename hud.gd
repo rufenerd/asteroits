@@ -26,7 +26,7 @@ func _update_bank():
 	for team in World.bank.keys():
 		var lbl := amount_label_template.duplicate()
 		lbl.text = str(int(round(World.bank[team])))
-		lbl.modulate = World.colors[team]
+		lbl.modulate = World.team_color(team)
 		amount_label_template.get_parent().add_child(lbl)
 
 func _update_extra_lives():
@@ -45,8 +45,8 @@ func _update_extra_lives():
 		var icon = life_icon_scene.instantiate()
 		extra_lives_box.add_child(icon)
 
-		if icon.has_method("set_color"):
-			icon.set_color(World.colors[player.team])
+			if icon.has_method("set_color"):
+				icon.set_color(World.team_color(player.team))
 
 func _update_base_score():
 	for child in base_score_box.get_children():
@@ -55,5 +55,5 @@ func _update_base_score():
 	for base in get_tree().get_nodes_in_group("bases"):
 		var icon = base_icon_scene.instantiate()
 		base_score_box.add_child(icon)
-		if icon.has_method("set_color"):
-			icon.set_color(World.colors[base.team])
+			if icon.has_method("set_color"):
+				icon.set_color(World.team_color(base.team))
