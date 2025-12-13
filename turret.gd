@@ -2,11 +2,14 @@ extends Explodable
 
 @export var bullet_scene: PackedScene
 
+func _ready():
+	add_to_group("turrets")
+
 @export
 var fire_cooldown = 0.5
 var fire_timer = 1.0
 
-var cell : Vector2i
+var cell: Vector2i
 var team
 
 func _physics_process(delta):

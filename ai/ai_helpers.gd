@@ -1,46 +1,45 @@
 extends Node
 class_name AIHelpers
 
+static func _closest_in_list(position: Vector2, nodes: Array, predicate = null):
+	var best = null
+	var best_dist := INF
+	for n in nodes:
+		if predicate != null:
+			if predicate is Callable:
+				if not predicate.call(n):
+					continue
+			else:
+				continue
+		if not is_instance_valid(n):
+			continue
+		var d = position.distance_squared_to(n.global_position)
+		if d < best_dist:
+			best_dist = d
+			best = n
+	return best
+
+
 static func find_nearest_enemy(brain) -> Player:
 	var player = brain.player
-	var closest = null
-	var closest_dist := INF
-
-	for p in brain.get_tree().get_nodes_in_group("players"):
-		if not is_instance_valid(p):
-			continue
-		if p == player:
-			continue
-		if p.team == player.team:
-			continue
-
-		var d = player.global_position.distance_squared_to(p.global_position)
-		if d < closest_dist:
-			closest_dist = d
-			closest = p
-
-	return closest
+	var nodes = brain.get_tree().get_nodes_in_group("players")
+	return _closest_in_list(player.global_position, nodes, func(n):
+		if n == player:
+			return false
+		if n.team == player.team:
+			return false
+		return true
+	)
 
 
 static func find_best_resource(brain):
-	var best = null
-	var best_score := -INF
 	var player = brain.player
-
-	for r in brain.get_tree().get_nodes_in_group("resources"):
-		if not is_instance_valid(r):
-			continue
+	var nodes = brain.get_tree().get_nodes_in_group("resources")
+	return _closest_in_list(player.global_position, nodes, func(r):
 		if r.harvester != null:
-			continue
-
-		var dist2 = player.global_position.distance_squared_to(r.global_position)
-		var score = -dist2
-
-		if score > best_score:
-			best_score = score
-			best = r
-
-	return best
+			return false
+		return true
+	)
 
 
 static func get_to_with_braking(brain, desired_position):
@@ -65,12 +64,12 @@ static func get_to_with_braking(brain, desired_position):
 
 	var to_target = direction.normalized()
 
-	if distance < speed_limit_distance and distance > 0.5 * speed_limit_distance \
-	and speed > max_speed:
+	if distance < speed_limit_distance and distance > 0.5 * speed_limit_distance and speed > max_speed:
 		brain.braking = true
 		input.target_position = player.global_position
 	else:
 		input.target_position = player.global_position + to_target * distance
+
 
 static func imminent_wall_collision(player: Player, input):
 	var dir := Vector2.ZERO
@@ -108,23 +107,14 @@ static func imminent_wall_collision(player: Player, input):
 
 	return best_hit
 
+
 static func find_nearest_unowned_base(player: Node2D, bases: Array) -> Node2D:
-	var nearest = null
-	var best_dist := INF
-
-	for b in bases:
-		if not is_instance_valid(b):
-			continue
-
+	return _closest_in_list(player.global_position, bases, func(b):
 		if b.team == player.team:
-			continue
+			return false
+		return true
+	)
 
-		var d := player.global_position.distance_squared_to(b.global_position)
-		if d < best_dist:
-			best_dist = d
-			nearest = b
-
-	return nearest
 
 static func smart_shoot(player, input, viewport, aim_for_position):
 	var distance = player.global_position.distance_to(aim_for_position)
@@ -133,7 +123,7 @@ static func smart_shoot(player, input, viewport, aim_for_position):
 		return
 	
 	var space_state = viewport.get_world_2d().direct_space_state
-	var query = PhysicsRayQueryParameters2D.create( player.global_position, aim_for_position )
+	var query = PhysicsRayQueryParameters2D.create(player.global_position, aim_for_position)
 	query.exclude = [player]
 	var result = space_state.intersect_ray(query)
 	if result and result.collider.is_in_group("harvesters") and result.collider.team == player.team:
@@ -141,3 +131,14 @@ static func smart_shoot(player, input, viewport, aim_for_position):
 			return
 	
 	input.target_aim = aim_for_position
+
+
+static func find_nearest_turret(brain):
+	var player = brain.player
+	var nodes = brain.get_tree().get_nodes_in_group("turrets")
+
+	return _closest_in_list(player.global_position, nodes, func(t):
+		if t.team == player.team:
+			return false
+		return true
+	)

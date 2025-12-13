@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://cugfh2h4fn8fg" path="res://player_indicator.gd" id="2_64ctp"]
 
 [sub_resource type="SystemFont" id="SystemFont_64ctp"]
+subpixel_positioning = 0
 
 [node name="HUD" type="CanvasLayer"]
 

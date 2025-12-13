@@ -1,7 +1,7 @@
 extends Node
 class_name AIBrain
 
-enum Mode {UNSTICK, HARVEST, COMBAT, COLLISION_AVOIDANCE, BASE_CAPTURE, ASTEROID}
+enum Mode {UNSTICK, HARVEST, COMBAT, COLLISION_AVOIDANCE, TURRET, BASE_CAPTURE, ASTEROID}
 
 var player: Player
 var input: AIInput
@@ -40,6 +40,7 @@ func _ready():
 		Mode.HARVEST: load("res://ai/modes/harvest_mode.gd").new(),
 		Mode.COMBAT: load("res://ai/modes/combat_mode.gd").new(),
 		Mode.COLLISION_AVOIDANCE: load("res://ai/modes/collision_avoidance_mode.gd").new(),
+		Mode.TURRET: load("res://ai/modes/turret_mode.gd").new(),
 		Mode.BASE_CAPTURE: load("res://ai/modes/base_capture_mode.gd").new(),
 		Mode.ASTEROID: load("res://ai/modes/asteroid_mode.gd").new(),
 	}
