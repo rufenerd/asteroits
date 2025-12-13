@@ -4,7 +4,7 @@ class_name HarvestMode
 func score(brain):
 	return clamp(1100 - World.bank[brain.player.team], 0, 1100)
 
-func apply(brain, delta):
+func apply(brain, _delta):
 	var resource = AIHelpers.find_best_resource(brain)
 	if not resource:
 		return

@@ -1,8 +1,8 @@
 class_name AIMode
 extends Resource
 
-func score(brain: AIBrain) -> float:
+func score(_brain: AIBrain) -> float:
 	return 0.0
 
-func apply(brain: AIBrain, delta: float) -> void:
+func apply(brain: AIBrain, _delta: float) -> void:
 	pass
