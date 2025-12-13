@@ -56,7 +56,12 @@ func apply(brain, _damagedelta):
 	var coin = _find_nearest_coin(brain)
 	if coin:
 		AIHelpers.get_to_with_braking(brain, coin.global_position)
-		input.target_aim = coin.global_position
+
+		var to_coin = (coin.global_position - player.global_position).normalized()
+		var angle_offset = randf_range(-0.1, 0.1)
+		var aim_direction = to_coin.rotated(angle_offset)
+		var aim_for_position = player.global_position + aim_direction * 1000
+		AIHelpers.smart_shoot(player, input, brain.get_viewport(), aim_for_position)
 		return
 
 	var ast = _find_nearest_asteroid(brain)
