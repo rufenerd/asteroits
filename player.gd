@@ -11,7 +11,7 @@ const TURBO_MAX_SPEED = 4 * NORMAL_MAX_SPEED
 const NORMAL_ACCELERATION = 400.0
 const TURBO_ACCELERATION = 4000.0
 
-const TURBO_COST = 1000
+const TURBO_COST = 500
 
 @export var deadzone := 0.2
 @export var max_speed := NORMAL_MAX_SPEED
