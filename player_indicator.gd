@@ -98,7 +98,7 @@ func highlight(screen_pos: Vector2, base_color: Color, p):
 		var screen_dir := world_dir_to_screen_dir(world_dir.normalized(), canvas_xform)
 
 		var other_color = World.team_color(other.team)
-		var tick_color := other_color * modulate_color
+		var tick_color = other_color * modulate_color
 
 		draw_radial_tick(
 			screen_pos,
