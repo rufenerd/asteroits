@@ -16,4 +16,12 @@ func apply(brain: AIBrain, _delta: float) -> void:
 		return
 
 	brain.input.target_position = brain.player.global_position
+
+	var target_player = AIHelpers.find_nearest_enemy(brain)
+	if target_player != null:
+		var dist = turret.global_position.distance_to(target_player.global_position)
+		if dist < 1500.0:
+			AIHelpers.smart_shoot(brain.player, brain.input, brain.get_viewport(), target_player.global_position)
+			return
+
 	AIHelpers.smart_shoot(brain.player, brain.input, brain.get_viewport(), turret.global_position)

@@ -123,10 +123,10 @@ func build(node, build_position, team):
 		return
 		
 	if not node is Harvester:
-		if bank[team] < 10:
+		if bank[team] < 200:
 			node.queue_free()
 			return
-		bank[team] -= 10
+		bank[team] -= 200
 
 	var snapped_pos = cell_to_world(cell)
 	node.global_position = snapped_pos

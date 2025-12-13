@@ -16,14 +16,7 @@ func apply(brain, delta):
 
 	if brain.unstick_time <= 0.0:
 		brain.unstick_time = randf_range(0.4, 0.8)
-
-		var base_dir: Vector2
-		if p.velocity.length() > 10:
-			base_dir = -p.velocity.normalized()
-		else:
-			base_dir = Vector2.RIGHT.rotated(p.rotation)
-
-		brain.unstick_dir = base_dir.rotated(randf_range(-PI/3, PI/3))
+		brain.unstick_dir = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized()
 
 	input.target_position = p.global_position + brain.unstick_dir * 400
 	input.target_aim = p.global_position
