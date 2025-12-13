@@ -1,7 +1,7 @@
 extends Node
 class_name AIBrain
 
-enum Mode { UNSTICK, HARVEST, COMBAT, COLLISION_AVOIDANCE, BASE_CAPTURE }
+enum Mode {UNSTICK, HARVEST, COMBAT, COLLISION_AVOIDANCE, BASE_CAPTURE, ASTEROID}
 
 var player: Player
 var input: AIInput
@@ -36,6 +36,7 @@ func _ready():
 		Mode.COMBAT: load("res://ai/modes/combat_mode.gd").new(),
 		Mode.COLLISION_AVOIDANCE: load("res://ai/modes/collision_avoidance_mode.gd").new(),
 		Mode.BASE_CAPTURE: load("res://ai/modes/base_capture_mode.gd").new(),
+		Mode.ASTEROID: load("res://ai/modes/asteroid_mode.gd").new(),
 	}
 
 func _physics_process(delta):
@@ -57,7 +58,7 @@ func choose_mode(delta):
 		return
 	mode_timer = randf_range(0.3, 1.0)
 
-	var best_score = -INF
+	var best_score = - INF
 	var best_mode = mode
 
 	for m in modes.keys():
