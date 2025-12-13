@@ -219,3 +219,6 @@ func check_win_conditions():
 
 func players():
 	return get_tree().get_nodes_in_group("players")
+
+func asteroids():
+	return get_tree().get_nodes_in_group("asteroids")

@@ -91,6 +91,7 @@ func spawn_child(hit_origin: Vector2):
 
 func _ready():
 	World.asteroid_count += 1
+	add_to_group("asteroids")
 	randomize()
 	global_position = Vector2(600, 600)
 
