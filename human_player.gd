@@ -6,5 +6,8 @@ func _ready():
 	World.register_player($Player)
 
 func _process(delta: float) -> void:
+	if not is_instance_valid($Player):
+		return
+
 	if World.hud and not World.hud.player:
 		World.hud.player = $Player
