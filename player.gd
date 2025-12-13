@@ -174,6 +174,7 @@ func build(node, delta):
 	node.team = team
 	build_timer -= delta
 	if node is not Harvester and build_timer > 0.0:
+		node.queue_free()
 		return
 	build_timer = build_cooldown
 	World.build(node, global_position, team)

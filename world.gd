@@ -115,13 +115,16 @@ func build(node, build_position, team):
 	var cell = world_to_cell(build_position)
 
 	if board.has(cell):
+		node.queue_free()
 		return
 
 	if node is Harvester and not resources.has(cell):
+		node.queue_free()
 		return
 		
 	if not node is Harvester:
 		if bank[team] < 10:
+			node.queue_free()
 			return
 		bank[team] -= 10
 
