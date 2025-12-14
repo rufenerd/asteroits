@@ -106,7 +106,8 @@ func _physics_process(delta):
 		turbo = true
 	else:
 		if turbo:
-			velocity = Vector2.ZERO
+			if velocity.length() > NORMAL_MAX_SPEED:
+				velocity = velocity.normalized() * NORMAL_MAX_SPEED
 		max_speed = NORMAL_MAX_SPEED
 		acceleration = NORMAL_ACCELERATION
 		turbo = false
