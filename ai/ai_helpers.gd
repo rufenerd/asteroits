@@ -42,7 +42,7 @@ static func find_best_resource(brain):
 	)
 
 
-static func is_aligned_with_target(player: Player, target_position: Vector2, threshold := 0.95) -> bool:
+static func is_aligned_with_target(player: Player, target_position: Vector2, threshold := 0.99) -> bool:
 	var direction_to_target = (target_position - player.global_position).normalized()
 	var player_forward = Vector2.RIGHT.rotated(player.rotation)
 	return direction_to_target.dot(player_forward) > threshold
