@@ -40,7 +40,7 @@ func score(brain):
 	var coin = _find_nearest_coin(brain)
 	if coin:
 		var dist = brain.player.global_position.distance_to(coin.global_position)
-		return 5000 - dist
+		return 3000 - dist
 
 	var ast = _find_nearest_asteroid(brain)
 	if ast:
