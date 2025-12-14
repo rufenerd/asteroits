@@ -44,6 +44,10 @@ func _update_bank():
 			child.queue_free()
 
 	for team in World.bank.keys():
+		# Only show bank for teams with alive players
+		var alive_players = World.players().filter(func(p): return p.team == team)
+		if alive_players.size() == 0:
+			continue
 		var lbl := amount_label_template.duplicate()
 		lbl.text = str(int(round(World.bank[team])))
 		lbl.modulate = World.team_color(team)
@@ -82,6 +86,10 @@ func _update_base_score():
 func _get_bank_signature() -> String:
 	var parts := []
 	for team in World.bank.keys():
+		# Only include teams with alive players
+		var alive_players = World.players().filter(func(p): return p.team == team)
+		if alive_players.size() == 0:
+			continue
 		parts.append(str(team) + ":" + str(int(round(World.bank[team]))))
 	parts.sort()
 	return ",".join(parts)
