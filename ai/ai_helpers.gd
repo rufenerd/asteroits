@@ -42,6 +42,12 @@ static func find_best_resource(brain):
 	)
 
 
+static func is_aligned_with_target(player: Player, target_position: Vector2, threshold := 0.95) -> bool:
+	var direction_to_target = (target_position - player.global_position).normalized()
+	var player_forward = Vector2.RIGHT.rotated(player.rotation)
+	return direction_to_target.dot(player_forward) > threshold
+
+
 static func get_to_with_braking(brain, desired_position):
 	var player = brain.player
 	var input = brain.input
@@ -63,8 +69,9 @@ static func get_to_with_braking(brain, desired_position):
 	var speed_limit_distance := 300.0
 
 	var to_target = direction.normalized()
+	var aligned = is_aligned_with_target(player, desired_position)
 
-	if distance < speed_limit_distance and distance > 0.5 * speed_limit_distance and speed > max_speed:
+	if distance < speed_limit_distance and distance > 0.5 * speed_limit_distance and speed > max_speed and not aligned:
 		brain.braking = true
 		input.target_position = player.global_position
 	else:

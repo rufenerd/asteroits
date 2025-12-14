@@ -64,7 +64,7 @@ func _physics_process(delta):
 	input.turbo = false
 
 	choose_mode(delta)
-	print(Mode.find_key(mode))
+	#print(Mode.find_key(mode))
 	modes[mode].apply(self, delta)
 
 	choose_build_strategy(delta)
