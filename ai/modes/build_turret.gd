@@ -36,10 +36,12 @@ func score(brain):
 				if w.global_position.distance_to(b.global_position) <= DEFENSE_RADIUS:
 					defenses += 1
 
-			if defenses < 8:
+			if defenses < 20:
 				return int(3500 - dist_to_base) + 50 % randi()
 
 	return 0
 
 func apply(brain, _delta):
 	brain.input.build_turret = true
+	var angle = (randi() % 4) * (PI / 2.0)
+	brain.input.target_position = brain.player.global_position + Vector2.RIGHT.rotated(angle) * 100.0

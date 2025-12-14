@@ -11,7 +11,6 @@ var mode_timer = 0.0
 
 enum BuildStrategy {SHIELD, TURRET, WALL, HORDE}
 var build_strategy = BuildStrategy.SHIELD
-var build_timer = 0.0
 var build_strategies = {}
 
 var nearest_enemy = null
@@ -91,11 +90,6 @@ func choose_mode(delta):
 	mode = best_mode
 
 func choose_build_strategy(delta):
-	build_timer -= delta
-	if build_timer > 0:
-		return
-	build_timer = randf_range(0.3, 1.0)
-
 	var best_score = - INF
 	var best_strategy = build_strategy
 
