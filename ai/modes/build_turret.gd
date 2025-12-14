@@ -37,9 +37,9 @@ func score(brain):
 					defenses += 1
 
 			if defenses < 8:
-				return int(6000 - dist_to_base)
+				return int(3500 - dist_to_base) + 50 % randi()
 
-	return randi() % 300
+	return 0
 
 func apply(brain, _delta):
 	brain.input.build_turret = true
