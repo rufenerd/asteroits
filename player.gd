@@ -251,17 +251,6 @@ func on_hit(damage, _origin):
 	if health <= 0:
 		dying = true
 		if World.extra_lives[team] == 0:
-			# Find the alive player with the most bank
-			var max_bank = - INF
-			var best_player = null
-			for p in World.players():
-				if not is_instance_valid(p) or p == self:
-					continue
-				var p_bank = World.bank.get(p.team, 0)
-				if p_bank > max_bank:
-					max_bank = p_bank
-					best_player = p
-
 			var explosion = preload("res://Explosion.tscn").instantiate()
 			var anim := explosion.get_node("AnimatedSprite2D") as AnimatedSprite2D
 			anim.sprite_frames.set_animation_loop("explode", true)
@@ -281,7 +270,21 @@ func on_hit(damage, _origin):
 				camera.zoom.y = 16.0
 
 			call_deferred("_die", explosion)
-			
+
+			if not World.hud.player == self:
+				return
+
+			# Find the alive player with the most bank
+			var max_bank = - INF
+			var best_player = null
+			for p in World.players():
+				if not is_instance_valid(p) or p == self:
+					continue
+				var p_bank = World.bank.get(p.team, 0)
+				if p_bank > max_bank:
+					max_bank = p_bank
+					best_player = p
+
 			if best_player:
 				# Schedule camera switch after explosion plays
 				World.call_deferred("_switch_camera_deferred", best_player)
