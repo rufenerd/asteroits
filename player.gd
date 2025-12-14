@@ -40,6 +40,10 @@ var weapon_level = 1
 
 var turbo = false
 
+var respawn_timer = 0.0
+var invincible_timer = 0.0
+var blink_timer = 0.0
+
 var input: PlayerInput
 
 func _ready():
@@ -52,6 +56,21 @@ func _physics_process(delta):
 	input.update(self, delta)
 	# decrement global build cooldown every physics frame
 	build_timer = max(build_timer - delta, 0.0)
+	
+	respawn_timer = max(respawn_timer - delta, 0.0)
+	invincible_timer = max(invincible_timer - delta, 0.0)
+	
+	if invincible_timer > 0.0:
+		blink_timer += delta
+		if blink_timer >= 0.1:
+			blink_timer = 0.0
+			$Sprite2D.visible = not $Sprite2D.visible
+	else:
+		$Sprite2D.visible = true
+	
+	if respawn_timer > 0.0:
+		return
+	
 	var input_vector := input.move
 
 	var stick_active := input_vector.length() >= deadzone
@@ -216,6 +235,8 @@ func snapped_cardinal(angle: float) -> float:
 	return closest
 
 func on_hit(damage, _origin):
+	if invincible_timer > 0.0:
+		return
 	if shield and shield.health > 0:
 		return
 	health -= damage
@@ -245,6 +266,8 @@ func on_hit(damage, _origin):
 			weapon_level = 1
 			health = 1
 			global_position = World.spawn_points[team]
+			respawn_timer = 0.5
+			invincible_timer = 3.0
 			var damaged = preload("res://damaged.tscn").instantiate()
 			damaged.global_position = global_position
 			get_tree().current_scene.add_child(damaged)
