@@ -24,6 +24,14 @@ func shoot_bullet():
 	bullet.origin = self
 	bullet.team = team
 
+	var team_col = World.colors.get(team, Color.WHITE)
+	var c: Color
+	if typeof(team_col) == TYPE_STRING:
+		c = Color.from_string(team_col, Color.WHITE)
+	else:
+		c = team_col
+	bullet.modulate = c.lerp(Color.WHITE, 0.3) * 2.5
+
 	var nose_offset := Vector2(16, 0).rotated(rotation)
 	bullet.global_position = global_position + nose_offset
 

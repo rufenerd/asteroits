@@ -31,10 +31,9 @@ func score(brain):
 			if defenses < 8:
 				return int(5500 - dist_to_base)
 
-	var s = 500
 	if brain.mode == AIBrain.Mode.BASE_CAPTURE:
-		s += 1500
-	return s
+		return 1500
+	return randi() % 300
 
 func apply(brain, _delta):
 	brain.input.build_wall = true

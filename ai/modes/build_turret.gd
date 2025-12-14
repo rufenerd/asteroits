@@ -8,6 +8,11 @@ func score(brain):
 	if bank < 200:
 		return 0
 
+	var shield = brain.player.shield
+	var shield_missing = not shield or not is_instance_valid(shield)
+	if shield_missing or shield.health < 4.0:
+		return 10
+
 	# If we're near a friendly base that lacks defenses, score highly to build there
 	var bases = brain.get_tree().get_nodes_in_group("bases")
 	var DEFENSE_RADIUS := 600.0
@@ -34,16 +39,7 @@ func score(brain):
 			if defenses < 8:
 				return int(6000 - dist_to_base)
 
-	var turret_score = 0
-	if brain.nearest_enemy:
-		var dist = brain.player.global_position.distance_to(brain.nearest_enemy.global_position)
-		turret_score = 2000 - dist
-	else:
-		turret_score = randi() % 300
-
-	return turret_score + int(modes_score_bonus(brain))
+	return randi() % 300
 
 func apply(brain, _delta):
 	brain.input.build_turret = true
-func modes_score_bonus(_brain):
-	return 0
