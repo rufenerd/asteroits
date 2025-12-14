@@ -87,9 +87,13 @@ func _physics_process(delta):
 	_update_rotation_from_input(input_vector, delta)
 
 	move_and_slide()
+	var pos_after_move = global_position
 
 	global_position.x = clamp(global_position.x, World.BOUNDS.position.x, World.BOUNDS.position.x + World.BOUNDS.size.x)
 	global_position.y = clamp(global_position.y, World.BOUNDS.position.y, World.BOUNDS.position.y + World.BOUNDS.size.y)
+
+	if global_position != pos_after_move:
+		velocity = Vector2.ZERO
 
 	var aim_vector := input.aim
 
