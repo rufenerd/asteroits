@@ -46,7 +46,7 @@ func _physics_process(delta):
 func register_player(player: Player):
 	if player.team in extra_lives:
 		return
-	bank[player.team] = 0
+	bank[player.team] = 1000
 	extra_lives[player.team] = 2
 	spawn_points[player.team] = available_spawn_locations.pop_front()
 	colors[player.team] = available_colors.pop_front()
@@ -244,3 +244,15 @@ func team_color(team: String, default := Color.WHITE) -> Color:
 	if typeof(raw) == TYPE_STRING:
 		return Color.from_string(raw, default)
 	return raw
+
+func _switch_camera_deferred(best_player):
+	await get_tree().create_timer(1.0).timeout
+	if best_player and is_instance_valid(best_player):
+		var best_camera = best_player.get_node_or_null("Camera2D")
+		if best_camera and is_instance_valid(best_camera) and best_camera.is_inside_tree():
+			var current_cam = get_viewport().get_camera_2d()
+			if current_cam:
+				current_cam.enabled = false
+			best_camera.enabled = true
+			best_camera.zoom = Vector2(1, 1)
+			best_camera.make_current()

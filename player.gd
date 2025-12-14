@@ -43,6 +43,7 @@ var turbo = false
 var respawn_timer = 0.0
 var invincible_timer = 0.0
 var blink_timer = 0.0
+var dying = false
 
 var input: PlayerInput
 
@@ -239,6 +240,8 @@ func snapped_cardinal(angle: float) -> float:
 	return closest
 
 func on_hit(damage, _origin):
+	if dying:
+		return
 	if invincible_timer > 0.0:
 		return
 	if shield and shield.health > 0:
@@ -246,7 +249,19 @@ func on_hit(damage, _origin):
 	health -= damage
 
 	if health <= 0:
+		dying = true
 		if World.extra_lives[team] == 0:
+			# Find the alive player with the most bank
+			var max_bank = - INF
+			var best_player = null
+			for p in World.players():
+				if not is_instance_valid(p) or p == self:
+					continue
+				var p_bank = World.bank.get(p.team, 0)
+				if p_bank > max_bank:
+					max_bank = p_bank
+					best_player = p
+
 			var explosion = preload("res://Explosion.tscn").instantiate()
 			var anim := explosion.get_node("AnimatedSprite2D") as AnimatedSprite2D
 			anim.sprite_frames.set_animation_loop("explode", true)
@@ -257,18 +272,24 @@ func on_hit(damage, _origin):
 
 			var camera = $Camera2D
 			if is_instance_valid(camera) and camera:
+				# For now, keep current camera on explosion
+				camera.enabled = true
 				camera.make_current()
 				camera.reparent(get_tree().current_scene)
 				camera.global_position = explosion.global_position
 				camera.zoom.x = 16.0
 				camera.zoom.y = 16.0
-				camera.global_position = explosion.global_position
 
 			call_deferred("_die", explosion)
+			
+			if best_player:
+				# Schedule camera switch after explosion plays
+				World.call_deferred("_switch_camera_deferred", best_player)
 		else:
 			World.extra_lives[team] -= 1
 			weapon_level = 1
 			health = 1
+			dying = false
 			global_position = World.spawn_points[team]
 			respawn_timer = 0.5
 			invincible_timer = 3.0
@@ -280,6 +301,17 @@ func _die(explosion):
 	remove_from_group("players")
 	get_tree().current_scene.add_child(explosion)
 
+func switch_camera(best_player):
+	print("Switching camera to best player: ", best_player)
+	if best_player:
+		var best_camera = best_player.get_node_or_null("Camera2D")
+		if best_camera and is_instance_valid(best_camera) and best_camera.is_inside_tree():
+			var current_cam = get_viewport().get_camera_2d()
+			if current_cam:
+				current_cam.enabled = false
+			best_camera.enabled = true
+			best_camera.zoom = Vector2(1, 1)
+			best_camera.make_current()
 
 func upgrade_weapon():
 	weapon_level += 1
