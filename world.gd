@@ -8,7 +8,6 @@ const NUM_RESOURCE_CLUSTERS = 20
 const MIN_RESOURCES_IN_CLUSTER = 25
 const MAX_RESOURCES_IN_CLUSTER = 50
 const MAX_CLUSTER_RADIUS = 20
-const NUM_BASES = 4
 
 var asteroid_count := 0
 var board = {}
@@ -38,7 +37,7 @@ var available_spawn_locations = [Vector2(400, 400), Vector2(400, 9600), Vector2(
 
 func _ready():
 	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
-	initialize_bases(NUM_BASES)
+	initialize_bases()
 	spawn_initial_asteroid()
 
 func _physics_process(delta):
@@ -52,14 +51,19 @@ func register_player(player: Player):
 	spawn_points[player.team] = available_spawn_locations.pop_front()
 	colors[player.team] = available_colors.pop_front()
 
-func initialize_bases(num_bases):
-	for c in range(num_bases):
+func initialize_bases():
+	var quadrants = [
+		Rect2i(0, 0, NUM_CELLS_IN_ROW / 2, NUM_CELLS_IN_ROW / 2), # top left
+		Rect2i(NUM_CELLS_IN_ROW / 2, 0, NUM_CELLS_IN_ROW / 2, NUM_CELLS_IN_ROW / 2), # top right
+		Rect2i(0, NUM_CELLS_IN_ROW / 2, NUM_CELLS_IN_ROW / 2, NUM_CELLS_IN_ROW / 2), # bottom left
+		Rect2i(NUM_CELLS_IN_ROW / 2, NUM_CELLS_IN_ROW / 2, NUM_CELLS_IN_ROW / 2, NUM_CELLS_IN_ROW / 2) # bottom right
+	]
+	for q in quadrants:
 		var base = preload("res://base.tscn").instantiate()
-		var made_base = false
 		while true:
 			var cell = Vector2i(
-				randi() % NUM_CELLS_IN_ROW,
-				randi() % NUM_CELLS_IN_ROW
+				q.position.x + randi() % q.size.x,
+				q.position.y + randi() % q.size.y
 			)
 			if not board.has(cell) and not resources.has(cell):
 				board[cell] = base
