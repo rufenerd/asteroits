@@ -4,7 +4,7 @@ class_name BuildWall
 func score(brain):
 	var team = brain.player.team
 	var bank = World.bank.get(team, 0)
-	if bank < 200:
+	if bank < 200 or brain.player.velocity.length() < 50.0:
 		return 0
 
 	var bases = brain.get_tree().get_nodes_in_group("bases")
