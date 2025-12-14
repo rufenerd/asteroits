@@ -6,7 +6,7 @@ func score(brain):
 	if not prev:
 		return 0
 	var moved = brain.player.global_position.distance_to(prev)
-	if moved < 2.0 and brain.player.velocity.length() < 30:
+	if moved < 0.5 and brain.player.velocity.length() < 30:
 		return 6000
 	return 0
 

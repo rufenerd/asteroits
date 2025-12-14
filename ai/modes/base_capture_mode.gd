@@ -30,9 +30,20 @@ func score(brain):
 
 	return 0
 
-func apply(brain, delta):
+func apply(brain, _delta):
 	var bases = brain.get_tree().get_nodes_in_group("bases")
 	var nearest_base = AIHelpers.find_nearest_unowned_base(brain.player, bases)
 	if nearest_base:
 		AIHelpers.get_to_with_braking(brain, nearest_base.global_position)
 		brain.input.target_aim = brain.player.global_position
+
+		# Check if base is aligned with player's direction
+		var direction_to_base = (nearest_base.global_position - brain.player.global_position).normalized()
+		var player_forward = Vector2.RIGHT.rotated(brain.player.rotation)
+		var alignment = direction_to_base.dot(player_forward)
+
+		# If aligned (dot product close to 1), enable turbo
+		if alignment > 0.8:
+			brain.input.turbo = true
+		else:
+			brain.input.turbo = false
