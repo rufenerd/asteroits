@@ -37,8 +37,10 @@ func apply(brain, _delta):
 		AIHelpers.get_to_with_braking(brain, nearest_base.global_position)
 		brain.input.target_aim = brain.player.global_position
 
+		var direction = nearest_base.global_position - brain.player.global_position
+		var distance = direction.length()
 		# If aligned with base, enable turbo
-		if AIHelpers.is_aligned_with_target(brain.player, nearest_base.global_position):
+		if distance > 1000 and AIHelpers.is_aligned_with_target(brain.player, nearest_base.global_position):
 			brain.input.turbo = true
 		else:
 			brain.input.turbo = false
