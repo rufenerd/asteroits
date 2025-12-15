@@ -31,6 +31,8 @@ func score(brain):
 			if defenses < 8:
 				return int(3500 - dist_to_base) + 50 % randi()
 
+	if randf() < 0.001:
+		return 3500
 	return 0
 
 func apply(brain, _delta):
