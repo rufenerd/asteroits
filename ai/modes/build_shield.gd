@@ -9,7 +9,10 @@ func score(brain):
 	if bank >= 1000 and shield_missing:
 		boost_score = 3000
 	elif bank >= 1000 and brain.player.shield.health > 3:
-		boost_score = 0
+		if randf() < 0.001:
+			boost_score = 3000
+		else:
+			boost_score = 0
 	elif bank >= 1000:
 		boost_score = 1500
 	return boost_score + int(modes_score_bonus(brain))
