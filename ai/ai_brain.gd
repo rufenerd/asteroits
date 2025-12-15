@@ -69,7 +69,7 @@ func _physics_process(delta):
 	input.turbo = false
 
 	choose_mode(delta)
-	#print(Mode.find_key(mode))
+	print(Mode.find_key(mode))
 	modes[mode].apply(self, delta)
 
 	choose_build_strategy(delta)
@@ -83,7 +83,7 @@ func choose_mode(delta):
 	mode_timer -= delta
 	if mode_timer > 0:
 		return
-	mode_timer = randf_range(0.3, 1.0)
+	mode_timer = randf_range(0.5, 1.5)
 
 	var best_score = - INF
 	var best_mode = mode
