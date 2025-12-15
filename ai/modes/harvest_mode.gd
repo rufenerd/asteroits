@@ -2,7 +2,7 @@ extends AIMode
 class_name HarvestMode
 
 func score(brain):
-	return 1000 + 10.0 * clamp(1100 - World.bank[brain.player.team], 0, 1100)
+	return 100 + 10.0 * clamp(1100 - World.bank[brain.player.team], 0, 1100)
 
 func apply(brain, _delta):
 	var resource = AIHelpers.find_best_resource(brain)

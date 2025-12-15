@@ -12,9 +12,12 @@ func score(brain):
 	var avoid_score := 0
 
 	if hit:
-		var dist = brain.player.global_position.distance_to(hit.position)
-		avoid_score = clamp(1.0 - dist / WALL_NOTICE, 0, 1) * 120000
-		best_threat_dist = min(best_threat_dist, dist)
+		# Ignore friendly walls
+		var is_friendly_wall = hit.collider.has_method("get") and hit.collider.get("team") == brain.player.team
+		if not is_friendly_wall:
+			var dist = brain.player.global_position.distance_to(hit.position)
+			avoid_score = clamp(1.0 - dist / WALL_NOTICE, 0, 1) * 120000
+			best_threat_dist = min(best_threat_dist, dist)
 
 	# Check nearby asteroids with larger notice
 	for a in brain.get_tree().get_nodes_in_group("asteroids"):
@@ -62,9 +65,11 @@ func apply(brain, _delta):
 	var threat_dist := INF
 
 	if hit:
-		threat_node = hit
-		threat_pos = hit.position
-		threat_dist = p.global_position.distance_to(hit.position)
+		var is_friendly_wall = hit.collider.has_method("get") and hit.collider.get("team") == p.team
+		if not is_friendly_wall:
+			threat_node = hit
+			threat_pos = hit.position
+			threat_dist = p.global_position.distance_to(hit.position)
 
 	for a in brain.get_tree().get_nodes_in_group("asteroids"):
 		if not is_instance_valid(a):
