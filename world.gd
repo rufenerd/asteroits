@@ -212,25 +212,6 @@ func check_win_conditions():
 		get_tree().quit()
 		return
 
-	# --- 3. One team's World.bank is 100,000 more than any other ---
-	var max_team = null
-	var max_value := -INF
-	for team_id in World.bank.keys():
-		var val = World.bank[team_id]
-		if val > max_value:
-			max_value = val
-			max_team = team_id
-
-	for team_id in World.bank.keys():
-		if team_id == max_team:
-			continue
-		if max_value - World.bank[team_id] < 100_000:
-			max_team = null
-			break
-
-	if max_team != null:
-		print("%s wins by having 40k more resources than any opponent!" % max_team)
-		get_tree().quit()
 
 func players():
 	return get_tree().get_nodes_in_group("players")
