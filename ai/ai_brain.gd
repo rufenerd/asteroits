@@ -9,6 +9,11 @@ var input: AIInput
 var mode = Mode.HARVEST
 var mode_timer = 0.0
 
+# Personality multipliers (tunable per AI)
+var combat_multiplier := 1.0
+var base_multiplier := 1.0
+var asteroid_multiplier := 1.0
+
 enum BuildStrategy {SHIELD, TURRET, WALL, HORDE}
 var build_strategy = BuildStrategy.SHIELD
 var build_strategies = {}
@@ -85,6 +90,16 @@ func choose_mode(delta):
 
 	for m in modes.keys():
 		var s = modes[m].score(self)
+		match m:
+			Mode.COMBAT:
+				s *= combat_multiplier
+				s += (combat_multiplier - 1.0) * 1000
+			Mode.BASE_CAPTURE:
+				s *= base_multiplier
+				s += (base_multiplier - 1.0) * 1000
+			Mode.ASTEROID:
+				s *= asteroid_multiplier
+				s += (asteroid_multiplier - 1.0) * 1000
 		if s > best_score:
 			best_score = s
 			best_mode = m
