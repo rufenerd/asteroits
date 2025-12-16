@@ -10,13 +10,17 @@ func score(brain):
 	for b in bases:
 		if not is_instance_valid(b):
 			continue
-		if b.team == p.team:
+		var base_team = b.team
+		# Skip neutral bases when comparing ownership
+		if typeof(base_team) == TYPE_STRING and base_team == "neutral":
+			continue
+		if base_team == p.team:
 			my_bases += 1
 		else:
-			opponents[b.team] = opponents.get(b.team, 0) + 1
+			opponents[base_team] = opponents.get(base_team, 0) + 1
 
 	for team_id in opponents.keys():
-		if team_id != "neutral" and opponents[team_id] >= my_bases + 2:
+		if opponents[team_id] >= my_bases + 2:
 			return 3001
 
 	var nearest_unowned = AIHelpers.find_nearest_unowned_base(brain.player, bases)

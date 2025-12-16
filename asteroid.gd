@@ -1,22 +1,29 @@
 class_name Asteroid extends RigidBody2D
 
-@export var sides := 16                 # Number of random points
-@export var radius := 160.0             # Outer size
-@export var concavity := 0.6            # 0 = convex, 1 = jagged
+@export var sides := 16 # Number of random points
+@export var radius := 160.0 # Outer size
+@export var concavity := 0.6 # 0 = convex, 1 = jagged
 @export var color := Color.DARK_GRAY
 
 @export var min_speed := 5.0
 @export var max_speed := 30.0
 
-@export var min_spin := -1.0           # radians/sec
+@export var min_spin := -1.0 # radians/sec
 @export var max_spin := 1.0
 
-@export var player_mass := 1.0       # conceptual mass
-@export var push_power := 1.5         # tune feel, not physics
+@export var player_mass := 1.0 # conceptual mass
+@export var push_power := 1.5 # tune feel, not physics
 @export var self_pushback := 0.15
 
 @export var hit_debounce := 0.5
 var hit_debounce_timer := 0.0
+
+# Client-side network smoothing targets
+var _net_pos: Vector2
+var _net_rot: float = 0.0
+var _net_lin_vel: Vector2 = Vector2.ZERO
+var _net_ang_vel: float = 0.0
+const SMOOTH := 12.0
 
 const COIN_DROP_ODDS = 10
 const COIN_SCENES = {
@@ -26,6 +33,10 @@ const COIN_SCENES = {
 }
 
 func on_hit(_damage, origin):
+	# Only server processes asteroid hits
+	if not multiplayer.is_server():
+		return
+		
 	if hit_debounce_timer < hit_debounce:
 		return
 
@@ -36,6 +47,7 @@ func on_hit(_damage, origin):
 		explosion.global_position = global_position
 		explosion.target_node = self
 		get_tree().current_scene.add_child(explosion)
+		_rpc_spawn_explosion.rpc(global_position)
 
 		if randi() % COIN_DROP_ODDS == 0:
 			var coin_roll = randi() % 3
@@ -50,13 +62,31 @@ func on_hit(_damage, origin):
 			var coin = COIN_SCENES[coin_type].instantiate()
 			coin.global_position = global_position
 			get_tree().current_scene.add_child(coin)
+		World._rpc_destroy_asteroid.rpc(get_path())
 	else:
 		for i in range(4):
 			spawn_child(origin)
+		World._rpc_destroy_asteroid.rpc(get_path())
 	queue_free()
 
 func _physics_process(delta: float) -> void:
 	hit_debounce_timer += delta
+	# Server periodically broadcasts asteroid state
+	if multiplayer.is_server():
+		_sync_timer += delta
+		if _sync_timer >= SYNC_INTERVAL:
+			_sync_timer = 0.0
+			_rpc_sync_state.rpc(global_position, rotation, linear_velocity, angular_velocity)
+
+func _process(delta: float) -> void:
+	# Client-side smoothing / dead reckoning with extrapolation
+	if multiplayer.is_server():
+		return
+	# Extrapolate 4 frames forward like players
+	var predicted_pos = _net_pos + _net_lin_vel * (4.0 / 60.0 + delta)
+	var w = clamp(SMOOTH * delta, 0.0, 1.0)
+	global_position = global_position.lerp(predicted_pos, w)
+	rotation = lerp_angle(rotation, _net_rot, w)
 
 func spawn_child(hit_origin: Vector2):
 	var child := preload("res://asteroid.tscn").instantiate()
@@ -89,11 +119,23 @@ func spawn_child(hit_origin: Vector2):
 	# --- spin ---
 	child.angular_velocity = randf_range(-8.0, 8.0) * (mass / child.mass)
 
+	# Assign deterministic name and sync child spawn to clients
+	var child_name = World.next_net_name("Asteroid")
+	child.name = child_name
+	World._rpc_spawn_child_asteroid.rpc(child.global_position, child.radius, child.mass, child.linear_velocity, child.angular_velocity, child_name)
+
 func _ready():
 	World.asteroid_count += 1
 	add_to_group("asteroids")
 	randomize()
-	global_position = Vector2(600, 600)
+	# Do not override spawn position set by spawner
+	
+	# Only server simulates asteroid physics
+	if not multiplayer.is_server():
+		set_physics_process(false)
+		freeze = true
+		_net_pos = global_position
+		_net_rot = rotation
 
 	var poly := random_concave_polygon(sides, radius, concavity)
 
@@ -156,7 +198,7 @@ func _convex_hull(pts: Array[Vector2]) -> Array[Vector2]:
 		lower.append(p)
 
 	var upper: Array[Vector2] = []
-	for i in range(pts.size()-1, -1, -1):
+	for i in range(pts.size() - 1, -1, -1):
 		var p := pts[i]
 		while upper.size() >= 2 and _cross(upper[-2], upper[-1], p) <= 0:
 			upper.pop_back()
@@ -234,6 +276,26 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 
 	# Apply new position directly to body
 	state.transform.origin = pos
+	
+var _sync_timer := 0.0
+const SYNC_INTERVAL := 0.1
+
+@rpc("authority", "unreliable")
+func _rpc_sync_state(pos: Vector2, rot: float, lin_vel: Vector2, ang_vel: float):
+	if multiplayer.is_server():
+		return
+	_net_pos = pos
+	_net_rot = rot
+	_net_lin_vel = lin_vel
+	_net_ang_vel = ang_vel
+
+@rpc("authority", "call_local")
+func _rpc_spawn_explosion(pos: Vector2):
+	if multiplayer.is_server():
+		return
+	var explosion = preload("res://Explosion.tscn").instantiate()
+	explosion.global_position = pos
+	get_tree().current_scene.add_child(explosion)
 
 func _exit_tree():
 	World.asteroid_destroyed()

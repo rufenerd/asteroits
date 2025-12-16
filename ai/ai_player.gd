@@ -5,10 +5,7 @@ class_name AIPlayer extends Node2D
 @export var asteroid_bias := 1.0
 
 func _ready() -> void:
-	$Player.team = "ai-" + str(randi() % 100_000_000)
-	World.register_player($Player)
-	$Player/Sprite2D.modulate = World.team_color($Player.team)
-	$Player.global_position = World.spawn_points[$Player.team]
+	# Player registration/position handled by Player._ready using team set before instancing
 	if is_instance_valid($Player/Camera2D):
 		$Player/Camera2D.enabled = false
 

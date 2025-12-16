@@ -35,7 +35,6 @@ var modes = {}
 
 func _ready():
 	player = $"../Player"
-	player.team = "ai1"
 	input = AIInput.new()
 	player.input = input
 
@@ -69,7 +68,6 @@ func _physics_process(delta):
 	input.turbo = false
 
 	choose_mode(delta)
-	print(Mode.find_key(mode))
 	modes[mode].apply(self, delta)
 
 	choose_build_strategy(delta)

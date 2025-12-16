@@ -2,6 +2,17 @@ class_name HumanInput
 extends PlayerInput
 
 func update(_player, _delta):
+	# Only process input if the window is focused
+	if _player and not _player.get_window().has_focus():
+		move = Vector2.ZERO
+		aim = Vector2.ZERO
+		turbo = false
+		build_wall = false
+		build_harvester = false
+		build_turret = false
+		boost_shield = false
+		return
+	
 	move = Vector2(
 		Input.get_axis("left_stick_left", "left_stick_right"),
 		Input.get_axis("left_stick_up", "left_stick_down")

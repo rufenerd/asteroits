@@ -1,7 +1,7 @@
 class_name Shield
 extends Explodable
 
-var cell : Vector2i
+var cell: Vector2i
 var team
 
 @export var sprite: Sprite2D
@@ -27,7 +27,7 @@ func _process(_delta):
 	$ShieldHealthLabelContainer/ShieldHealthLabel.text = str(health)
 
 func _handle_hit(target):
-	if "team" in target and target.team == team:
+	if "team" in target and str(target.team) == str(team):
 		return
 	
 	if target is Base or target is Harvester:

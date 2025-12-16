@@ -17,6 +17,10 @@ func _ready():
 		$Sprite2D.modulate = World.team_color(team)
 
 func _physics_process(delta):
+	# Only server processes bullet physics and collision
+	if not multiplayer.is_server():
+		return
+		
 	var velocity = direction * speed
 	var new_position = global_position + velocity * delta
 
@@ -41,7 +45,9 @@ func _physics_process(delta):
 			hit.on_hit(damage, result.position)
 
 		if not own_shield or not origin is Player:
+			var node_name = name
 			queue_free()
+			World._rpc_destroy_bullet_by_name.rpc(node_name)
 
 		return
 
@@ -50,4 +56,12 @@ func _physics_process(delta):
 
 	time_alive += delta
 	if time_alive >= lifetime:
+		var node_name = name
 		queue_free()
+		World._rpc_destroy_bullet_by_name.rpc(node_name)
+
+func _process(delta):
+	# Client-only: move bullet visually without physics/collision
+	if multiplayer.is_server():
+		return
+	global_position += direction * speed * delta

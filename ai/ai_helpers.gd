@@ -117,8 +117,16 @@ static func imminent_wall_collision(player: Player, input):
 
 static func find_nearest_unowned_base(player: Node2D, bases: Array) -> Node2D:
 	return _closest_in_list(player.global_position, bases, func(b):
-		if b.team == player.team:
-			return false
+		# Skip bases owned by player and neutral bases
+		if typeof(b.team) == TYPE_STRING:
+			if b.team == "neutral":
+				return false
+			# Compare stringified team ids to avoid string/int == errors
+			if str(player.team) == b.team:
+				return false
+		else:
+			if b.team == player.team:
+				return false
 		return true
 	)
 

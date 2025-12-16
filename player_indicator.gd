@@ -9,6 +9,10 @@ func _ready():
 	camera = get_viewport().get_camera_2d()
 
 func _process(_delta):
+	# Refresh camera in case current changes or was null
+	if camera == null or not is_instance_valid(camera):
+		camera = get_viewport().get_camera_2d()
+
 	if is_visible_in_tree():
 		queue_redraw()
 

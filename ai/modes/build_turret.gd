@@ -19,7 +19,13 @@ func score(brain):
 	for b in bases:
 		if not is_instance_valid(b):
 			continue
-		if b.team != team:
+		var base_team = b.team
+		if typeof(base_team) == TYPE_STRING:
+			if base_team == "neutral":
+				continue
+			if str(team) != base_team:
+				continue
+		elif base_team != team:
 			continue
 		var dist_to_base = brain.player.global_position.distance_to(b.global_position)
 		if dist_to_base <= 500.0:
