@@ -6,6 +6,7 @@ func score(brain):
 
 func apply(brain, _delta):
 	var resource = AIHelpers.find_best_resource(brain)
+
 	if not resource or not is_instance_valid(resource):
 		return
 

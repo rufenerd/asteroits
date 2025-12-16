@@ -47,12 +47,13 @@ texture = SubResource("NoiseTexture2D_h2yge")
 stretch_mode = 1
 
 [node name="AIPlayer" parent="World" instance=ExtResource("3_1bvp3")]
-combat_bias = 2.0
+combat_bias = 1.1
 
 [node name="AIPlayer2" parent="World" instance=ExtResource("3_1bvp3")]
-base_bias = 2.0
+base_bias = 1.1
 
 [node name="AIPlayer3" parent="World" instance=ExtResource("3_1bvp3")]
+base_bias = 1.1
 asteroid_bias = 2.0
 
 [node name="HumanPlayer" parent="World" instance=ExtResource("3_h2yge")]
