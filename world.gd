@@ -19,6 +19,8 @@ var extra_lives = {}
 var spawn_points = {}
 
 var hud: HUD
+var spectator_mode := false
+var player_order: Array = []
 
 #green 39FF14
 #pink DA14FE
@@ -43,14 +45,31 @@ func _ready():
 
 func _physics_process(delta):
 	check_win_conditions()
+	# In spectator mode, inputs are handled in _input/_unhandled_input.
+
+func _unhandled_input(event):
+	if not spectator_mode:
+		return
+	if event.is_action_pressed("boost_shield"):
+		_switch_camera_next()
+
+func _input(event):
+	# Also listen in _input to ensure we catch inputs even if some UI consumes them.
+	if not spectator_mode:
+		return
+	if event.is_action_pressed("boost_shield"):
+		_switch_camera_next()
 	
 func register_player(player: Player):
 	if player.team in extra_lives:
 		return
 	bank[player.team] = STARTING_RESOURCES
-	extra_lives[player.team] = 2
+	extra_lives[player.team] = 0
 	spawn_points[player.team] = available_spawn_locations.pop_front()
 	colors[player.team] = available_colors.pop_front()
+	# Track stable player order for camera handoff indices
+	if not player_order.has(player):
+		player_order.append(player)
 
 func initialize_bases():
 	var quadrants = [
@@ -257,3 +276,46 @@ func _switch_camera_deferred(best_player):
 			best_camera.enabled = true
 			best_camera.zoom = Vector2(1, 1)
 			best_camera.make_current()
+
+
+# No longer using timed handoff; spectator toggling is always available after game over.
+
+
+func _switch_camera_immediate(target_player):
+	if not target_player or not is_instance_valid(target_player):
+		return
+	var cam = target_player.get_node_or_null("Camera2D")
+	if not cam or not is_instance_valid(cam) or not cam.is_inside_tree():
+		return
+	var current_cam = get_viewport().get_camera_2d()
+	if current_cam:
+		current_cam.enabled = false
+	cam.enabled = true
+	cam.zoom = Vector2(1, 1)
+	cam.make_current()
+
+func _switch_camera_next():
+	var alive_players := _alive_players_in_order()
+	if alive_players.is_empty():
+		return
+	var current_cam = get_viewport().get_camera_2d()
+	var current_index := -1
+	for i in range(alive_players.size()):
+		var p = alive_players[i]
+		var cam = p.get_node_or_null("Camera2D")
+		if cam and is_instance_valid(cam) and cam == current_cam:
+			current_index = i
+			break
+	var next_index = (current_index + 1) % alive_players.size()
+	var target = alive_players[next_index]
+	_switch_camera_immediate(target)
+
+func enter_spectator_mode():
+	spectator_mode = true
+
+func _alive_players_in_order() -> Array:
+	var result: Array = []
+	for p in player_order:
+		if is_instance_valid(p) and p.is_in_group("players"):
+			result.append(p)
+	return result

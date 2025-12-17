@@ -272,6 +272,10 @@ func on_hit(damage, _origin):
 
 			call_deferred("_die", explosion)
 
+			# Enter spectator mode: allow toggling cameras after game over
+			if World:
+				World.enter_spectator_mode()
+
 			if not World.hud.player == self:
 				return
 
