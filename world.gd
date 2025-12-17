@@ -8,6 +8,7 @@ const NUM_RESOURCE_CLUSTERS = 20
 const MIN_RESOURCES_IN_CLUSTER = 25
 const MAX_RESOURCES_IN_CLUSTER = 50
 const MAX_CLUSTER_RADIUS = 20
+const STARTING_RESOURCES = 0
 
 var asteroid_count := 0
 var board = {}
@@ -46,7 +47,7 @@ func _physics_process(delta):
 func register_player(player: Player):
 	if player.team in extra_lives:
 		return
-	bank[player.team] = 100000
+	bank[player.team] = STARTING_RESOURCES
 	extra_lives[player.team] = 2
 	spawn_points[player.team] = available_spawn_locations.pop_front()
 	colors[player.team] = available_colors.pop_front()

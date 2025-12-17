@@ -40,7 +40,7 @@ func _physics_process(delta):
 		if not friendly_fire and not own_shield and hit.has_method("on_hit"):
 			hit.on_hit(damage, result.position)
 
-		if not own_shield or not origin is Player:
+		if not own_shield or not (is_instance_valid(origin) and origin is Player):
 			queue_free()
 
 		return
