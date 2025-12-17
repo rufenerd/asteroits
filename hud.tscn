@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://buga6hnc4h5xu"]
+[gd_scene load_steps=5 format=3 uid="uid://buga6hnc4h5xu"]
 
 [ext_resource type="Script" uid="uid://boj00ndbghduf" path="res://hud.gd" id="1_37p78"]
 [ext_resource type="Script" uid="uid://cugfh2h4fn8fg" path="res://player_indicator.gd" id="2_64ctp"]
+[ext_resource type="FontFile" path="res://art/font-press-start-2p/PressStart2P-Regular.ttf" id="3_font"]
 
 [sub_resource type="SystemFont" id="SystemFont_64ctp"]
 subpixel_positioning = 0
@@ -13,6 +14,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("3_font")
 script = ExtResource("1_37p78")
 
 [node name="ExtraLives" type="HBoxContainer" parent="Control"]
@@ -44,7 +46,8 @@ theme_override_constants/separation = 50
 [node name="BankAmount" type="Label" parent="Control/HBoxContainer"]
 modulate = Color(0.854902, 0.0784314, 0.996078, 1)
 layout_mode = 2
-theme_override_font_sizes/font_size = 50
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 40
 
 [node name="PlayerIndicators" type="Control" parent="."]
 z_index = 2
