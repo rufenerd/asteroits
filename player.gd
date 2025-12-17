@@ -264,7 +264,8 @@ func on_hit(damage, _origin):
 				# For now, keep current camera on explosion
 				camera.enabled = true
 				camera.make_current()
-				camera.reparent(get_tree().current_scene)
+				# Reparent to explosion so it tracks the effect while the player is hidden
+				camera.reparent(explosion, true)
 				camera.global_position = explosion.global_position
 				camera.zoom.x = 16.0
 				camera.zoom.y = 16.0
