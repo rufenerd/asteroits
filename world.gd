@@ -46,7 +46,7 @@ func _physics_process(delta):
 func register_player(player: Player):
 	if player.team in extra_lives:
 		return
-	bank[player.team] = 1000
+	bank[player.team] = 100000
 	extra_lives[player.team] = 2
 	spawn_points[player.team] = available_spawn_locations.pop_front()
 	colors[player.team] = available_colors.pop_front()
@@ -118,6 +118,10 @@ func build(node, build_position, team):
 	node.modulate = colors[team]
 	var cell = world_to_cell(build_position)
 
+	if _is_inside_base_area(build_position):
+		node.queue_free()
+		return
+
 	if board.has(cell):
 		node.queue_free()
 		return
@@ -143,6 +147,21 @@ func build(node, build_position, team):
 
 	if resources.has(cell):
 		resources[cell].visible = false
+
+
+func _is_inside_base_area(world_pos: Vector2) -> bool:
+	# Check if position is within a base's collision radius
+	for base in get_tree().get_nodes_in_group("bases"):
+		if not is_instance_valid(base):
+			continue
+		var collision_shape = base.get_node_or_null("CollisionShape2D")
+		if not collision_shape:
+			continue
+		var dist = world_pos.distance_to(collision_shape.global_position)
+		var base_radius = 19.0 # CircleShape2D radius from base.tscn
+		if dist < base_radius:
+			return true
+	return false
 
 func harvest(harvester):
 	var resource = resources[harvester.cell]
