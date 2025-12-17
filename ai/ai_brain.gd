@@ -1,7 +1,7 @@
 extends Node
 class_name AIBrain
 
-enum Mode {UNSTICK, HARVEST, COMBAT, COLLISION_AVOIDANCE, TURRET, BASE_CAPTURE, ASTEROID}
+enum Mode {UNSTICK, HARVEST, COMBAT, COLLISION_AVOIDANCE, TURRET, BASE_CAPTURE, ASTEROID, WANDER}
 
 var player: Player
 var input: AIInput
@@ -21,6 +21,9 @@ var build_strategies = {}
 var nearest_enemy = null
 var previous_position = null
 var avoidance_cooldown = 0.0
+
+var mode_age := 0.0
+var wander_cooldown := 0.0
 
 var unstick_time = 0.0
 var unstick_dir = Vector2.ZERO
@@ -47,6 +50,7 @@ func _ready():
 		Mode.TURRET: load("res://ai/modes/turret_mode.gd").new(),
 		Mode.BASE_CAPTURE: load("res://ai/modes/base_capture_mode.gd").new(),
 		Mode.ASTEROID: load("res://ai/modes/asteroid_mode.gd").new(),
+		Mode.WANDER: load("res://ai/modes/wander_mode.gd").new(),
 	}
 
 	build_strategies = {
@@ -61,6 +65,7 @@ func _physics_process(delta):
 		return
 
 	avoidance_cooldown = max(avoidance_cooldown - delta, 0)
+	wander_cooldown = max(wander_cooldown - delta, 0)
 	nearest_enemy = AIHelpers.find_nearest_enemy(self)
 
 	input.build_turret = false
@@ -68,7 +73,9 @@ func _physics_process(delta):
 	input.boost_shield = false
 	input.turbo = false
 
+	var prev_mode = mode
 	choose_mode(delta)
+	update_mode_age(delta, prev_mode)
 	print(Mode.find_key(mode))
 	modes[mode].apply(self, delta)
 
@@ -105,6 +112,12 @@ func choose_mode(delta):
 			best_mode = m
 
 	mode = best_mode
+
+func update_mode_age(delta, prev_mode):
+	if mode != prev_mode:
+		mode_age = 0.0
+	else:
+		mode_age += delta
 
 func choose_build_strategy(delta):
 	var best_score = - INF
