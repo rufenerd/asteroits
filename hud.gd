@@ -66,7 +66,7 @@ func show_game_over(color: Color) -> void:
 	if not is_instance_valid(game_over_label):
 		return
 	var c := color
-	c.a = 0.4
+	c.a = 0.8
 	game_over_label.modulate = c
 	game_over_label.visible = true
 

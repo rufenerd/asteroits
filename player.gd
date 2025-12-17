@@ -272,11 +272,9 @@ func on_hit(damage, _origin):
 
 			call_deferred("_die", explosion)
 
-			# Enter spectator mode: allow toggling cameras after game over
+			# Trigger full game over flow in World (spectator, HUD, AI buff)
 			if World:
-				World.enter_spectator_mode()
-				if World.hud:
-					World.hud.show_game_over(World.team_color(team))
+				World.game_over(team)
 
 			if not World.hud.player == self:
 				return

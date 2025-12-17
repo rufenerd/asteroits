@@ -99,18 +99,19 @@ func choose_mode(delta):
 		var s = modes[m].score(self)
 		match m:
 			Mode.COMBAT:
-				s *= combat_multiplier
 				s += (combat_multiplier - 1.0) * 1000
+				s *= combat_multiplier
 			Mode.BASE_CAPTURE:
-				s *= base_multiplier
 				s += (base_multiplier - 1.0) * 1000
+				s *= base_multiplier
 			Mode.ASTEROID:
-				s *= asteroid_multiplier
 				s += (asteroid_multiplier - 1.0) * 1000
+				s *= asteroid_multiplier
 		if s > best_score:
 			best_score = s
 			best_mode = m
 
+	print("Chose mode: %s (score: %f)" % [Mode.find_key(best_mode), best_score])
 	mode = best_mode
 
 func update_mode_age(delta, prev_mode):

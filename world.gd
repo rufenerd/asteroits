@@ -21,6 +21,7 @@ var spawn_points = {}
 var hud: HUD
 var spectator_mode := false
 var player_order: Array = []
+var game_over_ai_buffed := false
 
 #green 39FF14
 #pink DA14FE
@@ -310,8 +311,35 @@ func _switch_camera_next():
 	var target = alive_players[next_index]
 	_switch_camera_immediate(target)
 
-func enter_spectator_mode():
+func game_over(team: String) -> void:
 	spectator_mode = true
+	if hud:
+		hud.show_game_over(team_color(team))
+	if not game_over_ai_buffed:
+		_buff_richest_ai_combat()
+		game_over_ai_buffed = true
+		game_over_ai_buffed = true
+
+func _buff_richest_ai_combat():
+	# Pick the richest alive AI and give it a massive combat multiplier
+	var richest_p: Player = null
+	var richest_bank := -INF
+	for p in players():
+		if not is_instance_valid(p):
+			continue
+		var parent = p.get_parent()
+		if parent and parent is AIPlayer:
+			var p_bank = bank.get(p.team, 0)
+			if p_bank > richest_bank:
+				richest_bank = p_bank
+				richest_p = p
+	if richest_p == null:
+		return
+	var richest_parent = richest_p.get_parent()
+	var brain = richest_parent.get_node_or_null("AIBrain")
+	if brain and is_instance_valid(brain):
+		brain.combat_multiplier = 99.0
+		print("Buffed AI combat multiplier for team ", richest_p.team, " with bank ", richest_bank)
 
 func _alive_players_in_order() -> Array:
 	var result: Array = []
