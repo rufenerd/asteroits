@@ -275,6 +275,8 @@ func on_hit(damage, _origin):
 			# Enter spectator mode: allow toggling cameras after game over
 			if World:
 				World.enter_spectator_mode()
+				if World.hud:
+					World.hud.show_game_over(World.team_color(team))
 
 			if not World.hud.player == self:
 				return

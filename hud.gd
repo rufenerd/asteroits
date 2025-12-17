@@ -7,6 +7,7 @@ class_name HUD extends Control
 @export var base_icon_scene = preload("res://base_icon.tscn")
 @onready var base_score_box = $BaseScore
 @export var player: Player
+@onready var game_over_label: Label = $GameOverLabel
 
 var _bank_sig = ""
 var _bases_sig = ""
@@ -14,10 +15,33 @@ var _lives_sig = null
 
 func _ready() -> void:
 	World.hud = self
+	# Ensure the HUD root fills the viewport so children can center properly
+	anchor_left = 0.0
+	anchor_top = 0.0
+	anchor_right = 1.0
+	anchor_bottom = 1.0
+	offset_left = 0.0
+	offset_top = 0.0
+	offset_right = 0.0
+	offset_bottom = 0.0
 
 	_bank_sig = ""
 	_bases_sig = ""
 	_lives_sig = null
+
+	if is_instance_valid(game_over_label):
+		# Ensure the label fills the screen and centers its text
+		game_over_label.anchor_left = 0.0
+		game_over_label.anchor_top = 0.0
+		game_over_label.anchor_right = 1.0
+		game_over_label.anchor_bottom = 1.0
+		game_over_label.offset_left = 0.0
+		game_over_label.offset_top = 0.0
+		game_over_label.offset_right = 0.0
+		game_over_label.offset_bottom = 0.0
+		game_over_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		game_over_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		game_over_label.visible = false
 
 func _process(_delta):
 	var bank_sig = _get_bank_signature()
@@ -37,6 +61,14 @@ func _process(_delta):
 	if lives_sig != _lives_sig:
 		_lives_sig = lives_sig
 		_update_extra_lives()
+
+func show_game_over(color: Color) -> void:
+	if not is_instance_valid(game_over_label):
+		return
+	var c := color
+	c.a = 0.4
+	game_over_label.modulate = c
+	game_over_label.visible = true
 
 func _update_bank():
 	for child in amount_label_template.get_parent().get_children():
