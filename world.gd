@@ -236,7 +236,7 @@ func check_win_conditions():
 	for team_id in base_counts.keys():
 		if base_counts[team_id] >= 4:
 			print("%s wins by controlling all 4 bases!" % team_id)
-			get_tree().quit()
+			_call_victory_and_quit(team_id)
 			return
 
 	# --- 2. Only 1 player remains ---
@@ -249,7 +249,7 @@ func check_win_conditions():
 	if alive_players.size() == 1:
 		var winner = alive_players[0]
 		print("%s wins by being the last remaining!" % winner.team)
-		get_tree().quit()
+		_call_victory_and_quit(winner.team)
 		return
 
 
@@ -277,6 +277,13 @@ func _switch_camera_deferred(best_player):
 			best_camera.enabled = true
 			best_camera.zoom = Vector2(1, 1)
 			best_camera.make_current()
+# Show victory overlay (for human team) then quit after short delay
+func _call_victory_and_quit(winning_team: String) -> void:
+	if hud and is_instance_valid(hud) and hud.player and is_instance_valid(hud.player):
+		if hud.player.team == winning_team:
+			hud.show_you_win(team_color(winning_team))
+	await get_tree().create_timer(2.0).timeout
+	get_tree().quit()
 
 
 # No longer using timed handoff; spectator toggling is always available after game over.
@@ -317,7 +324,6 @@ func game_over(team: String) -> void:
 		hud.show_game_over(team_color(team))
 	if not game_over_ai_buffed:
 		_buff_richest_ai_combat()
-		game_over_ai_buffed = true
 		game_over_ai_buffed = true
 
 func _buff_richest_ai_combat():

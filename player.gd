@@ -272,8 +272,8 @@ func on_hit(damage, _origin):
 
 			call_deferred("_die", explosion)
 
-			# Trigger full game over flow in World (spectator, HUD, AI buff)
-			if World:
+			# Trigger full game over flow only if this is the HUD-tracked player
+			if World and World.hud and World.hud.player == self:
 				World.game_over(team)
 
 			if not World.hud.player == self:

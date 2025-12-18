@@ -50,7 +50,7 @@ stretch_mode = 1
 combat_bias = 1.1
 
 [node name="AIPlayer2" parent="World" instance=ExtResource("3_1bvp3")]
-base_bias = 1.1
+base_bias = 1.5
 
 [node name="AIPlayer3" parent="World" instance=ExtResource("3_1bvp3")]
 base_bias = 1.1

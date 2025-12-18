@@ -8,6 +8,7 @@ class_name HUD extends Control
 @onready var base_score_box = $BaseScore
 @export var player: Player
 @onready var game_over_label: Label = $GameOverLabel
+@onready var win_label: Label = $WinLabel
 
 var _bank_sig = ""
 var _bases_sig = ""
@@ -43,6 +44,19 @@ func _ready() -> void:
 		game_over_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		game_over_label.visible = false
 
+	if is_instance_valid(win_label):
+		win_label.anchor_left = 0.0
+		win_label.anchor_top = 0.0
+		win_label.anchor_right = 1.0
+		win_label.anchor_bottom = 1.0
+		win_label.offset_left = 0.0
+		win_label.offset_top = 0.0
+		win_label.offset_right = 0.0
+		win_label.offset_bottom = 0.0
+		win_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		win_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		win_label.visible = false
+
 func _process(_delta):
 	var bank_sig = _get_bank_signature()
 	if bank_sig != _bank_sig:
@@ -69,6 +83,14 @@ func show_game_over(color: Color) -> void:
 	c.a = 0.8
 	game_over_label.modulate = c
 	game_over_label.visible = true
+
+func show_you_win(color: Color) -> void:
+	if not is_instance_valid(win_label):
+		return
+	var c := color
+	c.a = 0.8
+	win_label.modulate = c
+	win_label.visible = true
 
 func _update_bank():
 	for child in amount_label_template.get_parent().get_children():
