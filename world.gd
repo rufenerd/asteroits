@@ -279,9 +279,16 @@ func _switch_camera_deferred(best_player):
 			best_camera.make_current()
 # Show victory overlay (for human team) then quit after short delay
 func _call_victory_and_quit(winning_team: String) -> void:
+	# Enable spectator camera toggling at match end
+	spectator_mode = true
+	
 	if hud and is_instance_valid(hud) and hud.player and is_instance_valid(hud.player):
+		var player_team_color = team_color(hud.player.team)
 		if hud.player.team == winning_team:
-			hud.show_you_win(team_color(winning_team))
+			hud.show_you_win(player_team_color)
+		else:
+			hud.show_game_over(player_team_color)
+	
 	await get_tree().create_timer(2.0).timeout
 	get_tree().quit()
 

@@ -15,18 +15,29 @@ func score(brain):
 		else:
 			opponents[b.team] = opponents.get(b.team, 0) + 1
 
+	# Defensive: respond when an opponent is close to winning
 	for team_id in opponents.keys():
 		if team_id != "neutral" and opponents[team_id] >= my_bases + 2:
 			return 3001
 
 	var nearest_unowned = AIHelpers.find_nearest_unowned_base(brain.player, bases)
+	
+	# Offensive: strongly incentivize going for the win
+	if my_bases == 3 and nearest_unowned:
+		return 5000  # Very high priority to capture the 4th base for the win
+	
+	if my_bases == 2 and nearest_unowned:
+		return 2500  # High priority to get closer to winning
+	
+	# Close proximity bonus
 	if nearest_unowned:
 		var dist = p.global_position.distance_to(nearest_unowned.global_position)
 		if dist < 500:
 			return 2000
 
-	if my_bases >= 3 and nearest_unowned:
-		return 1500
+	# Default: some interest in capturing bases
+	if my_bases >= 1 and nearest_unowned:
+		return 800
 
 	return 0
 
