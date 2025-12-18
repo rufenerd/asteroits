@@ -65,7 +65,7 @@ func register_player(player: Player):
 	if player.team in extra_lives:
 		return
 	bank[player.team] = STARTING_RESOURCES
-	extra_lives[player.team] = 0
+	extra_lives[player.team] = 2
 	spawn_points[player.team] = available_spawn_locations.pop_front()
 	colors[player.team] = available_colors.pop_front()
 	# Track stable player order for camera handoff indices

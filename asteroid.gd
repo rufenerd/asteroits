@@ -32,7 +32,7 @@ func on_hit(_damage, origin):
 	hit_debounce_timer = 0.0
 
 	if (radius == 10):
-		var explosion = preload("res://Explosion.tscn").instantiate()
+		var explosion = preload("res://explosion.tscn").instantiate()
 		explosion.global_position = global_position
 		explosion.target_node = self
 		get_tree().current_scene.add_child(explosion)

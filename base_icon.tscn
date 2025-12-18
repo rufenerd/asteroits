@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://kosbj7ep0ko0"]
 
 [ext_resource type="Script" uid="uid://bywym12vhoay2" path="res://base_icon.gd" id="1_l8vyc"]
-[ext_resource type="Texture2D" uid="uid://dx3jvbytudyrj" path="res://art/base.png" id="2_sblht"]
+[ext_resource type="Texture2D" uid="uid://ty27dlxku7vt" path="res://art/base_icon.png" id="2_sblht"]
 
 [node name="BaseIcon" type="Control"]
 layout_mode = 3
@@ -9,4 +9,5 @@ anchors_preset = 0
 script = ExtResource("1_l8vyc")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(3.8125, 3.8125)
 texture = ExtResource("2_sblht")

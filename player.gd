@@ -251,7 +251,7 @@ func on_hit(damage, _origin):
 	if health <= 0:
 		dying = true
 		if World.extra_lives[team] == 0:
-			var explosion = preload("res://Explosion.tscn").instantiate()
+			var explosion = preload("res://explosion.tscn").instantiate()
 			var anim := explosion.get_node("AnimatedSprite2D") as AnimatedSprite2D
 			anim.sprite_frames.set_animation_loop("explode", true)
 			explosion.global_position = global_position

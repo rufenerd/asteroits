@@ -6,14 +6,14 @@
 [node name="ExtraLifeIcon" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 242.0
-offset_top = 41.0
-offset_right = 282.0
-offset_bottom = 81.0
+offset_left = -19.0
+offset_top = -20.0
+offset_right = 21.0
+offset_bottom = 20.0
 script = ExtResource("1_c2p00")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(12, 16)
+position = Vector2(18.78, 22.78)
 rotation = -1.5708
-scale = Vector2(2.5, 2.5)
+scale = Vector2(3.3475, 3.3475)
 texture = ExtResource("1_22kp8")
