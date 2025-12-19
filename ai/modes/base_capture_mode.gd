@@ -24,10 +24,10 @@ func score(brain):
 	
 	# Offensive: strongly incentivize going for the win
 	if my_bases == 3 and nearest_unowned:
-		return 5000  # Very high priority to capture the 4th base for the win
+		return 5000 # Very high priority to capture the 4th base for the win
 	
 	if my_bases == 2 and nearest_unowned:
-		return 2500  # High priority to get closer to winning
+		return 2500 # High priority to get closer to winning
 	
 	# Close proximity bonus
 	if nearest_unowned:
