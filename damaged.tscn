@@ -32,3 +32,5 @@ script = ExtResource("1_y6b4c")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_71oi5")
 animation = &"damaged"
+frame = 1
+frame_progress = 1.0
