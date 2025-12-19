@@ -6,7 +6,7 @@ func score(brain):
 		return 0
 
 	var core_score = (3000 * brain.player.weapon_level)
-	if World.bank[brain.player.team] > 20000:
+	if World.get_bank(brain.player) > 20000:
 		return core_score
 	return core_score  - brain.player.global_position.distance_to(brain.nearest_enemy.global_position)
 
@@ -15,4 +15,4 @@ func apply(brain, delta):
 		return
 
 	brain.input.target_position = brain.nearest_enemy.global_position
-	AIHelpers.smart_shoot(brain.player, brain.input, brain.get_viewport(), brain.nearest_enemy.global_position, brain)
+	AIHelpers.smart_shoot(brain, brain.nearest_enemy.global_position)

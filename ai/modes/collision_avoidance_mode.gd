@@ -6,7 +6,7 @@ const ASTEROID_NOTICE := 450.0
 const PLAYER_NOTICE := 500.0
 
 func score(brain):
-	var hit = AIHelpers.imminent_wall_collision(brain.player, brain.input)
+	var hit = AIHelpers.imminent_wall_collision(brain)
 
 	var best_threat_dist := INF
 	var avoid_score := 0
@@ -58,7 +58,7 @@ func apply(brain, _delta):
 	var input = brain.input
 
 	# Gather threats: wall hit, nearest asteroid, nearest player
-	var hit = AIHelpers.imminent_wall_collision(brain.player, brain.input)
+	var hit = AIHelpers.imminent_wall_collision(brain)
 
 	var threat_node = null
 	var threat_pos = Vector2.ZERO

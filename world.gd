@@ -25,7 +25,7 @@ var spectator_mode := false
 var player_order: Array = []
 var game_over_ai_buffed := false
 var is_paused := false
-var difficulty := Difficulty.NORMAL
+var difficulty := Difficulty.HARD
 
 #green 39FF14
 #pink DA14FE
@@ -395,3 +395,30 @@ func toggle_pause() -> void:
 			hud.show_paused(color)
 		else:
 			hud.hide_paused()
+
+
+# === Convenience methods for cleaner access ===
+
+## Get bank for a player's team
+func get_bank(player: Player) -> int:
+	return bank.get(player.team, 0)
+
+## Set bank for a player's team
+func set_bank(player: Player, amount: int) -> void:
+	bank[player.team] = amount
+
+## Add to bank for a player's team
+func add_bank(player: Player, amount: int) -> void:
+	bank[player.team] = bank.get(player.team, 0) + amount
+
+## Get team color for a player
+func get_team_color(player: Player) -> Color:
+	return team_color(player.team)
+
+## Get extra lives for a player's team
+func get_extra_lives(player: Player) -> int:
+	return extra_lives.get(player.team, 0)
+
+## Set extra lives for a player's team
+func set_extra_lives(player: Player, amount: int) -> void:
+	extra_lives[player.team] = amount

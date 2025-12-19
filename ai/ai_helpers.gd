@@ -87,7 +87,9 @@ static func get_to_with_braking(brain, desired_position):
 		input.target_position = player.global_position + (steering_target - player.global_position).normalized() * distance
 
 
-static func imminent_wall_collision(player: Player, input):
+static func imminent_wall_collision(brain):
+	var player = brain.player
+	var input = brain.input
 	var dir := Vector2.ZERO
 
 	if player.velocity.length() > 50:
@@ -124,7 +126,9 @@ static func imminent_wall_collision(player: Player, input):
 	return best_hit
 
 
-static func find_nearest_unowned_base(player: Node2D, bases: Array) -> Node2D:
+static func find_nearest_unowned_base(brain) -> Node2D:
+	var player = brain.player
+	var bases = brain.get_tree().get_nodes_in_group("bases")
 	return _closest_in_list(player.global_position, bases, func(b):
 		if b.team == player.team:
 			return false
@@ -132,7 +136,11 @@ static func find_nearest_unowned_base(player: Node2D, bases: Array) -> Node2D:
 	)
 
 
-static func smart_shoot(player, input, viewport, aim_for_position, brain = null):
+static func smart_shoot(brain, aim_for_position):
+	var player = brain.player
+	var input = brain.input
+	var viewport = brain.get_viewport()
+	
 	var distance = player.global_position.distance_to(aim_for_position)
 	if distance > 1500:
 		input.target_aim = player.global_position
@@ -178,7 +186,7 @@ static func smart_shoot(player, input, viewport, aim_for_position, brain = null)
 				aim_pos = predicted_pos
 	
 	# Handle shoot cooldown for EASY difficulty
-	if brain and diff == World.Difficulty.EASY:
+	if diff == World.Difficulty.EASY:
 		if brain.shoot_cooldown <= 0:
 			input.target_aim = aim_pos
 			brain.shoot_cooldown = 0.8  # 800ms between shots

@@ -21,7 +21,7 @@ func apply(brain: AIBrain, _delta: float) -> void:
 	if target_player != null:
 		var dist = turret.global_position.distance_to(target_player.global_position)
 		if dist < 1500.0:
-			AIHelpers.smart_shoot(brain.player, brain.input, brain.get_viewport(), target_player.global_position, brain)
+			AIHelpers.smart_shoot(brain, target_player.global_position)
 			return
 
-	AIHelpers.smart_shoot(brain.player, brain.input, brain.get_viewport(), turret.global_position, brain)
+	AIHelpers.smart_shoot(brain, turret.global_position)

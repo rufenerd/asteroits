@@ -20,7 +20,7 @@ func score(brain):
 		if team_id != "neutral" and opponents[team_id] >= my_bases + 2:
 			return 3001
 
-	var nearest_unowned = AIHelpers.find_nearest_unowned_base(brain.player, bases)
+	var nearest_unowned = AIHelpers.find_nearest_unowned_base(brain)
 	
 	# Offensive: strongly incentivize going for the win
 	if my_bases == 3 and nearest_unowned:
@@ -42,8 +42,7 @@ func score(brain):
 	return 0
 
 func apply(brain, _delta):
-	var bases = brain.get_tree().get_nodes_in_group("bases")
-	var nearest_base = AIHelpers.find_nearest_unowned_base(brain.player, bases)
+	var nearest_base = AIHelpers.find_nearest_unowned_base(brain)
 	if nearest_base:
 		AIHelpers.get_to_with_braking(brain, nearest_base.global_position)
 		brain.input.target_aim = brain.player.global_position
@@ -51,7 +50,7 @@ func apply(brain, _delta):
 		var direction = nearest_base.global_position - brain.player.global_position
 		var distance = direction.length()
 
-		if World.bank[brain.player.team] > 1200 and distance > 1000 and AIHelpers.is_aligned_with_target(brain.player, nearest_base.global_position):
+		if World.get_bank(brain.player) > 1200 and distance > 1000 and AIHelpers.is_aligned_with_target(brain.player, nearest_base.global_position):
 			brain.input.turbo = true
 		else:
 			brain.input.turbo = false
