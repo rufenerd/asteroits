@@ -4,24 +4,14 @@ class_name AsteroidMode
 func _find_nearest_coin(brain):
 	var best = null
 	var best_dist := INF
-	var root = brain.get_tree().current_scene
-	if not root:
-		return null
-
-	# iterative DFS to avoid closure capture issues
-	var stack = [root]
-	while stack.size() > 0:
-		var node = stack.pop_back()
-		for c in node.get_children():
-			if not is_instance_valid(c):
-				continue
-			if c is Coin:
-				var d = brain.player.global_position.distance_squared_to(c.global_position)
-				if d < best_dist:
-					best_dist = d
-					best = c
-			stack.append(c)
-
+	var coins = brain.get_tree().get_nodes_in_group("coins")
+	for c in coins:
+		if not is_instance_valid(c):
+			continue
+		var d = brain.player.global_position.distance_squared_to(c.global_position)
+		if d < best_dist:
+			best_dist = d
+			best = c
 	return best
 
 func _find_nearest_asteroid(brain):
@@ -40,6 +30,8 @@ func score(brain):
 	var coin = _find_nearest_coin(brain)
 	if coin:
 		var dist = brain.player.global_position.distance_to(coin.global_position)
+		if World.difficulty == World.Difficulty.HARD:
+			return 6000 - dist
 		return 3000 - dist
 
 	var ast = _find_nearest_asteroid(brain)
@@ -55,7 +47,10 @@ func apply(brain, _damagedelta):
 
 	var coin = _find_nearest_coin(brain)
 	if coin:
-		AIHelpers.get_to_with_braking(brain, coin.global_position)
+		if World.difficulty == World.Difficulty.HARD:
+			AIHelpers.hurry_to(brain, coin.global_position)
+		else:
+			AIHelpers.get_to_with_braking(brain, coin.global_position)
 
 		var to_coin = (coin.global_position - player.global_position).normalized()
 		var angle_offset = randf_range(-0.1, 0.1)

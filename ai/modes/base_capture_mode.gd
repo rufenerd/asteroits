@@ -51,18 +51,6 @@ func score(brain):
 func apply(brain, _delta):
 	var nearest_base = AIHelpers.find_nearest_unowned_base(brain)
 	if nearest_base:
-		AIHelpers.get_to_with_braking(brain, nearest_base.global_position)
+		AIHelpers.hurry_to(brain, nearest_base.global_position)
 		brain.input.target_aim = brain.player.global_position
-
-		var direction = nearest_base.global_position - brain.player.global_position
-		var distance = direction.length()
-
-		var aligned_regular := AIHelpers.is_aligned_with_target(brain.player, nearest_base.global_position, 0.95)
-		var can_turbo: bool = World.get_bank(brain.player) > 1200 and distance > 1000 and aligned_regular
-
-		if World.difficulty == World.Difficulty.HARD and not can_turbo:
-			var aligned_super := AIHelpers.is_aligned_with_target(brain.player, nearest_base.global_position, 0.99)
-			if aligned_super:
-				can_turbo = true
-
-		brain.input.turbo = can_turbo
+		# turbo decision handled by AIHelpers.hurry_to

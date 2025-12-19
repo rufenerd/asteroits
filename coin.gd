@@ -3,6 +3,7 @@ class_name Coin extends Area2D
 func _ready():
 	connect("area_entered", Callable(self, "_on_area_entered"))
 	connect("body_entered", Callable(self, "_on_body_entered"))
+	add_to_group("coins")
 
 func _on_area_entered(area):
 	_handle_hit(area)
@@ -17,4 +18,3 @@ func _handle_hit(target):
 
 func apply(player: Player):
 	pass
-	

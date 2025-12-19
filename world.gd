@@ -25,7 +25,7 @@ var spectator_mode := false
 var player_order: Array = []
 var game_over_ai_buffed := false
 var is_paused := false
-var difficulty := Difficulty.NORMAL
+var difficulty := Difficulty.HARD
 
 #green 39FF14
 #pink DA14FE

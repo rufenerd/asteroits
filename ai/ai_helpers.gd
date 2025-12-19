@@ -87,6 +87,24 @@ static func get_to_with_braking(brain, desired_position):
 		input.target_position = player.global_position + (steering_target - player.global_position).normalized() * distance
 
 
+static func hurry_to(brain, target_position: Vector2) -> void:
+	# Move toward the target using braking logic
+	get_to_with_braking(brain, target_position)
+
+	var player: Player = brain.player
+	var distance = player.global_position.distance_to(target_position)
+
+	var aligned_regular := is_aligned_with_target(player, target_position, 0.95)
+	var can_turbo: bool = World.get_bank(player) > 1200 and distance > 1000 and aligned_regular
+
+	if World.difficulty == World.Difficulty.HARD and not can_turbo:
+		var aligned_super := is_aligned_with_target(player, target_position, 0.99)
+		if aligned_super:
+			can_turbo = true
+
+	brain.input.turbo = can_turbo
+
+
 static func imminent_wall_collision(brain):
 	var player = brain.player
 	var input = brain.input
