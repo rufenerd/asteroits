@@ -10,9 +10,11 @@ class_name HUD extends Control
 @onready var game_over_label: Label = $GameOverLabel
 @onready var win_label: Label = $WinLabel
 @onready var paused_label: Label = $PausedLabel
+@onready var coin_message_label: Label = $CoinMessageLabel
 
 var _bank_sig = ""
 var _bases_sig = ""
+var _coin_message_timer := 0.0
 var _lives_sig = null
 
 func _ready() -> void:
@@ -53,6 +55,12 @@ func _process(_delta):
 	if lives_sig != _lives_sig:
 		_lives_sig = lives_sig
 		_update_extra_lives()
+
+	# Handle coin message timer
+	if _coin_message_timer > 0:
+		_coin_message_timer -= _delta
+		if _coin_message_timer <= 0:
+			coin_message_label.visible = false
 
 func show_game_over(color: Color) -> void:
 	_show_message(game_over_label, color)
@@ -163,3 +171,14 @@ func _get_lives_signature() -> String:
 	if not player:
 		return ""
 	return str(player.team) + ":" + str(int(World.extra_lives.get(player.team, 0)))
+
+## Show a coin pickup message for 1 second
+func show_coin_message(message: String, color: Color) -> void:
+	if not is_instance_valid(coin_message_label):
+		return
+	coin_message_label.text = message
+	var c := color
+	c.a = 0.8
+	coin_message_label.modulate = c
+	coin_message_label.visible = true
+	_coin_message_timer = 2.0
