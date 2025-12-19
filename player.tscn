@@ -11,7 +11,7 @@
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_0xm2m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1bvp3"]
-size = Vector2(14, 14.5)
+size = Vector2(12, 14)
 
 [node name="Player" type="CharacterBody2D"]
 z_index = 1
@@ -24,6 +24,8 @@ turret_scene = ExtResource("5_n7ghd")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(0.854902, 0.0784314, 0.996078, 1)
 material = SubResource("CanvasItemMaterial_0xm2m")
+position = Vector2(-0.958331, -0.041661)
+scale = Vector2(0.217448, 0.217448)
 texture = ExtResource("6_nvl01")
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -35,5 +37,4 @@ limit_bottom = 10000
 script = ExtResource("7_1jxqw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-1, -0.25)
 shape = SubResource("RectangleShape2D_1bvp3")

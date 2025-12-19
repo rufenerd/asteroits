@@ -19,11 +19,11 @@ script = ExtResource("1_37p78")
 
 [node name="ExtraLives" type="HBoxContainer" parent="Control"]
 layout_mode = 0
-offset_left = 1935.0
-offset_top = 36.0
-offset_right = 2786.0
-offset_bottom = 78.0
-theme_override_constants/separation = 60
+offset_left = 1960.0
+offset_top = 46.0
+offset_right = 2823.0
+offset_bottom = 232.0
+theme_override_constants/separation = 80
 alignment = 2
 
 [node name="BaseScore" type="HBoxContainer" parent="Control"]
