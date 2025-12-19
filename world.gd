@@ -27,19 +27,14 @@ var game_over_ai_buffed := false
 var is_paused := false
 var difficulty := Difficulty.HARD
 
-#green 39FF14
-#pink DA14FE
-#blue 00F0FF
-#orange FE6414
-#yellow FEDA14
 var colors = {"neutral": Color.WHITE}
 
 var available_colors = [
-	Color8(57, 255, 20), # 39FF14
-	Color8(218, 20, 254), # DA14FE
-	Color8(0, 240, 255), # 00F0FF
-	Color8(254, 218, 20), # FEDA14
-	Color8(254, 100, 20) # FE6414
+	Color8(57, 255, 20), # 39FF14 green
+	Color8(218, 20, 254), # DA14FE pink
+	Color8(0, 240, 255), # 00F0FF blue
+	Color8(254, 218, 20), # FEDA14 yellow
+	Color8(254, 100, 20) # FE6414 orange
 ]
 var available_spawn_locations = [Vector2(400, 400), Vector2(400, 9600), Vector2(9600, 400), Vector2(9600, 9600)]
 
