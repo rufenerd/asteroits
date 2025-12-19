@@ -31,45 +31,9 @@ func _ready() -> void:
 	_bases_sig = ""
 	_lives_sig = null
 
-	if is_instance_valid(game_over_label):
-		# Ensure the label fills the screen and centers its text
-		game_over_label.anchor_left = 0.0
-		game_over_label.anchor_top = 0.0
-		game_over_label.anchor_right = 1.0
-		game_over_label.anchor_bottom = 1.0
-		game_over_label.offset_left = 0.0
-		game_over_label.offset_top = 0.0
-		game_over_label.offset_right = 0.0
-		game_over_label.offset_bottom = 0.0
-		game_over_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		game_over_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		game_over_label.visible = false
-
-	if is_instance_valid(win_label):
-		win_label.anchor_left = 0.0
-		win_label.anchor_top = 0.0
-		win_label.anchor_right = 1.0
-		win_label.anchor_bottom = 1.0
-		win_label.offset_left = 0.0
-		win_label.offset_top = 0.0
-		win_label.offset_right = 0.0
-		win_label.offset_bottom = 0.0
-		win_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		win_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		win_label.visible = false
-
-	if is_instance_valid(paused_label):
-		paused_label.anchor_left = 0.0
-		paused_label.anchor_top = 0.0
-		paused_label.anchor_right = 1.0
-		paused_label.anchor_bottom = 1.0
-		paused_label.offset_left = 0.0
-		paused_label.offset_top = 0.0
-		paused_label.offset_right = 0.0
-		paused_label.offset_bottom = 0.0
-		paused_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		paused_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		paused_label.visible = false
+	_setup_message_label(game_over_label)
+	_setup_message_label(win_label)
+	_setup_message_label(paused_label)
 
 func _process(_delta):
 	var bank_sig = _get_bank_signature()
@@ -91,33 +55,44 @@ func _process(_delta):
 		_update_extra_lives()
 
 func show_game_over(color: Color) -> void:
-	if not is_instance_valid(game_over_label):
-		return
-	var c := color
-	c.a = 0.8
-	game_over_label.modulate = c
-	game_over_label.visible = true
+	_show_message(game_over_label, color)
 
 func show_you_win(color: Color) -> void:
-	if not is_instance_valid(win_label):
-		return
-	var c := color
-	c.a = 0.8
-	win_label.modulate = c
-	win_label.visible = true
+	_show_message(win_label, color)
 
 func show_paused(color: Color) -> void:
-	if not is_instance_valid(paused_label):
-		return
-	var c := color
-	c.a = 0.8
-	paused_label.modulate = c
-	paused_label.visible = true
+	_show_message(paused_label, color)
 
 func hide_paused() -> void:
 	if not is_instance_valid(paused_label):
 		return
 	paused_label.visible = false
+
+## Helper: Set up a fullscreen centered message label
+func _setup_message_label(label: Label) -> void:
+	if not is_instance_valid(label):
+		return
+	# Fill the screen and center its text
+	label.anchor_left = 0.0
+	label.anchor_top = 0.0
+	label.anchor_right = 1.0
+	label.anchor_bottom = 1.0
+	label.offset_left = 0.0
+	label.offset_top = 0.0
+	label.offset_right = 0.0
+	label.offset_bottom = 0.0
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.visible = false
+
+## Helper: Show a message label with color and alpha
+func _show_message(label: Label, color: Color) -> void:
+	if not is_instance_valid(label):
+		return
+	var c := color
+	c.a = 0.8
+	label.modulate = c
+	label.visible = true
 
 func _update_bank():
 	for child in amount_label_template.get_parent().get_children():
