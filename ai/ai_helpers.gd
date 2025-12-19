@@ -141,8 +141,12 @@ static func smart_shoot(brain, aim_for_position):
 	var input = brain.input
 	var viewport = brain.get_viewport()
 	
+	var max_range := 1500.0
+	if World.difficulty == World.Difficulty.HARD:
+		max_range = 2000.0
+	
 	var distance = player.global_position.distance_to(aim_for_position)
-	if distance > 1500:
+	if distance > max_range:
 		input.target_aim = player.global_position
 		return
 	

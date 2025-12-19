@@ -5,6 +5,7 @@ func score(brain):
 	var p = brain.player
 	var my_bases = 0
 	var opponents = {}
+	var max_opponent_bases := 0
 
 	var bases = brain.get_tree().get_nodes_in_group("bases")
 	for b in bases:
@@ -14,6 +15,7 @@ func score(brain):
 			my_bases += 1
 		else:
 			opponents[b.team] = opponents.get(b.team, 0) + 1
+			max_opponent_bases = max(max_opponent_bases, opponents[b.team])
 
 	# Defensive: respond when an opponent is close to winning
 	for team_id in opponents.keys():
@@ -21,6 +23,11 @@ func score(brain):
 			return 3001
 
 	var nearest_unowned = AIHelpers.find_nearest_unowned_base(brain)
+
+	# Hard difficulty: if we're down 3+ bases, prioritize capture above turret mode
+	if World.difficulty == World.Difficulty.HARD and nearest_unowned:
+		if max_opponent_bases - my_bases >= 3:
+			return 6000
 	
 	# Offensive: strongly incentivize going for the win
 	if my_bases == 3 and nearest_unowned:
@@ -50,7 +57,12 @@ func apply(brain, _delta):
 		var direction = nearest_base.global_position - brain.player.global_position
 		var distance = direction.length()
 
-		if World.get_bank(brain.player) > 1200 and distance > 1000 and AIHelpers.is_aligned_with_target(brain.player, nearest_base.global_position):
-			brain.input.turbo = true
-		else:
-			brain.input.turbo = false
+		var aligned_regular := AIHelpers.is_aligned_with_target(brain.player, nearest_base.global_position, 0.95)
+		var can_turbo: bool = World.get_bank(brain.player) > 1200 and distance > 1000 and aligned_regular
+
+		if World.difficulty == World.Difficulty.HARD and not can_turbo:
+			var aligned_super := AIHelpers.is_aligned_with_target(brain.player, nearest_base.global_position, 0.99)
+			if aligned_super:
+				can_turbo = true
+
+		brain.input.turbo = can_turbo
