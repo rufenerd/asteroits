@@ -71,6 +71,13 @@ func _input(event):
 		toggle_pause()
 		get_viewport().set_input_as_handled()
 		return
+
+	# Rotate all team colors on demand (active during play or spectator)
+	if event.is_action_pressed("rotate_colors"):
+		rotate_colors()
+		apply_team_colors()
+		get_viewport().set_input_as_handled()
+		return
 	
 	# Also listen in _input to ensure we catch inputs even if some UI consumes them.
 	if not spectator_mode:
@@ -424,3 +431,102 @@ func get_extra_lives(player: Player) -> int:
 ## Set extra lives for a player's team
 func set_extra_lives(player: Player, amount: int) -> void:
 	extra_lives[player.team] = amount
+
+
+# === Team color rotation ===
+
+## Rotate assigned team colors together with unassigned available colors as one ring.
+## Keeps "neutral" unchanged. Applies new colors and then updates live nodes.
+func rotate_colors() -> void:
+	# Gather active team ids preferring stable camera order, then fill any missing
+	var team_ids: Array[String] = []
+	for p in _alive_players_in_order():
+		if p and is_instance_valid(p):
+			if not team_ids.has(p.team) and p.team != "neutral":
+				team_ids.append(p.team)
+	# Ensure all live teams are included even if not in player_order
+	for lp in players():
+		if not is_instance_valid(lp):
+			continue
+		if lp.team == "neutral":
+			continue
+		if not team_ids.has(lp.team):
+			team_ids.append(lp.team)
+
+	if team_ids.is_empty() and available_colors.is_empty():
+		return
+
+	# Build a single palette: assigned (by team order) + remaining available colors
+	var palette: Array = []
+	for t in team_ids:
+		palette.append(colors.get(t, Color.WHITE))
+	for c in available_colors:
+		palette.append(c)
+
+	if palette.is_empty():
+		return
+
+	# Shuffle entire palette instead of rotating
+	if palette.size() > 1:
+		palette.shuffle()
+
+	# Reassign colors back to teams then leftover back to available_colors
+	for i in range(team_ids.size()):
+		colors[team_ids[i]] = palette[i]
+	available_colors = palette.slice(team_ids.size(), palette.size())
+
+## Apply current team colors to all live nodes that cache modulate
+func apply_team_colors() -> void:
+	# Players and their shields
+	for p in players():
+		if not is_instance_valid(p):
+			continue
+		var col := team_color(p.team)
+		# Set on root as fallback in case scene differs
+		if "modulate" in p:
+			p.modulate = col
+		var sprite := p.get_node_or_null("Sprite2D")
+		if sprite and is_instance_valid(sprite):
+			sprite.modulate = col
+			if "self_modulate" in sprite:
+				sprite.self_modulate = col
+		if p.shield and is_instance_valid(p.shield):
+			p.shield.modulate = col
+			var ss = p.shield.get("sprite") if p.shield else null
+			if ss and is_instance_valid(ss):
+				ss.modulate = col
+				if "self_modulate" in ss:
+					ss.self_modulate = col
+
+	# Bases (skip neutral)
+	for b in get_tree().get_nodes_in_group("bases"):
+		if not is_instance_valid(b):
+			continue
+		if not ("team" in b) or b.team == "neutral":
+			continue
+		var b_sprite = b.get_node_or_null("Sprite2D")
+		if b_sprite and is_instance_valid(b_sprite):
+			b_sprite.modulate = team_color(b.team)
+
+	# Structures built by teams
+	for group_name in ["walls", "turrets", "harvesters"]:
+		for n in get_tree().get_nodes_in_group(group_name):
+			if not is_instance_valid(n):
+				continue
+			if not ("team" in n) or n.team == null:
+				continue
+			n.modulate = team_color(n.team)
+
+	# Bullets (in-flight) - match tint used at spawn
+	for b in get_tree().get_nodes_in_group("bullets"):
+		if not is_instance_valid(b):
+			continue
+		if not ("team" in b) or b.team == null:
+			continue
+		var base_col := team_color(b.team)
+		var tint := base_col.lerp(Color.WHITE, 0.3) * 2.5
+		if "modulate" in b:
+			b.modulate = tint
+		var bs := b.get_node_or_null("Sprite2D")
+		if bs and is_instance_valid(bs):
+			bs.modulate = base_col

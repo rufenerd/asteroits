@@ -13,6 +13,7 @@ var origin
 
 func _ready():
 	previous_position = global_position
+	add_to_group("bullets")
 	if team:
 		$Sprite2D.modulate = World.team_color(team)
 
