@@ -17,7 +17,7 @@ func _on_body_entered(body):
 
 func _handle_hit(target):
 	if target.has_method("on_hit"):
-		if target is Player and target.team == team:
+		if (target is Player or target is Shield) and target.team == team:
 			pass
 		else:
 			target.on_hit(1, global_position)
