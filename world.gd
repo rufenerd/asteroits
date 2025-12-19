@@ -22,6 +22,7 @@ var hud: HUD
 var spectator_mode := false
 var player_order: Array = []
 var game_over_ai_buffed := false
+var is_paused := false
 
 #green 39FF14
 #pink DA14FE
@@ -40,11 +41,18 @@ var available_colors = [
 var available_spawn_locations = [Vector2(400, 400), Vector2(400, 9600), Vector2(9600, 400), Vector2(9600, 9600)]
 
 func _ready():
+	# Allow World to always process (including when paused) so unpause works
+	# But child nodes will be pausable by default
+	process_mode = PROCESS_MODE_ALWAYS
+	
 	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
 	initialize_bases()
 	spawn_initial_asteroid()
 
 func _physics_process(delta):
+	# Don't run game logic when paused
+	if is_paused:
+		return
 	check_win_conditions()
 	# In spectator mode, inputs are handled in _input/_unhandled_input.
 
@@ -55,6 +63,12 @@ func _unhandled_input(event):
 		_switch_camera_next()
 
 func _input(event):
+	# Handle pause first - input events fire even when paused
+	if event.is_action_pressed("pause"):
+		toggle_pause()
+		get_viewport().set_input_as_handled()
+		return
+	
 	# Also listen in _input to ensure we catch inputs even if some UI consumes them.
 	if not spectator_mode:
 		return
@@ -89,6 +103,7 @@ func initialize_bases():
 			if not board.has(cell) and not resources.has(cell):
 				board[cell] = base
 				base.global_position = cell_to_world(cell)
+				base.process_mode = PROCESS_MODE_PAUSABLE
 				add_child(base)
 				break
 		
@@ -133,6 +148,7 @@ func initialize_resource(amount, cell: Vector2i):
 	resource.global_position = cell_to_world(cell)
 	resource.amount = amount
 	resources[cell] = resource
+	resource.process_mode = PROCESS_MODE_PAUSABLE
 	add_child(resource)
 
 func build(node, build_position, team):
@@ -160,6 +176,7 @@ func build(node, build_position, team):
 	var snapped_pos = cell_to_world(cell)
 	node.global_position = snapped_pos
 
+	node.process_mode = PROCESS_MODE_PAUSABLE
 	add_child(node)
 
 	board[cell] = node
@@ -205,6 +222,7 @@ func asteroid_destroyed():
 
 func spawn_initial_asteroid():
 	var init_asteroid = preload("res://asteroid.tscn").instantiate()
+	init_asteroid.process_mode = PROCESS_MODE_PAUSABLE
 	add_child(init_asteroid)
 	init_asteroid.global_position = Vector2(randi() % CELL_SIZE * NUM_CELLS_IN_ROW, randi() % CELL_SIZE * NUM_CELLS_IN_ROW)
 	asteroid_count = 1
@@ -360,3 +378,17 @@ func _alive_players_in_order() -> Array:
 		if is_instance_valid(p) and p.is_in_group("players"):
 			result.append(p)
 	return result
+
+func toggle_pause() -> void:
+	is_paused = !is_paused
+	# Use pause the scene tree properly
+	get_tree().paused = is_paused
+	print("Pause toggled: ", is_paused, " - Tree paused: ", get_tree().paused)
+	if hud:
+		if is_paused:
+			var color = Color.WHITE
+			if hud.player and is_instance_valid(hud.player):
+				color = team_color(hud.player.team)
+			hud.show_paused(color)
+		else:
+			hud.hide_paused()
