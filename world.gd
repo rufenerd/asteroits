@@ -226,8 +226,10 @@ func asteroid_destroyed():
 func spawn_initial_asteroid():
 	var init_asteroid = preload("res://asteroid.tscn").instantiate()
 	init_asteroid.process_mode = PROCESS_MODE_PAUSABLE
+	var x = (randi() % NUM_CELLS_IN_ROW) * CELL_SIZE + randf_range(0, CELL_SIZE)
+	var y = (randi() % NUM_CELLS_IN_ROW) * CELL_SIZE + randf_range(0, CELL_SIZE)
+	init_asteroid.global_position = Vector2(x, y)
 	add_child(init_asteroid)
-	init_asteroid.global_position = Vector2(randi() % CELL_SIZE * NUM_CELLS_IN_ROW, randi() % CELL_SIZE * NUM_CELLS_IN_ROW)
 	asteroid_count = 1
 
 func world_to_cell(pos: Vector2) -> Vector2i:

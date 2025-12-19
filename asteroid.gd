@@ -93,7 +93,6 @@ func _ready():
 	World.asteroid_count += 1
 	add_to_group("asteroids")
 	randomize()
-	global_position = Vector2(600, 600)
 
 	var poly := random_concave_polygon(sides, radius, concavity)
 
