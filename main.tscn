@@ -1,8 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://dertmpgmxst4g"]
+[gd_scene load_steps=5 format=3 uid="uid://dertmpgmxst4g"]
 
-[ext_resource type="PackedScene" uid="uid://buga6hnc4h5xu" path="res://hud.tscn" id="2_h2yge"]
-[ext_resource type="PackedScene" uid="uid://c41rqh7tgwh2l" path="res://ai/ai_player.tscn" id="3_1bvp3"]
-[ext_resource type="PackedScene" uid="uid://3e6qq8pp7ips" path="res://ai/human_player.tscn" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://ew81kfgau176" path="res://title_screen.tscn" id="1_title"]
 
 [sub_resource type="Gradient" id="Gradient_0xm2m"]
 offsets = PackedFloat32Array(0.779221, 1)
@@ -18,26 +16,18 @@ domain_warp_enabled = true
 color_ramp = SubResource("Gradient_0xm2m")
 noise = SubResource("FastNoiseLite_0xm2m")
 
-[sub_resource type="Environment" id="Environment_h2yge"]
-glow_enabled = true
-glow_intensity = 1.0
-glow_hdr_threshold = 0.8
-glow_hdr_scale = 0.8
-
 [node name="Main" type="Node2D"]
 
-[node name="World" type="Node2D" parent="."]
+[node name="StarParallaxBackground" type="ParallaxBackground" parent="."]
 
-[node name="StarParallaxBackground" type="ParallaxBackground" parent="World"]
-
-[node name="Space" type="ColorRect" parent="World/StarParallaxBackground"]
+[node name="Space" type="ColorRect" parent="StarParallaxBackground"]
 offset_right = 10000.0
 offset_bottom = 10000.0
 color = Color(0, 0, 0, 1)
 
-[node name="StarsParallaxLayer" type="ParallaxLayer" parent="World/StarParallaxBackground"]
+[node name="StarsParallaxLayer" type="ParallaxLayer" parent="StarParallaxBackground"]
 
-[node name="StarNoiseTextureRect" type="TextureRect" parent="World/StarParallaxBackground/StarsParallaxLayer"]
+[node name="StarNoiseTextureRect" type="TextureRect" parent="StarParallaxBackground/StarsParallaxLayer"]
 modulate = Color(1, 1, 1, 0.666667)
 offset_left = -10000.0
 offset_top = -10000.0
@@ -46,18 +36,8 @@ offset_bottom = 10000.0
 texture = SubResource("NoiseTexture2D_h2yge")
 stretch_mode = 1
 
-[node name="AIPlayer" parent="World" instance=ExtResource("3_1bvp3")]
-combat_bias = 1.1
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 100
 
-[node name="AIPlayer2" parent="World" instance=ExtResource("3_1bvp3")]
-base_bias = 1.1
-
-[node name="AIPlayer3" parent="World" instance=ExtResource("3_1bvp3")]
-asteroid_bias = 2.0
-
-[node name="HumanPlayer" parent="World" instance=ExtResource("3_h2yge")]
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
-environment = SubResource("Environment_h2yge")
-
-[node name="HUD" parent="World" instance=ExtResource("2_h2yge")]
+[node name="TitleScreen" parent="UILayer" instance=ExtResource("1_title")]
+anchors_preset = 0

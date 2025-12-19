@@ -1,0 +1,86 @@
+[gd_scene load_steps=4 format=3 uid="uid://ew81kfgau176"]
+
+[ext_resource type="Script" uid="uid://d2pjj4lkronpl" path="res://title_screen.gd" id="1_p6f3j"]
+[ext_resource type="FontFile" uid="uid://bpsstsb2qw1as" path="res://art/font-press-start-2p/PressStart2P-Regular.ttf" id="2_abcd"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_main"]
+font = ExtResource("2_abcd")
+font_size = 48
+font_color = Color(0.223529, 1, 0.0784314, 1)
+
+[node name="TitleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_p6f3j")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+color = Color(0, 0, 0, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Title" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "ASTEROITS"
+label_settings = SubResource("LabelSettings_main")
+horizontal_alignment = 1
+
+[node name="Spacer1" type="Control" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="EasyRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="EasyArrow" type="Label" parent="CenterContainer/VBoxContainer/EasyRow"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "▶"
+label_settings = SubResource("LabelSettings_main")
+
+[node name="EasyOption" type="Label" parent="CenterContainer/VBoxContainer/EasyRow"]
+layout_mode = 2
+text = "EASY"
+label_settings = SubResource("LabelSettings_main")
+
+[node name="NormalRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="NormalArrow" type="Label" parent="CenterContainer/VBoxContainer/NormalRow"]
+visible = false
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "▶"
+label_settings = SubResource("LabelSettings_main")
+
+[node name="NormalOption" type="Label" parent="CenterContainer/VBoxContainer/NormalRow"]
+layout_mode = 2
+text = "NORMAL"
+label_settings = SubResource("LabelSettings_main")
+
+[node name="HardRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="HardArrow" type="Label" parent="CenterContainer/VBoxContainer/HardRow"]
+visible = false
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "▶"
+label_settings = SubResource("LabelSettings_main")
+
+[node name="HardOption" type="Label" parent="CenterContainer/VBoxContainer/HardRow"]
+layout_mode = 2
+text = "HARD"
+label_settings = SubResource("LabelSettings_main")
+
+[node name="Spacer2" type="Control" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2

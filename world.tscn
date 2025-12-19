@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://37mqfsuo5lku"]
+
+[ext_resource type="Script" uid="uid://d0enoidadyoq0" path="res://world.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://c41rqh7tgwh2l" path="res://ai/ai_player.tscn" id="1_tlwt5"]
+[ext_resource type="PackedScene" uid="uid://3e6qq8pp7ips" path="res://ai/human_player.tscn" id="2_aqk2v"]
+[ext_resource type="PackedScene" uid="uid://buga6hnc4h5xu" path="res://hud.tscn" id="3_036b0"]
+
+[sub_resource type="Environment" id="Environment_h2yge"]
+glow_enabled = true
+glow_intensity = 1.0
+glow_hdr_threshold = 0.8
+glow_hdr_scale = 0.8
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="AIPlayer" parent="." instance=ExtResource("1_tlwt5")]
+combat_bias = 1.1
+
+[node name="AIPlayer2" parent="." instance=ExtResource("1_tlwt5")]
+base_bias = 1.1
+
+[node name="AIPlayer3" parent="." instance=ExtResource("1_tlwt5")]
+asteroid_bias = 2.0
+
+[node name="HumanPlayer" parent="." instance=ExtResource("2_aqk2v")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_h2yge")
+
+[node name="HUD" parent="." instance=ExtResource("3_036b0")]
+
+[node name="WorldEnvironment2" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_h2yge")
+
+[node name="HUD2" parent="." instance=ExtResource("3_036b0")]

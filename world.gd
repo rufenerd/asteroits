@@ -42,7 +42,9 @@ func _ready():
 	# Allow World to always process (including when paused) so unpause works
 	# But child nodes will be pausable by default
 	process_mode = PROCESS_MODE_ALWAYS
-	
+	# Don't initialize the game yet - wait for title screen to select difficulty
+
+func initialize_game():
 	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
 	initialize_bases()
 	spawn_initial_asteroid()
