@@ -18,11 +18,14 @@ var bank = {}
 var extra_lives = {}
 var spawn_points = {}
 
+enum Difficulty {EASY, NORMAL, HARD}
+
 var hud: HUD
 var spectator_mode := false
 var player_order: Array = []
 var game_over_ai_buffed := false
 var is_paused := false
+var difficulty := Difficulty.NORMAL
 
 #green 39FF14
 #pink DA14FE

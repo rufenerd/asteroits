@@ -15,4 +15,4 @@ func apply(brain, delta):
 		return
 
 	brain.input.target_position = brain.nearest_enemy.global_position
-	AIHelpers.smart_shoot(brain.player, brain.input, brain.get_viewport(), brain.nearest_enemy.global_position)
+	AIHelpers.smart_shoot(brain.player, brain.input, brain.get_viewport(), brain.nearest_enemy.global_position, brain)

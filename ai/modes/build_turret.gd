@@ -13,6 +13,9 @@ func score(brain):
 	if shield_missing or shield.health < 4.0:
 		return 10
 
+	if World.difficulty == World.Difficulty.EASY:
+		return 0
+
 	# If we're near a friendly base that lacks defenses, score highly to build there
 	var bases = brain.get_tree().get_nodes_in_group("bases")
 	var DEFENSE_RADIUS := 600.0

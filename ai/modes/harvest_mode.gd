@@ -14,4 +14,4 @@ func apply(brain, _delta):
 	AIHelpers.get_to_with_braking(brain, resource.global_position)
 
 	if brain.nearest_enemy:
-		AIHelpers.smart_shoot(brain.player, brain.input, brain.get_viewport(), brain.nearest_enemy.global_position)
+		AIHelpers.smart_shoot(brain.player, brain.input, brain.get_viewport(), brain.nearest_enemy.global_position, brain)

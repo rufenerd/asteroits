@@ -71,11 +71,20 @@ static func get_to_with_braking(brain, desired_position):
 	var to_target = direction.normalized()
 	var aligned = is_aligned_with_target(player, desired_position)
 
+	# Add steering error based on difficulty
+	var steering_target = desired_position
+	var diff = World.difficulty
+	if diff == World.Difficulty.EASY:
+		# Add significant steering error
+		var error = Vector2(randf_range(-50, 50), randf_range(-50, 50))
+		steering_target += error
+	# Normal and Hard have perfect steering
+	
 	if distance < speed_limit_distance and distance > 0.5 * speed_limit_distance and speed > max_speed and not aligned:
 		brain.braking = true
 		input.target_position = player.global_position
 	else:
-		input.target_position = player.global_position + to_target * distance
+		input.target_position = player.global_position + (steering_target - player.global_position).normalized() * distance
 
 
 static func imminent_wall_collision(player: Player, input):
@@ -123,7 +132,7 @@ static func find_nearest_unowned_base(player: Node2D, bases: Array) -> Node2D:
 	)
 
 
-static func smart_shoot(player, input, viewport, aim_for_position):
+static func smart_shoot(player, input, viewport, aim_for_position, brain = null):
 	var distance = player.global_position.distance_to(aim_for_position)
 	if distance > 1500:
 		input.target_aim = player.global_position
@@ -137,8 +146,47 @@ static func smart_shoot(player, input, viewport, aim_for_position):
 			input.target_aim = player.global_position
 			return
 	
-	input.target_aim = aim_for_position
-
+	# Adjust aim based on difficulty
+	var aim_pos = aim_for_position
+	var diff = World.difficulty
+	
+	if diff == World.Difficulty.EASY:
+		# Large aiming error
+		var error_angle = randf_range(-0.3, 0.3) # ~17 degrees
+		var dir = (aim_pos - player.global_position).normalized()
+		var error_offset = dir.rotated(error_angle) * distance * 0.2
+		aim_pos += error_offset
+	elif diff == World.Difficulty.HARD:
+		# Predictive leading - iteratively calculate intercept point
+		if result and result.collider and result.collider.is_in_group("players"):
+			var target = result.collider
+			var target_pos = target.global_position
+			var target_velocity = target.velocity if "velocity" in target else Vector2.ZERO
+			var bullet_speed = 1000.0
+			
+			if target_velocity != Vector2.ZERO:
+				# Iteratively solve for intercept point (up to 5 iterations for accuracy)
+				var predicted_pos = target_pos
+				for i in range(5):
+					var to_predicted = predicted_pos - player.global_position
+					var dist_to_predicted = to_predicted.length()
+					if dist_to_predicted < 1.0:
+						break
+					var time_to_impact = dist_to_predicted / bullet_speed
+					predicted_pos = target_pos + target_velocity * time_to_impact
+				
+				aim_pos = predicted_pos
+	
+	# Handle shoot cooldown for EASY difficulty
+	if brain and diff == World.Difficulty.EASY:
+		if brain.shoot_cooldown <= 0:
+			input.target_aim = aim_pos
+			brain.shoot_cooldown = 0.8  # 800ms between shots
+		else:
+			# Cooldown active - prevent firing by aiming at self
+			input.target_aim = player.global_position
+	else:
+		input.target_aim = aim_pos  # Normal and Hard shoot freely
 
 static func find_nearest_turret(brain):
 	var player = brain.player

@@ -29,6 +29,7 @@ var unstick_time = 0.0
 var unstick_dir = Vector2.ZERO
 
 var braking = false
+var shoot_cooldown := 0.0
 
 # Helper utilities
 @onready var helpers := AIHelpers.new()
@@ -41,6 +42,12 @@ func _ready():
 	player.team = "ai1"
 	input = AIInput.new()
 	player.input = input
+	
+	# Apply difficulty modifiers to personality multipliers
+	var difficulty_mod := _get_difficulty_modifier()
+	combat_multiplier *= difficulty_mod
+	base_multiplier *= difficulty_mod
+	asteroid_multiplier *= difficulty_mod
 
 	modes = {
 		Mode.UNSTICK: load("res://ai/modes/unstick_mode.gd").new(),
@@ -66,6 +73,7 @@ func _physics_process(delta):
 
 	avoidance_cooldown = max(avoidance_cooldown - delta, 0)
 	wander_cooldown = max(wander_cooldown - delta, 0)
+	shoot_cooldown = max(shoot_cooldown - delta, 0)
 	nearest_enemy = AIHelpers.find_nearest_enemy(self)
 
 	input.build_turret = false
@@ -76,7 +84,7 @@ func _physics_process(delta):
 	var prev_mode = mode
 	choose_mode(delta)
 	update_mode_age(delta, prev_mode)
-	print(Mode.find_key(mode))
+	#print(Mode.find_key(mode))
 	modes[mode].apply(self, delta)
 
 	choose_build_strategy(delta)
@@ -131,3 +139,12 @@ func choose_build_strategy(delta):
 			best_strategy = s
 
 	build_strategy = best_strategy
+
+func _get_difficulty_modifier() -> float:
+	var diff = World.difficulty
+	if diff == World.Difficulty.EASY:
+		return 0.5
+	elif diff == World.Difficulty.HARD:
+		return 1.5
+	else:
+		return 1.0
