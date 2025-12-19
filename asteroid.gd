@@ -1,18 +1,18 @@
 class_name Asteroid extends RigidBody2D
 
-@export var sides := 16                 # Number of random points
-@export var radius := 160.0             # Outer size
-@export var concavity := 0.6            # 0 = convex, 1 = jagged
+@export var sides := 16 # Number of random points
+@export var radius := 160.0 # Outer size
+@export var concavity := 0.6 # 0 = convex, 1 = jagged
 @export var color := Color.DARK_GRAY
 
 @export var min_speed := 5.0
 @export var max_speed := 30.0
 
-@export var min_spin := -1.0           # radians/sec
+@export var min_spin := -1.0 # radians/sec
 @export var max_spin := 1.0
 
-@export var player_mass := 1.0       # conceptual mass
-@export var push_power := 1.5         # tune feel, not physics
+@export var player_mass := 1.0 # conceptual mass
+@export var push_power := 1.5 # tune feel, not physics
 @export var self_pushback := 0.15
 
 @export var hit_debounce := 0.5
@@ -155,7 +155,7 @@ func _convex_hull(pts: Array[Vector2]) -> Array[Vector2]:
 		lower.append(p)
 
 	var upper: Array[Vector2] = []
-	for i in range(pts.size()-1, -1, -1):
+	for i in range(pts.size() - 1, -1, -1):
 		var p := pts[i]
 		while upper.size() >= 2 and _cross(upper[-2], upper[-1], p) <= 0:
 			upper.pop_back()
