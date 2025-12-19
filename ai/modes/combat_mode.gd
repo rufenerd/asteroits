@@ -8,7 +8,7 @@ func score(brain):
 	var core_score = (3000 * brain.player.weapon_level)
 	if World.get_bank(brain.player) > 20000:
 		return core_score
-	return core_score  - brain.player.global_position.distance_to(brain.nearest_enemy.global_position)
+	return core_score - brain.player.global_position.distance_to(brain.nearest_enemy.global_position)
 
 func apply(brain, delta):
 	if not brain.nearest_enemy:

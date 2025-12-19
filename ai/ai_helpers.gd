@@ -189,12 +189,12 @@ static func smart_shoot(brain, aim_for_position):
 	if diff == World.Difficulty.EASY:
 		if brain.shoot_cooldown <= 0:
 			input.target_aim = aim_pos
-			brain.shoot_cooldown = 0.8  # 800ms between shots
+			brain.shoot_cooldown = 0.8 # 800ms between shots
 		else:
 			# Cooldown active - prevent firing by aiming at self
 			input.target_aim = player.global_position
 	else:
-		input.target_aim = aim_pos  # Normal and Hard shoot freely
+		input.target_aim = aim_pos # Normal and Hard shoot freely
 
 static func find_nearest_turret(brain):
 	var player = brain.player
