@@ -17,6 +17,7 @@ var resources = {}
 var bank = {}
 var extra_lives = {}
 var spawn_points = {}
+var match_has_ended := false
 
 enum Difficulty {EASY, NORMAL, HARD}
 
@@ -76,9 +77,67 @@ func reset_state():
 	available_spawn_locations = DEFAULT_AVAILABLE_SPAWN_LOCATIONS.duplicate()
 	spectator_mode = false
 	is_paused = false
+	match_has_ended = false
 	game_over_ai_buffed = false
 	# HUD will reassign itself on ready; clear reference to avoid stale state
 	hud = null
+
+func return_to_title_screen() -> void:
+	# Remove the world scene instance under Main if present
+	var main = get_tree().root.get_node_or_null("Main")
+	if main:
+		var world_scene = main.get_node_or_null("WorldScene")
+		if world_scene and is_instance_valid(world_scene):
+			world_scene.queue_free()
+	# Reset global world state
+	reset_state()
+	# Recreate title screen under the persistent UILayer
+	if main:
+		var ui_layer = main.get_node_or_null("UILayer")
+		if ui_layer:
+			# Avoid duplicate TitleScreen
+			var existing = ui_layer.get_node_or_null("TitleScreen")
+			if not existing:
+				var title_scene = load("res://title_screen.tscn")
+				var title_instance = title_scene.instantiate()
+				ui_layer.add_child(title_instance)
+
+func return_to_title_screen_with_fade() -> void:
+	var main = get_tree().root.get_node_or_null("Main")
+	# Create overlay above all UI and world
+	var overlay := CanvasLayer.new()
+	overlay.layer = 1000
+	if main:
+		main.add_child(overlay)
+	else:
+		add_child(overlay)
+
+	var rect := ColorRect.new()
+	rect.name = "FadeOverlay"
+	rect.color = Color(0, 0, 0, 1)
+	rect.modulate.a = 0.0
+	overlay.add_child(rect)
+	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	rect.offset_left = 0
+	rect.offset_top = 0
+	rect.offset_right = 0
+	rect.offset_bottom = 0
+
+	# Fade to black
+	var tween_in := create_tween()
+	tween_in.tween_property(rect, "modulate:a", 1.0, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	await tween_in.finished
+
+	# Switch to title
+	return_to_title_screen()
+
+	# Fade back to transparent
+	var tween_out := create_tween()
+	tween_out.tween_property(rect, "modulate:a", 0.0, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	await tween_out.finished
+
+	# Cleanup
+	overlay.queue_free()
 
 func _physics_process(delta):
 	# Don't run game logic when paused
@@ -96,6 +155,13 @@ func _unhandled_input(event):
 func _input(event):
 	# Handle pause first - input events fire even when paused
 	if event.is_action_pressed("pause"):
+		if match_has_ended:
+			# From end screens, pause acts as a quick reset back to title
+			is_paused = false
+			get_tree().paused = false
+			call_deferred("return_to_title_screen_with_fade")
+			get_viewport().set_input_as_handled()
+			return
 		toggle_pause()
 		get_viewport().set_input_as_handled()
 		return
@@ -239,6 +305,11 @@ func _is_inside_base_area(world_pos: Vector2) -> bool:
 	return false
 
 func harvest(harvester):
+	if not resources.has(harvester.cell):
+		# Resource might have been cleared during teardown; safely discard lingering harvesters.
+		if is_instance_valid(harvester):
+			harvester.queue_free()
+		return
 	var resource = resources[harvester.cell]
 	resource.harvester = harvester
 	if resource.amount > 0:
@@ -338,6 +409,7 @@ func _switch_camera_deferred(best_player):
 func _call_victory_and_quit(winning_team: String) -> void:
 	# Enable spectator camera toggling at match end
 	spectator_mode = true
+	match_has_ended = true
 	
 	if hud and is_instance_valid(hud) and hud.player and is_instance_valid(hud.player):
 		var player_team_color = team_color(hud.player.team)
@@ -347,7 +419,7 @@ func _call_victory_and_quit(winning_team: String) -> void:
 			hud.show_game_over(player_team_color)
 	
 	await get_tree().create_timer(2.0).timeout
-	get_tree().quit()
+	await return_to_title_screen_with_fade()
 
 
 # No longer using timed handoff; spectator toggling is always available after game over.
@@ -384,6 +456,7 @@ func _switch_camera_next():
 
 func game_over(team: String) -> void:
 	spectator_mode = true
+	match_has_ended = true
 	if hud:
 		hud.show_game_over(team_color(team))
 	if not game_over_ai_buffed:
