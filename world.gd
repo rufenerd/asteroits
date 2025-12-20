@@ -48,6 +48,8 @@ func _ready():
 	process_mode = PROCESS_MODE_ALWAYS
 	# Don't initialize the game yet - wait for title screen to select difficulty
 	reset_state()
+	# Hide mouse cursor globally
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 
 func initialize_game():
 	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
