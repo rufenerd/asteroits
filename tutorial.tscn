@@ -1,7 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://tutorial001"]
+[gd_scene load_steps=6 format=3 uid="uid://bn05diabr2te5"]
 
 [ext_resource type="PackedScene" uid="uid://3e6qq8pp7ips" path="res://ai/human_player.tscn" id="1_tutorial"]
 [ext_resource type="PackedScene" uid="uid://buga6hnc4h5xu" path="res://hud.tscn" id="2_tutorial"]
+[ext_resource type="Script" uid="uid://d0ywcvkfagcrh" path="res://tutorial_manager.gd" id="3_tutorial"]
+[ext_resource type="PackedScene" path="res://tutorial_hud.tscn" id="4_tutorial"]
 
 [sub_resource type="Environment" id="Environment_tutorial"]
 glow_enabled = true
@@ -18,3 +20,11 @@ environment = SubResource("Environment_tutorial")
 
 [node name="HUD" parent="." instance=ExtResource("2_tutorial")]
 visible = false
+
+[node name="TutorialManager" type="Node" parent="."]
+script = ExtResource("3_tutorial")
+
+[node name="TutorialHUDLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="TutorialHUD" parent="TutorialHUDLayer" instance=ExtResource("4_tutorial")]

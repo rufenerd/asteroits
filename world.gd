@@ -114,6 +114,9 @@ func return_to_title_screen() -> void:
 		var world_scene = main.get_node_or_null("WorldScene")
 		if world_scene and is_instance_valid(world_scene):
 			world_scene.queue_free()
+		var tutorial_scene = main.get_node_or_null("TutorialScene")
+		if tutorial_scene and is_instance_valid(tutorial_scene):
+			tutorial_scene.queue_free()
 	# Reset global world state
 	reset_state()
 	# Recreate title screen under the persistent UILayer
@@ -180,8 +183,8 @@ func _unhandled_input(event):
 func _input(event):
 	# Handle pause first - input events fire even when paused
 	if event.is_action_pressed("pause"):
-		if match_has_ended:
-			# From end screens, pause acts as a quick reset back to title
+		if match_has_ended or difficulty == Difficulty.TRAINING:
+			# From end screens or training mode, pause acts as a quick reset back to title
 			is_paused = false
 			get_tree().paused = false
 			call_deferred("return_to_title_screen_with_fade")

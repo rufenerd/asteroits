@@ -1,0 +1,50 @@
+[gd_scene load_steps=4 format=3 uid="uid://b2i21kh5plhoi"]
+
+[ext_resource type="Script" path="res://tutorial_hud.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://bpsstsb2qw1as" path="res://art/font-press-start-2p/PressStart2P-Regular.ttf" id="1_font"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font = ExtResource("1_font")
+font_size = 64
+font_color = Color(0.223529, 1, 0.0784314, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_message"]
+font = ExtResource("1_font")
+font_size = 32
+font_color = Color(1, 1, 1, 0.9)
+
+[node name="TutorialHUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="TopContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 60.0
+offset_right = 400.0
+offset_bottom = 220.0
+grow_horizontal = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="TopContainer"]
+layout_mode = 2
+text = "LEVEL 1: FLY AROUND"
+label_settings = SubResource("LabelSettings_title")
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="MessageLabel" type="Label" parent="TopContainer"]
+layout_mode = 2
+text = "Use the left stick to fly around."
+label_settings = SubResource("LabelSettings_message")
+horizontal_alignment = 1
+autowrap_mode = 3
