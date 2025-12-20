@@ -30,6 +30,7 @@ var coins_collected_this_level := 0
 var bases_captured_this_level := 0
 var level_start_shield := 0
 var level_start_asteroid_count := 0
+var turbo_time := 0.0
 
 func _ready():
 	process_mode = PROCESS_MODE_PAUSABLE
@@ -94,7 +95,7 @@ func _setup_levels():
 	# Level 3: Zoom out
 	levels.append(Level.new(
 		"LEVEL 3: ZOOM OUT",
-		"Press '.' (period) or L1 to zoom out all the way.",
+		"Press L1 to zoom out all the way.",
 		func():
 			if not player or not is_instance_valid(player):
 				return false
@@ -111,7 +112,7 @@ func _setup_levels():
 	# Level 4: Zoom in
 	levels.append(Level.new(
 		"LEVEL 4: ZOOM IN",
-		"Press ',' (comma) or R1 to zoom in once.",
+		"Press R1 to zoom in once.",
 		func():
 			if not player or not is_instance_valid(player):
 				return false
@@ -175,18 +176,24 @@ func _setup_levels():
 		func():
 			return coins_collected_this_level >= 1
 	))
-	
-	# Level 10: Capture bases
+		# Level 10: Turbo
 	levels.append(Level.new(
-		"LEVEL 10: CAPTURE A BASE",
+		"LEVEL 10: TURBO",
+		"Hold L2+R2 and move to use turbo. Turbo costs more the longer you use it. Maintain turbo velocity for 1 second.",
+		func():
+			return turbo_time >= 1.0
+	))
+		# Level 11: Capture bases
+	levels.append(Level.new(
+		"LEVEL 11: CAPTURE A BASE",
 		"Find and capture a base by flying over it.",
 		func():
 			return bases_captured_this_level >= 1
 	))
 	
-	# Level 11: Shield boost
+	# Level 12: Shield boost
 	levels.append(Level.new(
-		"LEVEL 11: SHIELD BOOST",
+		"LEVEL 12: SHIELD BOOST",
 		"Hold X for 1 second to activate or boost your shield for 1000 resources. Boost shield to level 3.",
 		func():
 			if not player or not is_instance_valid(player):
@@ -197,7 +204,7 @@ func _setup_levels():
 			return shield_level >= 3
 	))
 
-	# Level 12: Complete
+	# Level 13: Complete
 	levels.append(Level.new(
 		"TUTORIAL COMPLETE",
 		"You've learned the basics! Press Pause to return to menu.",
@@ -208,6 +215,11 @@ func _setup_levels():
 func _process(delta):
 	if current_level_index >= levels.size() or is_transitioning:
 		return
+	
+	# Track turbo time for level 10 (index 9)
+	if current_level_index == 9 and player and is_instance_valid(player):
+		if player.turbo:
+			turbo_time += delta
 	
 	# Track asteroid hits for level 8 (index 7)
 	if current_level_index == 7:
@@ -230,8 +242,8 @@ func _process(delta):
 					coin.set_meta("counted_for_tutorial", true)
 					coins_collected_this_level += 1
 	
-	# Track base captures for level 10 (index 9)
-	if current_level_index == 9 and player and is_instance_valid(player):
+	# Track base captures for level 11 (index 10)
+	if current_level_index == 10 and player and is_instance_valid(player):
 		var bases = get_tree().get_nodes_in_group("bases")
 		for base in bases:
 			if is_instance_valid(base) and "team" in base:
@@ -268,6 +280,7 @@ func _start_level(index: int):
 	asteroids_hit_this_level = 0
 	coins_collected_this_level = 0
 	bases_captured_this_level = 0
+	turbo_time = 0.0
 	
 	# Record starting shield level for shield level
 	if player and is_instance_valid(player) and player.shield and is_instance_valid(player.shield):
@@ -288,8 +301,8 @@ func _start_level(index: int):
 					extra_lives.visible = false
 				var base_score = control.get_node_or_null("BaseScore")
 				if base_score:
-					# Show base score starting at level 10 (index 9) - bases level
-					base_score.visible = (index >= 9)
+					# Show base score starting at level 11 (index 10) - bases level
+					base_score.visible = (index >= 10)
 		var player_indicators = game_hud.get_node_or_null("PlayerIndicators")
 		if player_indicators:
 			# Show player indicators starting at level 8 (index 7) - asteroids level
