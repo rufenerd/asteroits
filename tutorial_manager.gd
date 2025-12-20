@@ -195,7 +195,7 @@ func _setup_levels():
 	
 	# Level 12: Shield boost
 	levels.append(Level.new(
-		"LEVEL 12: SHIELD BOOST",
+		"LEVEL 12: SHIELD",
 		"Hold X for 1 second to activate or boost your shield for 1000 resources. Boost shield to level 3.",
 		func():
 			if not player or not is_instance_valid(player):

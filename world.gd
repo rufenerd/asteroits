@@ -81,8 +81,14 @@ func reset_state():
 		"harvesters",
 		"players",
 		"asteroids",
-		"bullets"
+		"bullets",
+		"coins"
 	])
+	
+	# Also clear any direct children of World autoload
+	for child in get_children():
+		if is_instance_valid(child):
+			child.free()
 
 	asteroid_count = 0
 	board.clear()
@@ -105,20 +111,28 @@ func _clear_groups(group_names: Array) -> void:
 	for group_name in group_names:
 		for node in get_tree().get_nodes_in_group(group_name):
 			if is_instance_valid(node):
-				node.queue_free()
+				node.free()
 
 func return_to_title_screen() -> void:
+	# Reset global world state and clear all groups first
+	reset_state()
+	
 	# Remove the world scene instance under Main if present
 	var main = get_tree().root.get_node_or_null("Main")
 	if main:
 		var world_scene = main.get_node_or_null("WorldScene")
 		if world_scene and is_instance_valid(world_scene):
-			world_scene.queue_free()
+			# Remove all children first
+			for child in world_scene.get_children():
+				child.free()
+			world_scene.free()
 		var tutorial_scene = main.get_node_or_null("TutorialScene")
 		if tutorial_scene and is_instance_valid(tutorial_scene):
-			tutorial_scene.queue_free()
-	# Reset global world state
-	reset_state()
+			# Remove all children first
+			for child in tutorial_scene.get_children():
+				child.free()
+			tutorial_scene.free()
+	
 	# Recreate title screen under the persistent UILayer
 	if main:
 		var ui_layer = main.get_node_or_null("UILayer")
