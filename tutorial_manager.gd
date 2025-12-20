@@ -53,18 +53,18 @@ func _setup_levels():
 		"Use the left stick to fly around.",
 		func():
 			var time_elapsed = Time.get_ticks_msec() / 1000.0 - level_start_time
-			if time_elapsed < 10.0:
+			if time_elapsed < 2.0:
 				return false
 			if not player or not is_instance_valid(player):
 				return false
 			var distance = player.global_position.distance_to(level_start_position)
-			return distance > 100.0
+			return distance > 200.0
 	))
 	
 	# Level 2: Shoot
 	levels.append(Level.new(
 		"LEVEL 2: SHOOT",
-		"Use the right stick to aim and shoot. Fire 5 shots.",
+		"Use the right stick to aim and shoot.",
 		func():
 			# Count new bullets created during this level
 			var current_bullets = get_tree().get_nodes_in_group("bullets")
@@ -73,12 +73,25 @@ func _setup_levels():
 					if not bullet.has_meta("counted_for_tutorial"):
 						bullet.set_meta("counted_for_tutorial", true)
 						bullets_fired_this_level += 1
-			return bullets_fired_this_level >= 5
+			return bullets_fired_this_level >= 10
+	))
+
+
+	# Level 3: Harvest resources
+	levels.append(Level.new(
+		"LEVEL 3: HARVEST RESOURCES",
+		"Hold the circle button and fly over circles to build harvesters to gain resources. Gain 1000 resources.",
+		func():
+			if not player or not is_instance_valid(player):
+				return false
+			var player_bank = World.bank.get(player.team, 0)
+			var gained = player_bank - level_start_bank
+			return gained >= 1000
 	))
 	
-	# Level 3: Build a wall
+	# Level 4: Build a wall
 	levels.append(Level.new(
-		"LEVEL 3: BUILD A WALL",
+		"LEVEL 4: BUILD A WALL",
 		"Press Z to build a wall. Build 3 walls.",
 		func():
 			var walls = get_tree().get_nodes_in_group("walls")
@@ -90,24 +103,12 @@ func _setup_levels():
 			return walls_built_this_level >= 3
 	))
 	
-	# Level 4: Harvest resources
-	levels.append(Level.new(
-		"LEVEL 4: HARVEST RESOURCES",
-		"Press C over resource tiles to build harvesters. Gain 100 resources.",
-		func():
-			if not player or not is_instance_valid(player):
-				return false
-			var player_bank = World.bank.get(player.team, 0)
-			var gained = player_bank - level_start_bank
-			return gained >= 100
-	))
-	
 	# Level 5: Complete
 	levels.append(Level.new(
 		"TUTORIAL COMPLETE",
 		"You've learned the basics! Press Pause to return to menu.",
 		func():
-			return false  # Never auto-complete, player must press pause
+			return false # Never auto-complete, player must press pause
 	))
 
 func _process(delta):
