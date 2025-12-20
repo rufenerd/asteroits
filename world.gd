@@ -67,6 +67,18 @@ func initialize_game():
 			hud._update_extra_lives()
 
 func reset_state():
+	# Free any lingering gameplay nodes that were parented directly to the World autoload
+	_clear_groups([
+		"bases",
+		"resources",
+		"walls",
+		"turrets",
+		"harvesters",
+		"players",
+		"asteroids",
+		"bullets"
+	])
+
 	asteroid_count = 0
 	board.clear()
 	resources.clear()
@@ -83,6 +95,12 @@ func reset_state():
 	game_over_ai_buffed = false
 	# HUD will reassign itself on ready; clear reference to avoid stale state
 	hud = null
+
+func _clear_groups(group_names: Array) -> void:
+	for group_name in group_names:
+		for node in get_tree().get_nodes_in_group(group_name):
+			if is_instance_valid(node):
+				node.queue_free()
 
 func return_to_title_screen() -> void:
 	# Remove the world scene instance under Main if present
@@ -352,6 +370,9 @@ func cell_to_world(cell: Vector2i) -> Vector2:
 	)
 
 func check_win_conditions():
+	# Prevent re-triggering end-game flow while transitioning back to title
+	if match_has_ended:
+		return
 	# --- 1. All 4 bases owned by 1 team (not neutral) ---
 	var base_counts := {}
 	for b in get_tree().get_nodes_in_group("bases"):
