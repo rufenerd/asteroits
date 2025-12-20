@@ -32,6 +32,7 @@ var level_start_shield := 0
 var level_start_asteroid_count := 0
 var turbo_time := 0.0
 var ai_player: Node2D = null
+var level_start_color: Color
 
 func _ready():
 	process_mode = PROCESS_MODE_PAUSABLE
@@ -205,9 +206,20 @@ func _setup_levels():
 			return shield_level >= 3
 	))
 	
-	# Level 13: Combat
+	# Level 13: Change color
 	levels.append(Level.new(
-		"LEVEL 13: COMBAT",
+		"LEVEL 13: CHANGE COLOR",
+		"Press D-pad down to change your ship color.",
+		func():
+			if not player or not is_instance_valid(player):
+				return false
+			var current_color = World.team_color(player.team)
+			return current_color != level_start_color
+	))
+	
+	# Level 14: Combat
+	levels.append(Level.new(
+		"LEVEL 14: COMBAT",
 		"Defeat the enemy player before game over.",
 		func():
 			# Check if AI player node exists
@@ -227,16 +239,21 @@ func _setup_levels():
 			return not ai_team_alive
 	))
 
-	# Level 14: Complete
+	# Level 15: Complete
 	levels.append(Level.new(
 		"TUTORIAL COMPLETE",
-		"To win a full game, capture all 4 bases or be the last of four players remaining. Press Start to return to menu.",
+		"To win a full game, capture all 4 bases or be the last of four players remaining. Press Start to pause during a game or return to the menu now.",
 		func():
 			return false # Never auto-complete, player must press pause
 	))
 
 func _process(delta):
 	if current_level_index >= levels.size() or is_transitioning:
+		return
+	
+	# Check for game over and return to menu
+	if World.match_has_ended:
+		_handle_game_over()
 		return
 	
 	# Track turbo time for level 10 (index 9)
@@ -277,7 +294,18 @@ func _process(delta):
 	var current_level = levels[current_level_index]
 	if current_level.check_condition.call():
 		_complete_level()
-
+func _handle_game_over():
+	if is_transitioning:
+		return
+	is_transitioning = true
+	
+	# Hide tutorial HUD
+	if tutorial_hud and is_instance_valid(tutorial_hud):
+		tutorial_hud.hide_level()
+	
+	# Wait a moment then fade to black and return to menu
+	await get_tree().create_timer(1.0).timeout
+	World.return_to_title_screen_with_fade()
 func _start_level(index: int):
 	if index >= levels.size():
 		return
@@ -312,8 +340,12 @@ func _start_level(index: int):
 	# Record starting asteroid count for asteroid level
 	level_start_asteroid_count = World.asteroid_count
 	
-	# Spawn AI player for level 13 (index 12) - combat level
-	if index == 12:
+	# Record starting color for color change level
+	if player and is_instance_valid(player):
+		level_start_color = World.team_color(player.team)
+	
+	# Spawn AI player for level 14 (index 13) - combat level
+	if index == 13:
 		var ai_scene = preload("res://ai/ai_player.tscn")
 		ai_player = ai_scene.instantiate()
 		get_tree().current_scene.add_child(ai_player)
@@ -333,8 +365,8 @@ func _start_level(index: int):
 			if control:
 				var extra_lives = control.get_node_or_null("ExtraLives")
 				if extra_lives:
-					# Show extra lives starting at level 13 (index 12) - combat level
-					extra_lives.visible = (index >= 12)
+					# Show extra lives starting at level 14 (index 13) - combat level
+					extra_lives.visible = (index >= 13)
 				var base_score = control.get_node_or_null("BaseScore")
 				if base_score:
 					# Show base score starting at level 11 (index 10) - bases level
