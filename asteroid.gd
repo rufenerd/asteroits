@@ -38,14 +38,18 @@ func on_hit(_damage, origin):
 		get_tree().current_scene.add_child(explosion)
 
 		if randi() % COIN_DROP_ODDS == 0:
-			var coin_roll = randi() % 3
 			var coin_type = null
-			if coin_roll == 1:
-				coin_type = "extra_life"
-			elif coin_roll == 2:
+			# In training mode, always drop resource coins
+			if World.difficulty == World.Difficulty.TRAINING:
 				coin_type = "resources"
 			else:
-				coin_type = "upgrade_weapon"
+				var coin_roll = randi() % 3
+				if coin_roll == 1:
+					coin_type = "extra_life"
+				elif coin_roll == 2:
+					coin_type = "resources"
+				else:
+					coin_type = "upgrade_weapon"
 
 			var coin = COIN_SCENES[coin_type].instantiate()
 			coin.global_position = global_position

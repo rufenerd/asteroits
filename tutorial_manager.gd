@@ -25,6 +25,11 @@ var walls_built_this_level := 0
 var harvesters_built_this_level := 0
 var level_start_bank := 0
 var level_start_zoom := 0.0
+var asteroids_hit_this_level := 0
+var coins_collected_this_level := 0
+var bases_captured_this_level := 0
+var level_start_shield := 0
+var level_start_asteroid_count := 0
 
 func _ready():
 	process_mode = PROCESS_MODE_PAUSABLE
@@ -154,8 +159,45 @@ func _setup_levels():
 			var turrets = get_tree().get_nodes_in_group("turrets")
 			return turrets.size() >= 5
 	))
+	
+	# Level 8: Find asteroids
+	levels.append(Level.new(
+		"LEVEL 8: FIND ASTEROIDS",
+		"The nav shows the direction to asteroids. Find one and shoot it to break it up.",
+		func():
+			return asteroids_hit_this_level >= 1
+	))
+	
+	# Level 9: Collect coins
+	levels.append(Level.new(
+		"LEVEL 9: COLLECT COINS",
+		"Small asteroids have a 1 in 10 chance of dropping a bonus coin. Get a coin!",
+		func():
+			return coins_collected_this_level >= 1
+	))
+	
+	# Level 10: Capture bases
+	levels.append(Level.new(
+		"LEVEL 10: CAPTURE A BASE",
+		"Find and capture a base by flying over it.",
+		func():
+			return bases_captured_this_level >= 1
+	))
+	
+	# Level 11: Shield boost
+	levels.append(Level.new(
+		"LEVEL 11: SHIELD BOOST",
+		"Hold X for 1 second to activate or boost your shield for 1000 resources. Boost shield to level 3.",
+		func():
+			if not player or not is_instance_valid(player):
+				return false
+			if not player.shield or not is_instance_valid(player.shield):
+				return false
+			var shield_level = player.shield.health
+			return shield_level >= 3
+	))
 
-	# Level 8: Complete
+	# Level 12: Complete
 	levels.append(Level.new(
 		"TUTORIAL COMPLETE",
 		"You've learned the basics! Press Pause to return to menu.",
@@ -166,6 +208,36 @@ func _setup_levels():
 func _process(delta):
 	if current_level_index >= levels.size() or is_transitioning:
 		return
+	
+	# Track asteroid hits for level 8 (index 7)
+	if current_level_index == 7:
+		var current_asteroid_count = World.asteroid_count
+		# If total asteroid count increased from start, asteroids were split (hit)
+		if current_asteroid_count > level_start_asteroid_count:
+			asteroids_hit_this_level += 1
+			level_start_asteroid_count = current_asteroid_count  # Update for next hit
+	
+	# Track coin collection for level 9 (index 8)
+	if current_level_index == 8:
+		var coins = get_tree().get_nodes_in_group("coins")
+		for coin in coins:
+			if is_instance_valid(coin) and coin.has_meta("counted_for_tutorial"):
+				continue
+			# Check if coin is about to be collected (very close to player)
+			if player and is_instance_valid(player):
+				var distance = coin.global_position.distance_to(player.global_position)
+				if distance < 20.0:  # Close enough to be collected soon
+					coin.set_meta("counted_for_tutorial", true)
+					coins_collected_this_level += 1
+	
+	# Track base captures for level 10 (index 9)
+	if current_level_index == 9 and player and is_instance_valid(player):
+		var bases = get_tree().get_nodes_in_group("bases")
+		for base in bases:
+			if is_instance_valid(base) and "team" in base:
+				if base.team == player.team and not base.has_meta("counted_for_tutorial"):
+					base.set_meta("counted_for_tutorial", true)
+					bases_captured_this_level += 1
 	
 	var current_level = levels[current_level_index]
 	if current_level.check_condition.call():
@@ -193,6 +265,16 @@ func _start_level(index: int):
 	bullets_fired_this_level = 0
 	walls_built_this_level = 0
 	harvesters_built_this_level = 0
+	asteroids_hit_this_level = 0
+	coins_collected_this_level = 0
+	bases_captured_this_level = 0
+	
+	# Record starting shield level for shield level
+	if player and is_instance_valid(player) and player.shield and is_instance_valid(player.shield):
+		level_start_shield = player.shield.health
+	
+	# Record starting asteroid count for asteroid level
+	level_start_asteroid_count = World.asteroid_count
 	
 	# Show game HUD starting at level 5 (index 4) - harvest resources level
 	if game_hud and is_instance_valid(game_hud):
@@ -206,10 +288,12 @@ func _start_level(index: int):
 					extra_lives.visible = false
 				var base_score = control.get_node_or_null("BaseScore")
 				if base_score:
-					base_score.visible = false
+					# Show base score starting at level 10 (index 9) - bases level
+					base_score.visible = (index >= 9)
 		var player_indicators = game_hud.get_node_or_null("PlayerIndicators")
 		if player_indicators:
-			player_indicators.visible = false
+			# Show player indicators starting at level 8 (index 7) - asteroids level
+			player_indicators.visible = (index >= 7)
 	
 	# Update HUD
 	if tutorial_hud and is_instance_valid(tutorial_hud):
