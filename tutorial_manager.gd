@@ -215,7 +215,7 @@ func _process(delta):
 		# If total asteroid count increased from start, asteroids were split (hit)
 		if current_asteroid_count > level_start_asteroid_count:
 			asteroids_hit_this_level += 1
-			level_start_asteroid_count = current_asteroid_count  # Update for next hit
+			level_start_asteroid_count = current_asteroid_count # Update for next hit
 	
 	# Track coin collection for level 9 (index 8)
 	if current_level_index == 8:
@@ -226,7 +226,7 @@ func _process(delta):
 			# Check if coin is about to be collected (very close to player)
 			if player and is_instance_valid(player):
 				var distance = coin.global_position.distance_to(player.global_position)
-				if distance < 20.0:  # Close enough to be collected soon
+				if distance < 20.0: # Close enough to be collected soon
 					coin.set_meta("counted_for_tutorial", true)
 					coins_collected_this_level += 1
 	
