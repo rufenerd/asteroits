@@ -26,7 +26,7 @@ theme_override_constants/separation = 30
 
 [node name="Title" type="Label" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
-text = "DE-'STROID"
+text = "dstroid"
 label_settings = SubResource("LabelSettings_main")
 horizontal_alignment = 1
 
