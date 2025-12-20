@@ -4,9 +4,11 @@ class_name AIPlayer extends Node2D
 @export var base_bias := 1.0
 @export var asteroid_bias := 1.0
 
-func _ready() -> void:
+func _enter_tree() -> void:
+	# Assign team early so the child Player registers with the correct team in its _ready()
 	$Player.team = "ai-" + str(randi() % 100_000_000)
-	World.register_player($Player)
+
+func _ready() -> void:
 	$Player/Sprite2D.modulate = World.team_color($Player.team)
 	$Player.global_position = World.spawn_points[$Player.team]
 	if is_instance_valid($Player/Camera2D):

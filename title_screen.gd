@@ -1,6 +1,6 @@
 extends Control
 
-var selected_difficulty := 1  # 0=EASY, 1=NORMAL, 2=HARD
+var selected_difficulty := 1 # 0=EASY, 1=NORMAL, 2=HARD
 var difficulties := [World.Difficulty.EASY, World.Difficulty.NORMAL, World.Difficulty.HARD]
 var difficulty_names := ["EASY", "NORMAL", "HARD"]
 
@@ -100,6 +100,9 @@ func start_game():
 	var difficulty_name = difficulty_names[selected_difficulty]
 	print("Starting game with difficulty: ", difficulty_name)
 	
+	# Reset world state before spawning players so colors/bank/spawns are fresh
+	World.reset_state()
+
 	# Set difficulty on the global World singleton
 	World.difficulty = difficulty
 	

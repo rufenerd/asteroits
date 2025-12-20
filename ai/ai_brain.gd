@@ -39,7 +39,6 @@ var modes = {}
 
 func _ready():
 	player = $"../Player"
-	player.team = "ai1"
 	input = AIInput.new()
 	player.input = input
 	

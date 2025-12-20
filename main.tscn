@@ -40,4 +40,3 @@ stretch_mode = 1
 layer = 100
 
 [node name="TitleScreen" parent="UILayer" instance=ExtResource("1_title")]
-anchors_preset = 0

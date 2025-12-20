@@ -29,25 +29,56 @@ var difficulty := Difficulty.HARD
 
 var colors = {"neutral": Color.WHITE}
 
-var available_colors = [
+const DEFAULT_AVAILABLE_COLORS := [
 	Color8(57, 255, 20), # 39FF14 green
 	Color8(218, 20, 254), # DA14FE pink
 	Color8(0, 240, 255), # 00F0FF blue
 	Color8(254, 218, 20), # FEDA14 yellow
 	Color8(254, 100, 20) # FE6414 orange
 ]
-var available_spawn_locations = [Vector2(400, 400), Vector2(400, 9600), Vector2(9600, 400), Vector2(9600, 9600)]
+
+var available_colors = DEFAULT_AVAILABLE_COLORS.duplicate()
+const DEFAULT_AVAILABLE_SPAWN_LOCATIONS := [Vector2(400, 400), Vector2(400, 9600), Vector2(9600, 400), Vector2(9600, 9600)]
+var available_spawn_locations = DEFAULT_AVAILABLE_SPAWN_LOCATIONS.duplicate()
 
 func _ready():
 	# Allow World to always process (including when paused) so unpause works
 	# But child nodes will be pausable by default
 	process_mode = PROCESS_MODE_ALWAYS
 	# Don't initialize the game yet - wait for title screen to select difficulty
+	reset_state()
 
 func initialize_game():
 	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
 	initialize_bases()
 	spawn_initial_asteroid()
+	# Ensure all team-colored elements are applied at start and HUD reflects current colors
+	apply_team_colors()
+	if hud and is_instance_valid(hud):
+		hud._bank_sig = ""
+		hud._bases_sig = ""
+		hud._lives_sig = null
+		hud._update_bank()
+		hud._update_base_score()
+		if hud.player and is_instance_valid(hud.player):
+			hud._update_extra_lives()
+
+func reset_state():
+	asteroid_count = 0
+	board.clear()
+	resources.clear()
+	bank.clear()
+	extra_lives.clear()
+	spawn_points.clear()
+	player_order.clear()
+	colors = {"neutral": Color.WHITE}
+	available_colors = DEFAULT_AVAILABLE_COLORS.duplicate()
+	available_spawn_locations = DEFAULT_AVAILABLE_SPAWN_LOCATIONS.duplicate()
+	spectator_mode = false
+	is_paused = false
+	game_over_ai_buffed = false
+	# HUD will reassign itself on ready; clear reference to avoid stale state
+	hud = null
 
 func _physics_process(delta):
 	# Don't run game logic when paused
@@ -72,7 +103,6 @@ func _input(event):
 	# Rotate all team colors on demand (active during play or spectator)
 	if event.is_action_pressed("rotate_colors"):
 		rotate_colors()
-		apply_team_colors()
 		get_viewport().set_input_as_handled()
 		return
 	
@@ -435,42 +465,53 @@ func set_extra_lives(player: Player, amount: int) -> void:
 ## Rotate assigned team colors together with unassigned available colors as one ring.
 ## Keeps "neutral" unchanged. Applies new colors and then updates live nodes.
 func rotate_colors() -> void:
-	# Gather active team ids preferring stable camera order, then fill any missing
+	# Gather all active teams from live players; fall back to any known teams in colors/bank
 	var team_ids: Array[String] = []
-	for p in _alive_players_in_order():
-		if p and is_instance_valid(p):
-			if not team_ids.has(p.team) and p.team != "neutral":
-				team_ids.append(p.team)
-	# Ensure all live teams are included even if not in player_order
-	for lp in players():
-		if not is_instance_valid(lp):
+	for p in players():
+		if not is_instance_valid(p):
 			continue
-		if lp.team == "neutral":
+		if p.team == "neutral":
 			continue
-		if not team_ids.has(lp.team):
-			team_ids.append(lp.team)
+		if not team_ids.has(p.team):
+			team_ids.append(p.team)
+	if team_ids.is_empty():
+		for t in colors.keys():
+			if t != "neutral" and not team_ids.has(t):
+				team_ids.append(t)
+	for t in bank.keys():
+		if t != "neutral" and not team_ids.has(t):
+			team_ids.append(t)
 
-	if team_ids.is_empty() and available_colors.is_empty():
+	if team_ids.is_empty():
 		return
 
-	# Build a single palette: assigned (by team order) + remaining available colors
-	var palette: Array = []
-	for t in team_ids:
-		palette.append(colors.get(t, Color.WHITE))
-	for c in available_colors:
-		palette.append(c)
+	# Build a fresh shuffled palette from defaults to ensure non-white vivid colors
+	var palette: Array = DEFAULT_AVAILABLE_COLORS.duplicate()
+	palette.shuffle()
 
-	if palette.is_empty():
-		return
+	# Ensure palette has enough entries (repeat if needed)
+	while palette.size() < team_ids.size():
+		var extra := DEFAULT_AVAILABLE_COLORS.duplicate()
+		extra.shuffle()
+		palette += extra
 
-	# Shuffle entire palette instead of rotating
-	if palette.size() > 1:
-		palette.shuffle()
-
-	# Reassign colors back to teams then leftover back to available_colors
+	# Assign colors sequentially from shuffled palette
 	for i in range(team_ids.size()):
 		colors[team_ids[i]] = palette[i]
+
+	# Remaining colors become the new available pool (drop any already used)
 	available_colors = palette.slice(team_ids.size(), palette.size())
+
+	# Apply to live nodes and refresh HUD coloring
+	apply_team_colors()
+	if hud and is_instance_valid(hud):
+		hud._bank_sig = ""
+		hud._bases_sig = ""
+		hud._lives_sig = null
+		hud._update_bank()
+		hud._update_base_score()
+		if hud.player and is_instance_valid(hud.player):
+			hud._update_extra_lives()
 
 ## Apply current team colors to all live nodes that cache modulate
 func apply_team_colors() -> void:

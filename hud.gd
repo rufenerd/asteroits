@@ -103,19 +103,33 @@ func _show_message(label: Label, color: Color) -> void:
 	label.visible = true
 
 func _update_bank():
-	for child in amount_label_template.get_parent().get_children():
+	var container = amount_label_template.get_parent()
+	for child in container.get_children():
 		if child != amount_label_template:
 			child.queue_free()
 
+	var teams: Array = []
 	for team in World.bank.keys():
-		# Only show bank for teams with alive players
 		var alive_players = World.players().filter(func(p): return p.team == team)
 		if alive_players.size() == 0:
 			continue
-		var lbl := amount_label_template.duplicate()
+		teams.append(team)
+
+	var idx := 0
+	for team in teams:
+		var lbl: Label
+		if idx == 0:
+			lbl = amount_label_template
+		else:
+			lbl = amount_label_template.duplicate()
+			container.add_child(lbl)
+		lbl.visible = true
 		lbl.text = str(int(round(World.bank[team])))
 		lbl.modulate = World.team_color(team)
-		amount_label_template.get_parent().add_child(lbl)
+		idx += 1
+
+	# Hide template if no teams to show
+	amount_label_template.visible = idx > 0
 
 func _update_extra_lives():
 	var lives: int = World.extra_lives[player.team]
