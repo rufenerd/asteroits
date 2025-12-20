@@ -1,13 +1,14 @@
 extends Control
 
-var selected_difficulty := 1 # 0=EASY, 1=NORMAL, 2=HARD
-var difficulties := [World.Difficulty.EASY, World.Difficulty.NORMAL, World.Difficulty.HARD]
-var difficulty_names := ["EASY", "NORMAL", "HARD"]
+var selected_difficulty := 0 # 0=TRAINING, 1=EASY, 2=NORMAL, 3=HARD
+var difficulties := [World.Difficulty.TRAINING, World.Difficulty.EASY, World.Difficulty.NORMAL, World.Difficulty.HARD]
+var difficulty_names := ["TRAINING", "EASY", "NORMAL", "HARD"]
 
 const NAV_DEBOUNCE_MS := 150
 var _nav_locked := false
 var _last_nav_ms := 0
 
+@onready var training_arrow := $CenterContainer/VBoxContainer/TrainingRow/TrainingArrow
 @onready var easy_arrow := $CenterContainer/VBoxContainer/EasyRow/EasyArrow
 @onready var normal_arrow := $CenterContainer/VBoxContainer/NormalRow/NormalArrow
 @onready var hard_arrow := $CenterContainer/VBoxContainer/HardRow/HardArrow
@@ -60,7 +61,7 @@ func _input(event):
 	
 	if event.is_action_pressed("left_stick_down") or event.is_action_pressed("aim_down"):
 		if _can_navigate():
-			selected_difficulty = min(selected_difficulty + 1, 2)
+			selected_difficulty = min(selected_difficulty + 1, 3)
 			update_difficulty_display()
 		get_viewport().set_input_as_handled()
 		return
@@ -72,6 +73,7 @@ func _input(event):
 
 func update_difficulty_display():
 	# Hide all arrows
+	training_arrow.visible = false
 	easy_arrow.visible = false
 	normal_arrow.visible = false
 	hard_arrow.visible = false
@@ -79,10 +81,12 @@ func update_difficulty_display():
 	# Show arrow for selected option
 	match selected_difficulty:
 		0:
-			easy_arrow.visible = true
+			training_arrow.visible = true
 		1:
-			normal_arrow.visible = true
+			easy_arrow.visible = true
 		2:
+			normal_arrow.visible = true
+		3:
 			hard_arrow.visible = true
 
 func _can_navigate() -> bool:
@@ -106,8 +110,9 @@ func start_game():
 	# Set difficulty on the global World singleton
 	World.difficulty = difficulty
 	
-	# Instantiate the world scene and add it to Main
-	var world_scene = load("res://world.tscn")
+	# Choose scene based on difficulty
+	var scene_path := "res://tutorial.tscn" if difficulty == World.Difficulty.TRAINING else "res://world.tscn"
+	var world_scene = load(scene_path)
 	var world_instance = world_scene.instantiate()
 	get_tree().root.get_node("Main").add_child(world_instance)
 	

@@ -19,7 +19,7 @@ var extra_lives = {}
 var spawn_points = {}
 var match_has_ended := false
 
-enum Difficulty {EASY, NORMAL, HARD}
+enum Difficulty {TRAINING, EASY, NORMAL, HARD}
 
 var hud: HUD
 var spectator_mode := false
@@ -52,7 +52,12 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 
 func initialize_game():
-	initialize_clustered_resources(NUM_RESOURCE_CLUSTERS, MIN_RESOURCES_IN_CLUSTER, MAX_RESOURCES_IN_CLUSTER, MAX_CLUSTER_RADIUS)
+	# Increase resources for TRAINING mode (double clusters, not individual resources to reduce node count)
+	var num_clusters := NUM_RESOURCE_CLUSTERS * 2 if difficulty == Difficulty.TRAINING else NUM_RESOURCE_CLUSTERS
+	var min_in_cluster := MIN_RESOURCES_IN_CLUSTER
+	var max_in_cluster := MAX_RESOURCES_IN_CLUSTER
+	
+	initialize_clustered_resources(num_clusters, min_in_cluster, max_in_cluster, MAX_CLUSTER_RADIUS)
 	initialize_bases()
 	spawn_initial_asteroid()
 	# Ensure all team-colored elements are applied at start and HUD reflects current colors
@@ -373,6 +378,11 @@ func check_win_conditions():
 	# Prevent re-triggering end-game flow while transitioning back to title
 	if match_has_ended:
 		return
+	
+	# Skip win conditions in TRAINING mode
+	if difficulty == Difficulty.TRAINING:
+		return
+	
 	# --- 1. All 4 bases owned by 1 team (not neutral) ---
 	var base_counts := {}
 	for b in get_tree().get_nodes_in_group("bases"):

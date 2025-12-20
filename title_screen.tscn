@@ -34,11 +34,27 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 
+[node name="TrainingRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TrainingArrow" type="Label" parent="CenterContainer/VBoxContainer/TrainingRow"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "▶"
+label_settings = SubResource("LabelSettings_main")
+
+[node name="TrainingOption" type="Label" parent="CenterContainer/VBoxContainer/TrainingRow"]
+layout_mode = 2
+text = "TRAIN"
+label_settings = SubResource("LabelSettings_main")
+
 [node name="EasyRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="EasyArrow" type="Label" parent="CenterContainer/VBoxContainer/EasyRow"]
+visible = false
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 text = "▶"
