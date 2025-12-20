@@ -180,7 +180,7 @@ static func smart_shoot(brain, aim_for_position):
 	var aim_pos = aim_for_position
 	var diff = World.difficulty
 	
-	if diff == World.Difficulty.EASY:
+	if diff == World.Difficulty.EASY or diff == World.Difficulty.TRAINING:
 		# Large aiming error
 		var error_angle = randf_range(-0.3, 0.3) # ~17 degrees
 		var dir = (aim_pos - player.global_position).normalized()
@@ -208,7 +208,7 @@ static func smart_shoot(brain, aim_for_position):
 				aim_pos = predicted_pos
 	
 	# Handle shoot cooldown for EASY difficulty
-	if diff == World.Difficulty.EASY:
+	if diff == World.Difficulty.EASY or diff == World.Difficulty.TRAINING:
 		if brain.shoot_cooldown <= 0:
 			input.target_aim = aim_pos
 			brain.shoot_cooldown = 0.8 # 800ms between shots

@@ -31,6 +31,7 @@ var bases_captured_this_level := 0
 var level_start_shield := 0
 var level_start_asteroid_count := 0
 var turbo_time := 0.0
+var ai_player: Node2D = null
 
 func _ready():
 	process_mode = PROCESS_MODE_PAUSABLE
@@ -203,11 +204,33 @@ func _setup_levels():
 			var shield_level = player.shield.health
 			return shield_level >= 3
 	))
+	
+	# Level 13: Combat
+	levels.append(Level.new(
+		"LEVEL 13: COMBAT",
+		"Defeat the enemy player before game over.",
+		func():
+			# Check if AI player node exists
+			if ai_player == null or not is_instance_valid(ai_player):
+				return true
+			# Check if AI player's Player child exists
+			var ai_player_node = ai_player.get_node_or_null("Player")
+			if ai_player_node == null or not is_instance_valid(ai_player_node):
+				return true
+			# Check if AI player has no extra lives and check if any players in their team are alive
+			var players = get_tree().get_nodes_in_group("players")
+			var ai_team_alive = false
+			for p in players:
+				if is_instance_valid(p) and "team" in p and p.team == ai_player_node.team:
+					ai_team_alive = true
+					break
+			return not ai_team_alive
+	))
 
-	# Level 13: Complete
+	# Level 14: Complete
 	levels.append(Level.new(
 		"TUTORIAL COMPLETE",
-		"You've learned the basics! Press Pause to return to menu.",
+		"To win, capture all 4 bases or be the last player. Press Pause to return to menu.",
 		func():
 			return false # Never auto-complete, player must press pause
 	))
@@ -289,6 +312,18 @@ func _start_level(index: int):
 	# Record starting asteroid count for asteroid level
 	level_start_asteroid_count = World.asteroid_count
 	
+	# Spawn AI player for level 13 (index 12) - combat level
+	if index == 12:
+		var ai_scene = preload("res://ai/ai_player.tscn")
+		ai_player = ai_scene.instantiate()
+		get_tree().current_scene.add_child(ai_player)
+		# Wait for AI player to be ready and registered
+		await get_tree().process_frame
+		var ai_player_node = ai_player.get_node_or_null("Player")
+		if ai_player_node:
+			World.set_extra_lives(ai_player_node, 0)
+			print("AI player spawned for combat level with 0 extra lives")
+	
 	# Show game HUD starting at level 5 (index 4) - harvest resources level
 	if game_hud and is_instance_valid(game_hud):
 		game_hud.visible = (index >= 4)
@@ -298,7 +333,8 @@ func _start_level(index: int):
 			if control:
 				var extra_lives = control.get_node_or_null("ExtraLives")
 				if extra_lives:
-					extra_lives.visible = false
+					# Show extra lives starting at level 13 (index 12) - combat level
+					extra_lives.visible = (index >= 12)
 				var base_score = control.get_node_or_null("BaseScore")
 				if base_score:
 					# Show base score starting at level 11 (index 10) - bases level
