@@ -13,6 +13,7 @@ class Level:
 var levels: Array[Level] = []
 var current_level_index := 0
 var tutorial_hud: Control
+var game_hud: CanvasLayer
 var player: Player
 var level_start_time := 0.0
 var level_start_position := Vector2.ZERO
@@ -30,6 +31,7 @@ func _ready():
 	await get_tree().process_frame
 	_find_player()
 	_find_hud()
+	_find_game_hud()
 	_setup_levels()
 	_start_level(0)
 
@@ -45,6 +47,12 @@ func _find_hud():
 		var hud_layer = parent.get_node_or_null("TutorialHUDLayer")
 		if hud_layer:
 			tutorial_hud = hud_layer.get_node_or_null("TutorialHUD")
+
+func _find_game_hud():
+	# Find the game HUD in the scene - it's a CanvasLayer
+	var parent = get_parent()
+	if parent:
+		game_hud = parent.get_node_or_null("HUD")
 
 func _setup_levels():
 	# Level 1: Fly around
@@ -92,7 +100,7 @@ func _setup_levels():
 	# Level 4: Build a wall
 	levels.append(Level.new(
 		"LEVEL 4: BUILD A WALL",
-		"Press Z to build a wall. Build 3 walls.",
+		"Press square to build a wall for 200 resources. Build 3 walls.",
 		func():
 			var walls = get_tree().get_nodes_in_group("walls")
 			for wall in walls:
@@ -103,7 +111,16 @@ func _setup_levels():
 			return walls_built_this_level >= 3
 	))
 	
-	# Level 5: Complete
+	# Level 5: Build a turret
+	levels.append(Level.new(
+		"LEVEL 5: BUILD A TURRET",
+		"Press triangle to build a turret in the direction you are facing for 200 resources. Build 5 (and keep) turrets.",
+		func():
+			var turrets = get_tree().get_nodes_in_group("turrets")
+			return turrets.size() >= 5
+	))
+
+	# Level 6: Complete
 	levels.append(Level.new(
 		"TUTORIAL COMPLETE",
 		"You've learned the basics! Press Pause to return to menu.",
@@ -137,6 +154,23 @@ func _start_level(index: int):
 	bullets_fired_this_level = 0
 	walls_built_this_level = 0
 	harvesters_built_this_level = 0
+	
+	# Show game HUD starting at level 3 (index 2)
+	if game_hud and is_instance_valid(game_hud):
+		game_hud.visible = (index >= 2)
+		# Hide everything except bank when showing HUD
+		if game_hud.visible:
+			var control = game_hud.get_node_or_null("Control")
+			if control:
+				var extra_lives = control.get_node_or_null("ExtraLives")
+				if extra_lives:
+					extra_lives.visible = false
+				var base_score = control.get_node_or_null("BaseScore")
+				if base_score:
+					base_score.visible = false
+		var player_indicators = game_hud.get_node_or_null("PlayerIndicators")
+		if player_indicators:
+			player_indicators.visible = false
 	
 	# Update HUD
 	if tutorial_hud and is_instance_valid(tutorial_hud):
