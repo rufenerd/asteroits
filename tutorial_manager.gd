@@ -24,6 +24,7 @@ var bullets_fired_this_level := 0
 var walls_built_this_level := 0
 var harvesters_built_this_level := 0
 var level_start_bank := 0
+var level_start_zoom := 0.0
 
 func _ready():
 	process_mode = PROCESS_MODE_PAUSABLE
@@ -85,9 +86,43 @@ func _setup_levels():
 	))
 
 
-	# Level 3: Harvest resources
+	# Level 3: Zoom out
 	levels.append(Level.new(
-		"LEVEL 3: HARVEST RESOURCES",
+		"LEVEL 3: ZOOM OUT",
+		"Press '.' (period) or L1 to zoom out all the way.",
+		func():
+			if not player or not is_instance_valid(player):
+				return false
+			var camera = player.get_node_or_null("Camera2D")
+			if not camera or not is_instance_valid(camera):
+				return false
+			var current_zoom = camera.zoom.x
+			if current_zoom <= 1.0:
+				print("Level 3 complete - zoomed out to: ", current_zoom)
+				return true
+			return false
+	))
+	
+	# Level 4: Zoom in
+	levels.append(Level.new(
+		"LEVEL 4: ZOOM IN",
+		"Press ',' (comma) or R1 to zoom in once.",
+		func():
+			if not player or not is_instance_valid(player):
+				return false
+			var camera = player.get_node_or_null("Camera2D")
+			if not camera or not is_instance_valid(camera):
+				return false
+			var current_zoom = camera.zoom.x
+			if current_zoom > level_start_zoom:
+				print("Level 4 complete - zoomed in to: ", current_zoom, " from: ", level_start_zoom)
+				return true
+			return false
+	))
+	
+	# Level 5: Harvest resources
+	levels.append(Level.new(
+		"LEVEL 5: HARVEST RESOURCES",
 		"Hold the circle button and fly over circles to build harvesters to gain resources. Gain 1000 resources.",
 		func():
 			if not player or not is_instance_valid(player):
@@ -97,9 +132,9 @@ func _setup_levels():
 			return gained >= 1000
 	))
 	
-	# Level 4: Build a wall
+	# Level 6: Build walls
 	levels.append(Level.new(
-		"LEVEL 4: BUILD A WALL",
+		"LEVEL 6: BUILD WALLS",
 		"Press square to build a wall for 200 resources. Build 3 walls.",
 		func():
 			var walls = get_tree().get_nodes_in_group("walls")
@@ -111,16 +146,16 @@ func _setup_levels():
 			return walls_built_this_level >= 3
 	))
 	
-	# Level 5: Build a turret
+	# Level 7: Build turrets
 	levels.append(Level.new(
-		"LEVEL 5: BUILD A TURRET",
+		"LEVEL 7: BUILD TURRETS",
 		"Press triangle to build a turret in the direction you are facing for 200 resources. Build 5 (and keep) turrets.",
 		func():
 			var turrets = get_tree().get_nodes_in_group("turrets")
 			return turrets.size() >= 5
 	))
 
-	# Level 6: Complete
+	# Level 8: Complete
 	levels.append(Level.new(
 		"TUTORIAL COMPLETE",
 		"You've learned the basics! Press Pause to return to menu.",
@@ -149,15 +184,19 @@ func _start_level(index: int):
 	if player and is_instance_valid(player):
 		level_start_position = player.global_position
 		level_start_bank = World.bank.get(player.team, 0)
+		var camera = player.get_node_or_null("Camera2D")
+		if camera and is_instance_valid(camera):
+			level_start_zoom = camera.zoom.x
+			print("Level ", index, " started with zoom: ", level_start_zoom)
 	
 	# Reset level-specific counters
 	bullets_fired_this_level = 0
 	walls_built_this_level = 0
 	harvesters_built_this_level = 0
 	
-	# Show game HUD starting at level 3 (index 2)
+	# Show game HUD starting at level 5 (index 4) - harvest resources level
 	if game_hud and is_instance_valid(game_hud):
-		game_hud.visible = (index >= 2)
+		game_hud.visible = (index >= 4)
 		# Hide everything except bank when showing HUD
 		if game_hud.visible:
 			var control = game_hud.get_node_or_null("Control")
