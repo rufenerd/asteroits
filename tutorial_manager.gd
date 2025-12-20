@@ -65,7 +65,7 @@ func _find_game_hud():
 func _setup_levels():
 	# Level 1: Fly around
 	levels.append(Level.new(
-		"LEVEL 1: FLY AROUND",
+		"LEVEL 1: FLY",
 		"Use the left stick to fly around.",
 		func():
 			var time_elapsed = Time.get_ticks_msec() / 1000.0 - level_start_time
@@ -96,7 +96,7 @@ func _setup_levels():
 	# Level 3: Zoom out
 	levels.append(Level.new(
 		"LEVEL 3: ZOOM OUT",
-		"Press L1 to zoom out all the way.",
+		"Press L1 a few times to zoom out all the way.",
 		func():
 			if not player or not is_instance_valid(player):
 				return false
@@ -113,7 +113,7 @@ func _setup_levels():
 	# Level 4: Zoom in
 	levels.append(Level.new(
 		"LEVEL 4: ZOOM IN",
-		"Press R1 to zoom in once.",
+		"Press R1 to zoom in.",
 		func():
 			if not player or not is_instance_valid(player):
 				return false
@@ -129,8 +129,8 @@ func _setup_levels():
 	
 	# Level 5: Harvest resources
 	levels.append(Level.new(
-		"LEVEL 5: HARVEST RESOURCES",
-		"Hold the circle button and fly over circles to build harvesters to gain resources. Gain 1000 resources.",
+		"LEVEL 5: HARVESTERS",
+		"Hold the circle button and fly over circles to build harvesters to produce resources. Accumulate 1000 resources.",
 		func():
 			if not player or not is_instance_valid(player):
 				return false
@@ -139,10 +139,10 @@ func _setup_levels():
 			return gained >= 1000
 	))
 	
-	# Level 6: Build walls
+	# Level 6: Mines
 	levels.append(Level.new(
-		"LEVEL 6: BUILD WALLS",
-		"Press square to build a wall for 200 resources. Build 3 walls.",
+		"LEVEL 6: MINES",
+		"Press square to build a mine for 200 resources. Mines will heavily damage colliding enemy. Build 3 mines.",
 		func():
 			var walls = get_tree().get_nodes_in_group("walls")
 			for wall in walls:
@@ -153,10 +153,10 @@ func _setup_levels():
 			return walls_built_this_level >= 3
 	))
 	
-	# Level 7: Build turrets
+	# Level 7: Turrets
 	levels.append(Level.new(
-		"LEVEL 7: BUILD TURRETS",
-		"Press triangle to build a turret in the direction you are facing for 200 resources. Build 5 (and keep) turrets.",
+		"LEVEL 7: TURRETS",
+		"Press triangle to build a turret in the direction you are facing for 200 resources. Turrets shoot enemies that cross its path. Build 5 turrets.",
 		func():
 			var turrets = get_tree().get_nodes_in_group("turrets")
 			return turrets.size() >= 5
@@ -164,7 +164,7 @@ func _setup_levels():
 	
 	# Level 8: Find asteroids
 	levels.append(Level.new(
-		"LEVEL 8: FIND ASTEROIDS",
+		"LEVEL 8: ASTEROIDS",
 		"The nav shows the direction to asteroids. Find one and shoot it to break it up.",
 		func():
 			return asteroids_hit_this_level >= 1
@@ -172,8 +172,8 @@ func _setup_levels():
 	
 	# Level 9: Collect coins
 	levels.append(Level.new(
-		"LEVEL 9: COLLECT COINS",
-		"Small asteroids have a 1 in 10 chance of dropping a bonus coin. Get a coin!",
+		"LEVEL 9: COINS",
+		"Small asteroids have a 1 in 10 chance of dropping a valuable bonus coin. Get a coin!",
 		func():
 			return coins_collected_this_level >= 1
 	))
@@ -186,7 +186,7 @@ func _setup_levels():
 	))
 		# Level 11: Capture bases
 	levels.append(Level.new(
-		"LEVEL 11: CAPTURE A BASE",
+		"LEVEL 11: BASES",
 		"Find and capture a base by flying over it.",
 		func():
 			return bases_captured_this_level >= 1
@@ -230,7 +230,7 @@ func _setup_levels():
 	# Level 14: Complete
 	levels.append(Level.new(
 		"TUTORIAL COMPLETE",
-		"To win, capture all 4 bases or be the last player. Press Pause to return to menu.",
+		"To win a full game, capture all 4 bases or be the last of four players remaining. Press Start to return to menu.",
 		func():
 			return false # Never auto-complete, player must press pause
 	))
@@ -357,8 +357,8 @@ func _complete_level():
 	
 	print("Completed: ", levels[current_level_index].title)
 	
-	# Wait a moment before starting next level
-	await get_tree().create_timer(1.5).timeout
+	# Brief pause before starting next level
+	await get_tree().create_timer(0.3).timeout
 	
 	current_level_index += 1
 	if current_level_index < levels.size():

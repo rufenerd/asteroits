@@ -40,7 +40,7 @@ func on_hit(_damage, origin):
 		# Better coin odds in training mode
 		var coin_odds = COIN_DROP_ODDS
 		if World.difficulty == World.Difficulty.TRAINING:
-			coin_odds = 5  # 1 in 5 for training instead of 1 in 10
+			coin_odds = 5 # 1 in 5 for training instead of 1 in 10
 		
 		if randi() % coin_odds == 0:
 			var coin_type = null
