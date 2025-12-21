@@ -239,8 +239,8 @@ func _setup_levels():
 
 	# Level 15: Complete
 	levels.append(Level.new(
-		"TUTORIAL COMPLETE",
-		"To win a full game, capture all 4 bases or be the last of four players remaining. Press Start to pause during a game or to return to the title game menu now.",
+		"TUTORIAL COMPLETE!",
+		"To win a full game, capture all four bases or be the last of four players remaining. Press Start to pause during a game or to return to the title game menu now.",
 		func():
 			return false # Never auto-complete, player must press pause
 	))
