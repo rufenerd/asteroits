@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://ew81kfgau176"]
+[gd_scene load_steps=6 format=3 uid="uid://ew81kfgau176"]
 
 [ext_resource type="Script" uid="uid://d2pjj4lkronpl" path="res://title_screen.gd" id="1_p6f3j"]
 [ext_resource type="FontFile" uid="uid://bpsstsb2qw1as" path="res://art/font-press-start-2p/PressStart2P-Regular.ttf" id="2_abcd"]
+[ext_resource type="Texture2D" uid="uid://cv1f4s3671dvx" path="res://art/ship.png" id="3_ship"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_title"]
 font = ExtResource("2_abcd")
@@ -40,10 +41,24 @@ text = "D-STROID"
 label_settings = SubResource("LabelSettings_title")
 horizontal_alignment = 1
 
-[node name="MiddleSpacer" type="Control" parent="MainVBox"]
-custom_minimum_size = Vector2(0, 100)
+[node name="ShipContainer" type="CenterContainer" parent="MainVBox"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="MainVBox/ShipContainer"]
+custom_minimum_size = Vector2(600, 600)
+layout_mode = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="MainVBox/ShipContainer/Control"]
+modulate = Color(0.223529, 1, 0.0784314, 1)
+position = Vector2(300, 300)
+rotation = -1.5708
+scale = Vector2(7.03125, 7.03125)
+texture = ExtResource("3_ship")
+
+[node name="MiddleSpacer" type="Control" parent="MainVBox"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
 
 [node name="CenterContainer" type="CenterContainer" parent="MainVBox"]
 layout_mode = 2
