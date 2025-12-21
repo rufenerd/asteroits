@@ -1,5 +1,7 @@
 class_name Coin extends Area2D
 
+signal coin_collected(player: Player)
+
 func _ready():
 	connect("area_entered", Callable(self, "_on_area_entered"))
 	connect("body_entered", Callable(self, "_on_body_entered"))
@@ -13,7 +15,9 @@ func _on_body_entered(body):
 
 func _handle_hit(target):
 	if target is Player:
+		coin_collected.emit(target)
 		apply(target)
+		remove_from_group("coins")  # Remove immediately before queue_free
 		queue_free()
 
 func apply(player: Player):

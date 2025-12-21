@@ -90,7 +90,7 @@ func _setup_levels():
 					if not bullet.has_meta("counted_for_tutorial"):
 						bullet.set_meta("counted_for_tutorial", true)
 						bullets_fired_this_level += 1
-			return bullets_fired_this_level >= 10
+			return bullets_fired_this_level >= 8
 	))
 
 
@@ -105,7 +105,7 @@ func _setup_levels():
 			if not camera or not is_instance_valid(camera):
 				return false
 			var current_zoom = camera.zoom.x
-			if current_zoom <= 1.0:
+			if current_zoom <= 0.5:
 				print("Level 3 complete - zoomed out to: ", current_zoom)
 				return true
 			return false
@@ -131,7 +131,7 @@ func _setup_levels():
 	# Level 5: Harvest resources
 	levels.append(Level.new(
 		"LEVEL 5: HARVESTERS",
-		"Hold the ○ button and fly over white circles to build harvesters that produce resources. Accumulate 1000 resources.",
+		"Hold circle and fly over white circles to build harvesters that produce resources. Accumulate 1000 resources.",
 		func():
 			if not player or not is_instance_valid(player):
 				return false
@@ -155,7 +155,7 @@ func _setup_levels():
 	# Level 7: Turrets
 	levels.append(Level.new(
 		"LEVEL 7: TURRETS",
-		"Press △ to build a turret in the direction you are facing for 200 resources. Turrets shoot enemies that cross its path. Build 5 turrets.",
+		"Press triangle to build a turret in the direction you are facing for 200 resources. Turrets shoot enemies that cross its path. Build 5 turrets.",
 		func():
 			var turrets = get_tree().get_nodes_in_group("turrets")
 			return turrets.size() >= 5
@@ -172,7 +172,7 @@ func _setup_levels():
 	# Level 9: Collect coins
 	levels.append(Level.new(
 		"LEVEL 9: COINS",
-		"Small asteroids have a 1 in 10 chance of dropping a valuable bonus coin. Get a coin!",
+		"Small asteroids have a 1 in 10 chance of dropping a bonus coin: +10k, a weapons upgrade, or an extra life. Get a coin!",
 		func():
 			return coins_collected_this_level >= 1
 	))
@@ -269,16 +269,12 @@ func _process(delta):
 	
 	# Track coin collection for level 9 (index 8)
 	if current_level_index == 8:
+		# Connect to any new coins that spawn
 		var coins = get_tree().get_nodes_in_group("coins")
 		for coin in coins:
-			if is_instance_valid(coin) and coin.has_meta("counted_for_tutorial"):
-				continue
-			# Check if coin is about to be collected (very close to player)
-			if player and is_instance_valid(player):
-				var distance = coin.global_position.distance_to(player.global_position)
-				if distance < 20.0: # Close enough to be collected soon
-					coin.set_meta("counted_for_tutorial", true)
-					coins_collected_this_level += 1
+			if is_instance_valid(coin) and not coin.has_meta("tutorial_connected"):
+				coin.set_meta("tutorial_connected", true)
+				coin.coin_collected.connect(_on_coin_collected)
 	
 	# Track base captures for level 11 (index 10)
 	if current_level_index == 10 and player and is_instance_valid(player):
@@ -330,6 +326,11 @@ func _start_level(index: int):
 	coins_collected_this_level = 0
 	bases_captured_this_level = 0
 	turbo_time = 0.0
+	
+	# Set initial coin count for level 8 (coin collection)
+	if index == 8:
+		var coins = get_tree().get_nodes_in_group("coins")
+		set_meta("level_8_start_coin_count", coins.size())
 	
 	# Record starting shield level for shield level
 	if player and is_instance_valid(player) and player.shield and is_instance_valid(player.shield):
@@ -397,3 +398,8 @@ func _complete_level():
 		if tutorial_hud and is_instance_valid(tutorial_hud):
 			tutorial_hud.hide_level()
 		is_transitioning = false
+
+func _on_coin_collected(player: Player):
+	if current_level_index == 8:
+		coins_collected_this_level += 1
+		print("Coin collected in tutorial! Total: ", coins_collected_this_level)
