@@ -8,12 +8,12 @@ const NAV_DEBOUNCE_MS := 150
 var _nav_locked := false
 var _last_nav_ms := 0
 
-@onready var training_arrow := $CenterContainer/VBoxContainer/TrainingRow/TrainingArrow
-@onready var easy_arrow := $CenterContainer/VBoxContainer/EasyRow/EasyArrow
-@onready var normal_arrow := $CenterContainer/VBoxContainer/NormalRow/NormalArrow
-@onready var hard_arrow := $CenterContainer/VBoxContainer/HardRow/HardArrow
+@onready var training_arrow := $MainVBox/CenterContainer/VBoxContainer/TrainingRow/TrainingArrow
+@onready var easy_arrow := $MainVBox/CenterContainer/VBoxContainer/EasyRow/EasyArrow
+@onready var normal_arrow := $MainVBox/CenterContainer/VBoxContainer/NormalRow/NormalArrow
+@onready var hard_arrow := $MainVBox/CenterContainer/VBoxContainer/HardRow/HardArrow
 @onready var _bg := $Background
-@onready var _center := $CenterContainer
+@onready var _center := $MainVBox/CenterContainer
 
 func _ready():
 	# Enforce full-rect anchors at runtime to avoid instance overrides
