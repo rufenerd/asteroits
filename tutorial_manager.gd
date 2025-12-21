@@ -155,7 +155,7 @@ func _setup_levels():
 	# Level 7: Turrets
 	levels.append(Level.new(
 		"LEVEL 7: TURRETS",
-		"Press triangle to build a turret in the direction you are facing for 200 resources. Turrets shoot enemies that cross its path. Build 5 turrets.",
+		"Press △ to build a turret in the direction you are facing for 200 resources. Turrets shoot enemies that cross its path. Build 5 turrets.",
 		func():
 			var turrets = get_tree().get_nodes_in_group("turrets")
 			return turrets.size() >= 5
