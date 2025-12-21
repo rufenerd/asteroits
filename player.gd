@@ -82,12 +82,12 @@ func _physics_process(delta):
 
 	if stick_active:
 		# Gently reduce velocity when heading is significantly off from trajectory
-		if velocity.length() > 50.0:  # Only apply if moving with momentum
+		if velocity.length() > 50.0: # Only apply if moving with momentum
 			var velocity_angle = velocity.angle()
 			var heading_diff = abs(wrapf(velocity_angle - rotation, -PI, PI))
 			
 			# Only apply drift correction for sharp turns (more than 60 degrees off)
-			if heading_diff > PI / 3.0:  # 60 degrees
+			if heading_diff > PI / 3.0: # 60 degrees
 				var drift_friction = friction * (heading_diff / PI) * 0.3
 				velocity = velocity.move_toward(Vector2.ZERO, drift_friction * delta)
 		

@@ -608,22 +608,39 @@ func rotate_colors() -> void:
 	if team_ids.is_empty():
 		return
 
-	# Build a fresh shuffled palette from defaults to ensure non-white vivid colors
-	var palette: Array = DEFAULT_AVAILABLE_COLORS.duplicate()
-	palette.shuffle()
+	# Remember the HUD player's original color
+	var hud_player_team = null
+	var hud_player_original_color = null
+	if hud and is_instance_valid(hud) and hud.player and is_instance_valid(hud.player):
+		hud_player_team = hud.player.team
+		hud_player_original_color = colors.get(hud_player_team)
 
-	# Ensure palette has enough entries (repeat if needed)
-	while palette.size() < team_ids.size():
-		var extra := DEFAULT_AVAILABLE_COLORS.duplicate()
-		extra.shuffle()
-		palette += extra
+	# Keep shuffling until HUD player gets a different color
+	var max_attempts = 20
+	var attempt = 0
+	while attempt < max_attempts:
+		# Build a fresh shuffled palette from defaults to ensure non-white vivid colors
+		var palette: Array = DEFAULT_AVAILABLE_COLORS.duplicate()
+		palette.shuffle()
 
-	# Assign colors sequentially from shuffled palette
-	for i in range(team_ids.size()):
-		colors[team_ids[i]] = palette[i]
+		# Ensure palette has enough entries (repeat if needed)
+		while palette.size() < team_ids.size():
+			var extra := DEFAULT_AVAILABLE_COLORS.duplicate()
+			extra.shuffle()
+			palette += extra
 
-	# Remaining colors become the new available pool (drop any already used)
-	available_colors = palette.slice(team_ids.size(), palette.size())
+		# Assign colors sequentially from shuffled palette
+		for i in range(team_ids.size()):
+			colors[team_ids[i]] = palette[i]
+
+		# Remaining colors become the new available pool (drop any already used)
+		available_colors = palette.slice(team_ids.size(), palette.size())
+		
+		# Check if HUD player got a new color, or if there's no HUD player to check
+		if hud_player_team == null or colors.get(hud_player_team) != hud_player_original_color:
+			break
+		
+		attempt += 1
 
 	# Apply to live nodes and refresh HUD coloring
 	apply_team_colors()
