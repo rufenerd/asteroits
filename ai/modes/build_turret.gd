@@ -15,6 +15,10 @@ func score(brain):
 
 	if World.difficulty == World.Difficulty.EASY:
 		return 0
+	
+	if World.difficulty == World.Difficulty.HARD:
+		if randf() < 0.001:
+			return 3500
 
 	# If we're near a friendly base that lacks defenses, score highly to build there
 	var base = find_base_needing_defense(brain, 20)

@@ -95,7 +95,7 @@ static func hurry_to(brain, target_position: Vector2) -> void:
 	var distance = player.global_position.distance_to(target_position)
 
 	var aligned_regular := is_aligned_with_target(player, target_position, 0.95)
-	var can_turbo: bool = World.get_bank(player) > 1200 and distance > 1000 and aligned_regular
+	var can_turbo: bool = World.difficulty != World.Difficulty.EASY and World.get_bank(player) > 1200 and distance > 1000 and aligned_regular
 
 	if World.difficulty == World.Difficulty.HARD and not can_turbo:
 		var aligned_super := is_aligned_with_target(player, target_position, 0.99)

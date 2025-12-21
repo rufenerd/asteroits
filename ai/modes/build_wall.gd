@@ -7,10 +7,10 @@ func score(brain):
 	if bank < 200 or brain.player.velocity.length() < 50.0:
 		return 0
 
-	# Check for base needing defense (fewer walls needed than turrets)
-	var base = find_base_needing_defense(brain, 8)
-	if base:
-		return calculate_defense_score(brain, base)
+	if World.difficulty != World.Difficulty.EASY:
+		var base = find_base_needing_defense(brain, 8)
+		if base:
+			return calculate_defense_score(brain, base)
 
 	# Random wall placement
 	if randf() < 0.001:
