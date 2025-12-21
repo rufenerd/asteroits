@@ -37,8 +37,13 @@ func on_hit(_damage, origin):
 		explosion.target_node = self
 		get_tree().current_scene.add_child(explosion)
 
+		# Don't drop coins if World is resetting
+		if World.is_resetting:
+			return
+
 		# Better coin odds in training mode
 		var coin_odds = COIN_DROP_ODDS
+
 		if World.difficulty == World.Difficulty.TRAINING:
 			coin_odds = 5 # 1 in 5 for training instead of 1 in 10
 

@@ -26,6 +26,7 @@ var spectator_mode := false
 var player_order: Array = []
 var game_over_ai_buffed := false
 var is_paused := false
+var is_resetting := false
 var difficulty := Difficulty.HARD
 
 var colors = {"neutral": Color.WHITE}
@@ -72,6 +73,7 @@ func initialize_game():
 			hud._update_extra_lives()
 
 func reset_state():
+	is_resetting = true
 	# Free any lingering gameplay nodes that were parented directly to the World autoload
 	_clear_groups([
 		"bases",
@@ -104,8 +106,10 @@ func reset_state():
 	is_paused = false
 	match_has_ended = false
 	game_over_ai_buffed = false
+	difficulty = Difficulty.HARD
 	# HUD will reassign itself on ready; clear reference to avoid stale state
 	hud = null
+	is_resetting = false
 
 func _clear_groups(group_names: Array) -> void:
 	for group_name in group_names:
@@ -367,7 +371,7 @@ func harvest(harvester):
 
 func asteroid_destroyed():
 	asteroid_count -= 1
-	if asteroid_count <= 0:
+	if asteroid_count <= 0 and not is_resetting:
 		call_deferred("spawn_initial_asteroid")
 
 func spawn_initial_asteroid():
