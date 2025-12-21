@@ -135,9 +135,7 @@ func _setup_levels():
 		func():
 			if not player or not is_instance_valid(player):
 				return false
-			var player_bank = World.bank.get(player.team, 0)
-			var gained = player_bank - level_start_bank
-			return gained >= 1000
+			return World.bank.get(player.team, 0) >= 1000
 	))
 	
 	# Level 6: Mines
