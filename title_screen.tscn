@@ -36,7 +36,7 @@ layout_mode = 2
 
 [node name="TrainingRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 8
 
 [node name="TrainingArrow" type="Label" parent="CenterContainer/VBoxContainer/TrainingRow"]
 custom_minimum_size = Vector2(40, 0)
@@ -54,7 +54,7 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="EasyArrow" type="Label" parent="CenterContainer/VBoxContainer/EasyRow"]
-visible = false
+modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 text = "▶"
@@ -70,7 +70,7 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="NormalArrow" type="Label" parent="CenterContainer/VBoxContainer/NormalRow"]
-visible = false
+modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 text = "▶"
@@ -86,7 +86,7 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="HardArrow" type="Label" parent="CenterContainer/VBoxContainer/HardRow"]
-visible = false
+modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 text = "▶"

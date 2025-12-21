@@ -1,7 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://b2i21kh5plhoi"]
+[gd_scene load_steps=5 format=3 uid="uid://b2i21kh5plhoi"]
 
-[ext_resource type="Script" path="res://tutorial_hud.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://bpsstsb2qw1as" path="res://art/font-press-start-2p/PressStart2P-Regular.ttf" id="1_font"]
+[ext_resource type="Script" uid="uid://lo43kk0i04nt" path="res://tutorial_hud.gd" id="1_script"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_title"]
 font = ExtResource("1_font")

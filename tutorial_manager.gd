@@ -131,7 +131,7 @@ func _setup_levels():
 	# Level 5: Harvest resources
 	levels.append(Level.new(
 		"LEVEL 5: HARVESTERS",
-		"Hold the circle button and fly over circles to build harvesters to produce resources. Accumulate 1000 resources.",
+		"Hold the ○ button and fly over white circles to build harvesters that produce resources. Accumulate 1000 resources.",
 		func():
 			if not player or not is_instance_valid(player):
 				return false
@@ -240,7 +240,7 @@ func _setup_levels():
 	# Level 15: Complete
 	levels.append(Level.new(
 		"TUTORIAL COMPLETE",
-		"To win a full game, capture all 4 bases or be the last of four players remaining. Press Start to pause during a game or return to the menu now.",
+		"To win a full game, capture all 4 bases or be the last of four players remaining. Press Start to pause during a game or to return to the title game menu now.",
 		func():
 			return false # Never auto-complete, player must press pause
 	))

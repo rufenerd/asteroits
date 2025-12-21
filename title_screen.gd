@@ -1,6 +1,6 @@
 extends Control
 
-var selected_difficulty := 0 # 0=TRAINING, 1=EASY, 2=NORMAL, 3=HARD
+var selected_difficulty := 2 # 0=TRAINING, 1=EASY, 2=NORMAL, 3=HARD
 var difficulties := [World.Difficulty.TRAINING, World.Difficulty.EASY, World.Difficulty.NORMAL, World.Difficulty.HARD]
 var difficulty_names := ["TRAINING", "EASY", "NORMAL", "HARD"]
 
@@ -73,22 +73,22 @@ func _input(event):
 		return
 
 func update_difficulty_display():
-	# Hide all arrows
-	training_arrow.visible = false
-	easy_arrow.visible = false
-	normal_arrow.visible = false
-	hard_arrow.visible = false
+	# Hide all arrows (make transparent)
+	training_arrow.modulate.a = 0.0
+	easy_arrow.modulate.a = 0.0
+	normal_arrow.modulate.a = 0.0
+	hard_arrow.modulate.a = 0.0
 	
-	# Show arrow for selected option
+	# Show arrow for selected option (make opaque)
 	match selected_difficulty:
 		0:
-			training_arrow.visible = true
+			training_arrow.modulate.a = 1.0
 		1:
-			easy_arrow.visible = true
+			easy_arrow.modulate.a = 1.0
 		2:
-			normal_arrow.visible = true
+			normal_arrow.modulate.a = 1.0
 		3:
-			hard_arrow.visible = true
+			hard_arrow.modulate.a = 1.0
 
 func _can_navigate() -> bool:
 	if _nav_locked:
