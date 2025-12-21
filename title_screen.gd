@@ -46,7 +46,8 @@ func _process(delta: float) -> void:
 		Input.is_action_pressed("left_stick_up") or
 		Input.is_action_pressed("left_stick_down") or
 		Input.is_action_pressed("aim_up") or
-		Input.is_action_pressed("aim_down")
+		Input.is_action_pressed("aim_down") or
+		Input.is_action_pressed("rotate_colors")
 	)
 	if not any_nav_pressed:
 		_nav_locked = false
@@ -59,7 +60,7 @@ func _input(event):
 		get_viewport().set_input_as_handled()
 		return
 	
-	if event.is_action_pressed("left_stick_down") or event.is_action_pressed("aim_down"):
+	if event.is_action_pressed("left_stick_down") or event.is_action_pressed("aim_down") or event.is_action_pressed("rotate_colors"):
 		if _can_navigate():
 			selected_difficulty = min(selected_difficulty + 1, 3)
 			update_difficulty_display()
